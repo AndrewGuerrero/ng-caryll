@@ -1,0 +1,19 @@
+ng-caryll-app {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 56px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+ng-caryll-app > ngc-sidenav {
+  flex: 1;
+}
+
+@media (max-width: 720px) {
+  ng-caryll-app {
+    top: 92px;
+  }
+}

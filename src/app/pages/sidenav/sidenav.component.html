@@ -1,0 +1,15 @@
+<mat-sidenav-container class="ngc-sidenav-container">
+  <mat-sidenav #sidenav class="ngc-sidenav" *ngIf="isScreenSmall()" [opened]="!isScreenSmall()" [mode]="isScreenSmall() ? 'over' : 'side'"
+    [fixedInViewport]="isScreenSmall()" fixedTopGap="92">
+    <ngc-nav></ngc-nav>
+  </mat-sidenav>
+  <div class="ngc-sidenav-content">
+    <ngc-page-header (toggleSidenav)="sidenav.toggle()"></ngc-page-header>
+    <div class="ngc-sidenav-inner-content">
+      <div class="ngc-sidenav-body-content">
+        <ngc-nav *ngIf="!isScreenSmall()"></ngc-nav>
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</mat-sidenav-container>

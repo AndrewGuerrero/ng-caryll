@@ -1,0 +1,9 @@
+<div class="ngc-nav">
+  <div class="ngc-nav-content">
+    <mat-nav-list *ngFor="let document of docItems.getAllItems()">
+      <a mat-list-item [routerLink]="'/' + document.id" routerLinkActive="ngc-item-selected">
+        {{document.name}}
+      </a>
+    </mat-nav-list>
+  </div>
+</div>

@@ -1,0 +1,7 @@
+<div class="ngc-document-viewer">
+  <span class="cdk-visually-hidden" tabindex="-1" #initialFocusTarget>{{docItem.id}}</span>
+  <ngc-document documentUrl="/assets/documents/{{docItem.id}}.html" class="ngc-dcontent" (contentLoaded)="onContentLoaded()">
+  </ngc-document>
+  <ngc-table-of-contents #toc container=".mat-drawer-content" *ngIf="showToc | async">
+  </ngc-table-of-contents>
+</div>
