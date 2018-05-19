@@ -1,0 +1,21 @@
+@mixin table-of-contents-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+
+  .ngc-toc-container {
+    border-left: solid 4px mat-color($primary);
+
+    .ngc-link {
+      color: mat-color($foreground, secondary-text);
+      transition: color 100ms;
+
+      &:hover,
+      &.ngc-active {
+        color: mat-color($primary);
+      }
+    }
+  }
+}

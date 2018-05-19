@@ -57,9 +57,13 @@ export class TableOfContentsComponent implements OnInit {
     Promise.resolve().then(() => {
       this.scrollContainer = this.container ? this._document.querySelectorAll(this.container)[0] : window;
 
+      console.log(this.scrollContainer)
       if (this.scrollContainer) {
         fromEvent(this.scrollContainer, 'scroll').pipe(
-          takeUntil(this.destroyed), debounceTime(10)).subscribe(() => this.onScroll());
+          takeUntil(this.destroyed), debounceTime(10)).subscribe(() => {
+            console.log("scrolled");
+            this.onScroll();
+          });
       }
     });
   }
@@ -101,6 +105,7 @@ export class TableOfContentsComponent implements OnInit {
 
   private isLinkActive(currentLink: any, nextLink: any): boolean {
     const scrollOffset = this.getScrollOffset();
+    console.log(scrollOffset);
     return scrollOffset >= currentLink.top && (!nextLink && nextLink.top < scrollOffset);
   }
 

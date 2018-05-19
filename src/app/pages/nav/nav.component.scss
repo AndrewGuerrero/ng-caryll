@@ -1,0 +1,38 @@
+@import '../../../styles/constants';
+
+$sidenav-width: 240px;
+
+.ngc-nav {
+   top: 25px;
+ 
+   .ngc-nav-content {
+     margin: 15px;
+     width: $sidenav-width;
+     max-height: 75vh;
+     overflow: auto;
+ 
+     &::-webkit-scrollbar {
+       height: 4px;
+       width: 4px;
+     }
+
+     .mat-list-item {
+       font-size: 14px;
+     }
+   }
+ }
+
+@media (max-width: $small-breakpoint-width) {
+
+  .docs-component-viewer-nav {
+    position: relative;
+    top: 0;
+
+    .docs-component-viewer-nav-content {
+      box-sizing: border-box;
+      margin: 0;
+      max-height: initial;
+      box-sizing: border-box;
+    }
+  }
+}

@@ -1,0 +1,24 @@
+@import '../../../styles/constants';
+
+.sidenav-toggle {
+  padding: 0;
+  min-width: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  mat-icon {
+    font-size: 30px;
+    height: 32px;;
+    width: 32px;
+    line-height: 32px;
+  }
+}
+
+.ngc-navbar-header {
+  height: 56px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 0 16px;
+}

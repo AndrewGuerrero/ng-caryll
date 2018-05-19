@@ -1,2 +1,15 @@
-/* You can add global styles to this file, and also import other style files */
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import '~@angular/material/theming';
+@import './styles/gruvbox-theming';
+@import './app-theme';
+@import './styles/markdown';
+@import './styles/tables';
+@import './styles/general';
+
+@include mat-core();
+
+$primary: mat-palette($gruvbox-light-purple);
+$accent:  mat-palette($gruvbox-light-aqua);
+
+$theme: gruvbox-light-theme($primary, $accent);
+@include angular-material-theme($theme);
+@include ng-caryll-app-theme($theme);

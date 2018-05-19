@@ -2,17 +2,17 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { PageTitleService } from '../page-title/page-title.service';
 
 @Component({
-  selector: 'ngc-page-header',
-  templateUrl: './page-header.component.html',
-  styleUrls: ['./page-header.component.scss'],
+  selector: 'ngc-navbar',
+  templateUrl: './navbar.component.html',
+  styleUrls: ['./navbar.component.scss']
 })
-export class PageHeaderComponent {
+export class NavbarComponent {
 
-  constructor(public pageTitle: PageTitleService) { }
+  constructor(private pageTitle: PageTitleService) { }
 
   @Output() toggleSidenav = new EventEmitter<void>();
 
-  getTitle() {
+  get title() {
     return this.pageTitle.title;
   }
 }

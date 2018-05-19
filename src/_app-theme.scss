@@ -1,0 +1,33 @@
+@import '../node_modules/@angular/material/theming';
+
+@import './app/pages/document-viewer/document-viewer-theme';
+@import './app/pages/nav/nav-theme';
+@import './app/pages/sidenav/sidenav-theme';
+@import './app/shared/navbar/navbar-theme';
+@import './app/shared/table-of-contents/table-of-contents-theme';
+@import './styles/markdown-theme';
+@import './styles/svg-theme';
+@import './styles/tables-theme';
+
+
+// Styles for the docs app that are based on the current theme.
+@mixin ng-caryll-app-theme($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+
+  .ngc-app-background {
+    background: mat-color($background, background);
+  }
+
+  @include document-viewer-theme($theme);
+  @include nav-theme($theme);
+  @include sidenav-theme($theme);
+  @include navbar-theme($theme);
+  @include table-of-contents-theme($theme);
+  @include ngc-site-markdown-theme($theme);
+  @include ngc-site-svg-theme($theme);
+  @include ngc-site-tables-theme($theme);
+}

@@ -8,6 +8,14 @@ ng-caryll-app {
   right: 0;
 }
 
+ngc-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
+
 ng-caryll-app > ngc-sidenav {
   flex: 1;
 }

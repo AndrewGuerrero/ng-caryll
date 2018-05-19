@@ -1,0 +1,26 @@
+@import 'gruvbox-palette';
+
+// Creates a container object for a light theme to be given to individual component theme mixins.
+@function gruvbox-light-theme($primary, $accent, $warn: mat-palette($gruvbox-light-red)) {
+   @return (
+     primary: $primary,
+     accent: $accent,
+     warn: $warn,
+     is-dark: false,
+     foreground: $gruvbox-light-theme-foreground,
+     background: $gruvbox-light-theme-background,
+   );
+ }
+ 
+ 
+ // Creates a container object for a dark theme to be given to individual component theme mixins.
+ @function gruvbox-dark-theme($primary, $accent, $warn: mat-palette($gruvbox-dark-red)) {
+   @return (
+     primary: $primary,
+     accent: $accent,
+     warn: $warn,
+     is-dark: true,
+     foreground: $gruvbox-dark-theme-foreground,
+     background: $gruvbox-dark-theme-background,
+   );
+ }

@@ -1,0 +1,63 @@
+@import '../../../styles/constants';
+
+ngc-sidenav-component {
+  display: flex;
+  flex-direction: column;
+}
+
+.ngc-sidenav-container {
+  flex: 1;
+  box-sizing: border-box;
+}
+
+.ngc-sidenav {
+  overflow: auto;
+}
+
+.ngc-sidenav-inner-content {
+  display: flex;
+  flex-direction: row;
+
+  // The rule will match the element following the router-outlet which will be the routed component.
+  router-outlet + * {
+    flex-grow: 1;
+  }
+}
+
+.mat-drawer {
+  &::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+  }
+}
+
+.ngc-sidenav-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.ngc-sidenav-inner-content {
+  display: flex; 
+  flex-direction: column;
+  flex: 1;
+}
+
+.ngc-sidenav-body-content {
+  display: flex;
+  flex: 1;
+}
+
+@media (max-width: $small-breakpoint-width) {
+  // Add specific rule to prevent default rule conflict
+  .ngc-sidenav-container .ngc-sidenav {
+    // position right above the content
+    z-index: 4;
+  }
+}
+
+@media (max-width: 720px) {
+  .ngc-sidenav-container {
+    flex: 1 0 auto;
+  }
+}

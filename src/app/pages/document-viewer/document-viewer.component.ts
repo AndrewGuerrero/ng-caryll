@@ -2,7 +2,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { Component, OnInit, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
 import { DocItem, DocumentationItemsService } from '../../shared/documentation-items/documentation-items.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { PageTitleService } from '../page-title/page-title.service';
+import { PageTitleService } from '../../shared/page-title/page-title.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { mapChildrenIntoArray } from '@angular/router/src/url_tree';
