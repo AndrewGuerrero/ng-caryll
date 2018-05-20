@@ -4,11 +4,13 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build --prod",
+    "start": "npm run build-themes && ng serve",
+    "build": "npm run build-themes && ng build --aot --prod",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "build-themes": "bash ./tools/build-themes.sh",
+    "postinstall": "webdriver-manager update && bash ./tools/build-themes.sh"
   },
   "private": true,
   "dependencies": {

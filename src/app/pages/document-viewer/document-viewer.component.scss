@@ -30,7 +30,6 @@ ngc-document-viewer {
     // sticky positioning
     @media (max-width: $small-breakpoint-width) {
       order: -1;
-      position: inherit;
       width: auto;
       padding-left: 0;
     }

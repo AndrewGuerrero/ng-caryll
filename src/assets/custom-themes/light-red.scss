@@ -1,0 +1,9 @@
+@import '../../app-theme';
+@import '../../styles/gruvbox-theming';
+
+$primary: mat-palette($gruvbox-light-red);
+$accent:  mat-palette($gruvbox-light-gray);
+
+$theme: gruvbox-light-theme($primary, $accent);
+@include angular-material-theme($theme);
+@include ng-caryll-app-theme($theme);

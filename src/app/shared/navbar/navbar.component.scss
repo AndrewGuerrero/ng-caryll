@@ -1,6 +1,6 @@
 @import '../../../styles/constants';
 
-.sidenav-toggle {
+.sidenav-toggle, .theme-toggle {
   padding: 0;
   min-width: 64px;
   display: flex;
@@ -21,4 +21,8 @@
   flex-wrap: wrap;
   align-items: center;
   padding: 0 16px;
+}
+
+.flex-spacer {
+  flex-grow: 1;
 }

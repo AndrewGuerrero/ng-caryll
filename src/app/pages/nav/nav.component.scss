@@ -10,6 +10,10 @@ $sidenav-width: 240px;
      width: $sidenav-width;
      max-height: 75vh;
      overflow: auto;
+
+     .mat-nav-list {
+       padding-top: 0;
+     }
  
      &::-webkit-scrollbar {
        height: 4px;

@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { mapChildrenIntoArray } from '@angular/router/src/url_tree';
 import { TableOfContentsComponent } from '../../shared/table-of-contents/table-of-contents.component';
+import { ThemeService } from '../../shared/theme/theme.service';
 
 @Component({
   selector: 'ngc-document-viewer',
@@ -14,32 +15,26 @@ import { TableOfContentsComponent } from '../../shared/table-of-contents/table-o
   styleUrls: ['./document-viewer.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class DocumentViewerComponent implements OnInit {
+export class DocumentViewerComponent {
   @ViewChild('toc') tableOfContents: TableOfContentsComponent;
-  @ViewChild('initialFocusTarget') focusTarget: ElementRef;
 
   docItem: DocItem;
-  showToc: Observable<boolean>;
 
   constructor(
     private route: ActivatedRoute,
     private pageTitle: PageTitleService,
     private breakpointObserver: BreakpointObserver,
-    public docItems: DocumentationItemsService) {
+    public docItems: DocumentationItemsService,
+    private theme: ThemeService,
+  ) {
     route.params.subscribe(p => {
       this.docItem = docItems.getItemById(p['id']);
       this.pageTitle.title = this.docItem.name;
     });
-
-    this.showToc = breakpointObserver.observe('(max-width: 1200px')
-      .pipe(map(result => !result.matches));
-  }
-
-  ngOnInit(): void {
-    setTimeout(() => this.focusTarget.nativeElement.focus(), 100);
   }
 
   onContentLoaded(): void {
+    this.theme.setTheme(this.docItem.theme);
     if (this.tableOfContents) {
       this.tableOfContents.updateScrollPosition();
     }

@@ -23,11 +23,6 @@
     }
   }
   
-  .ngc-markdown-h3 .material-icons,
-  .ngc-markdown-h4 .material-icons {
-    color: mat-color($foreground, secondary-text);
-  }
-
   .ngc-markdown-code {
     background: rgba(mat-color($foreground, secondary-text), $exportBackgroundOpacity);
   }

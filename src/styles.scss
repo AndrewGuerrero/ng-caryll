@@ -8,7 +8,7 @@
 @include mat-core();
 
 $primary: mat-palette($gruvbox-light-purple);
-$accent:  mat-palette($gruvbox-light-aqua);
+$accent:  mat-palette($gruvbox-light-gray);
 
 $theme: gruvbox-light-theme($primary, $accent);
 @include angular-material-theme($theme);

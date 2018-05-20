@@ -48,7 +48,7 @@ export class TableOfContentsComponent implements OnInit {
 
       const target = document.getElementById(this.urlFragment);
       if (target) {
-        target.scrollIntoView();
+        this.updateScrollPosition();
       }
     });
   }
@@ -57,23 +57,23 @@ export class TableOfContentsComponent implements OnInit {
     Promise.resolve().then(() => {
       this.scrollContainer = this.container ? this._document.querySelectorAll(this.container)[0] : window;
 
-      console.log(this.scrollContainer)
-      if (this.scrollContainer) {
-        fromEvent(this.scrollContainer, 'scroll').pipe(
-          takeUntil(this.destroyed), debounceTime(10)).subscribe(() => {
-            console.log("scrolled");
-            this.onScroll();
-          });
-      }
+      fromEvent(window, 'scroll').pipe(
+        takeUntil(this.destroyed), debounceTime(100)).subscribe(() => {
+          this.onScroll();
+        });
     });
   }
 
+  ngOnDestroy(): void {
+    this.destroyed.next();
+  }
+
   updateScrollPosition(): void {
-    this.links = this.createLinks()
+    this.links = this.createLinks();
 
     const target = document.getElementById(this.urlFragment);
     if (target) {
-      target.scrollIntoView();
+      setTimeout(() => target.scrollIntoView(), 100);
     }
   }
 
@@ -98,23 +98,17 @@ export class TableOfContentsComponent implements OnInit {
   }
 
   private onScroll(): void {
+    const scrollTop = window && window.pageYOffset || 0;
+    const topOffset = this.scrollContainer.clientHeight || 0;
     for (let i = 0; i < this.links.length; i++) {
       this.links[i].active = this.isLinkActive(this.links[i], this.links[i + 1]);
     }
   }
 
   private isLinkActive(currentLink: any, nextLink: any): boolean {
-    const scrollOffset = this.getScrollOffset();
-    console.log(scrollOffset);
-    return scrollOffset >= currentLink.top && (!nextLink && nextLink.top < scrollOffset);
-  }
-
-  private getScrollOffset(): number {
-    const { top } = this.element.nativeElement.getBoundingClientRect();
-    if (typeof this.scrollContainer.scrollTop !== 'undefined') {
-      return this.scrollContainer.scrollTop + top;
-    } else if (typeof this.scrollContainer.pageYOffset !== 'undefined') {
-      return this.scrollContainer.pageYOffset + top;
-    }
+    const scrollTop = window && window.pageYOffset || 0;
+    const topOffset = this.scrollContainer.clientHeight || 0;
+    const top = scrollTop + topOffset;
+    return top >= currentLink.top && !(nextLink && nextLink.top < top);
   }
 }

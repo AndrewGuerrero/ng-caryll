@@ -24,6 +24,7 @@ import { TableOfContentsComponent } from './shared/table-of-contents/table-of-co
 import { HeaderLinkComponent } from './shared/header-link/header-link.component';
 import { NavigationFocusDirective } from './shared/navigation-focus/navigation-focus.directive';
 import { NavbarComponent } from './shared/navbar/navbar.component';
+import { ThemeToggleComponent } from './shared/theme-toggle/theme-toggle.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { NavbarComponent } from './shared/navbar/navbar.component';
     TableOfContentsComponent,
     HeaderLinkComponent,
     NavigationFocusDirective,
-    NavbarComponent
+    NavbarComponent,
+    ThemeToggleComponent
   ],
   imports: [
     BrowserModule,

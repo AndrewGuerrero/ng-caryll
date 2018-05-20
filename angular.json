@@ -21,7 +21,82 @@
               "src/favicon.ico"
             ],
             "styles": [
-              "src/styles.scss"
+              {
+                "input": "src/styles.scss"
+              },
+              {
+                "input": "src/highlightjs/gruvbox-light.css"
+              },
+              {
+                "input": "src/assets/dark-red.css",
+                "lazy": true,
+                "bundleName": "dark-red"
+              },
+              {
+                "input": "src/assets/dark-green.css",
+                "lazy": true,
+                "bundleName": "dark-green"
+              },
+              {
+                "input": "src/assets/dark-yellow.css",
+                "lazy": true,
+                "bundleName": "dark-yellow"
+              },
+              {
+                "input": "src/assets/dark-blue.css",
+                "lazy": true,
+                "bundleName": "dark-blue"
+              },
+              {
+                "input": "src/assets/dark-purple.css",
+                "lazy": true,
+                "bundleName": "dark-purple"
+              },
+              {
+                "input": "src/assets/dark-aqua.css",
+                "lazy": true,
+                "bundleName": "dark-aqua"
+              },
+              {
+                "input": "src/assets/dark-orange.css",
+                "lazy": true,
+                "bundleName": "dark-orange"
+              },
+              {
+                "input": "src/assets/light-red.css",
+                "lazy": true,
+                "bundleName": "light-red"
+              },
+              {
+                "input": "src/assets/light-green.css",
+                "lazy": true,
+                "bundleName": "light-green"
+              },
+              {
+                "input": "src/assets/light-yellow.css",
+                "lazy": true,
+                "bundleName": "light-yellow"
+              },
+              {
+                "input": "src/assets/light-blue.css",
+                "lazy": true,
+                "bundleName": "light-blue"
+              },
+              {
+                "input": "src/assets/light-purple.css",
+                "lazy": true,
+                "bundleName": "light-purple"
+              },
+              {
+                "input": "src/assets/light-aqua.css",
+                "lazy": true,
+                "bundleName": "light-aqua"
+              },
+              {
+                "input": "src/assets/light-orange.css",
+                "lazy": true,
+                "bundleName": "light-orange"
+              }
             ],
             "scripts": []
           },
