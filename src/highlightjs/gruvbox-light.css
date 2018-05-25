@@ -17,6 +17,7 @@ Gruvbox style (light) (c) Pavel Pertsev (original style at https://github.com/mo
 }
 
 /* Gruvbox Red */
+
 .hljs-deletion,
 .hljs-formula,
 .hljs-keyword,
@@ -26,6 +27,7 @@ Gruvbox style (light) (c) Pavel Pertsev (original style at https://github.com/mo
 }
 
 /* Gruvbox Blue */
+
 .hljs-built_in,
 .hljs-emphasis,
 .hljs-name,
@@ -37,6 +39,7 @@ Gruvbox style (light) (c) Pavel Pertsev (original style at https://github.com/mo
 }
 
 /* Gruvbox Yellow */
+
 .hljs-attr,
 .hljs-params,
 .hljs-template-tag,
@@ -45,6 +48,7 @@ Gruvbox style (light) (c) Pavel Pertsev (original style at https://github.com/mo
 }
 
 /* Gruvbox Purple */
+
 .hljs-builtin-name,
 .hljs-doctag,
 .hljs-literal,
@@ -53,6 +57,7 @@ Gruvbox style (light) (c) Pavel Pertsev (original style at https://github.com/mo
 }
 
 /* Gruvbox Orange */
+
 .hljs-code,
 .hljs-meta,
 .hljs-regexp,
@@ -62,6 +67,7 @@ Gruvbox style (light) (c) Pavel Pertsev (original style at https://github.com/mo
 }
 
 /* Gruvbox Green */
+
 .hljs-addition,
 .hljs-meta-string,
 .hljs-section,
@@ -73,6 +79,7 @@ Gruvbox style (light) (c) Pavel Pertsev (original style at https://github.com/mo
 }
 
 /* Gruvbox Aqua */
+
 .hljs-attribute,
 .hljs-bullet,
 .hljs-class,
@@ -85,11 +92,13 @@ Gruvbox style (light) (c) Pavel Pertsev (original style at https://github.com/mo
 }
 
 /* Gruvbox Gray */
+
 .hljs-comment {
   color: #928374;
 }
 
 /* Gruvbox Purple */
+
 .hljs-link_label,
 .hljs-literal,
 .hljs-number {
@@ -102,7 +111,6 @@ Gruvbox style (light) (c) Pavel Pertsev (original style at https://github.com/mo
 }
 
 .hljs-section,
-.hljs-strong,
-.hljs-tag {
+.hljs-strong {
   font-weight: bold;
 }

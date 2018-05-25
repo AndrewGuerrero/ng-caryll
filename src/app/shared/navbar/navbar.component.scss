@@ -16,13 +16,9 @@
 }
 
 .ngc-navbar-header {
-  height: 56px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  padding: 0 16px;
+  max-height: 86px;
 }
 
 .flex-spacer {
-  flex-grow: 1;
+  flex: 1 1 auto
 }

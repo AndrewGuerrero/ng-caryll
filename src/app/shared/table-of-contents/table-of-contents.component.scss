@@ -23,7 +23,7 @@
 .ngc-toc-heading {
   margin: 0;
   padding: 0;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: bold;
 }
 
@@ -38,6 +38,10 @@ a {
   overflow: hidden;
 }
 
-.ngc-level-h4 {
+.ngc-level-h2 {
+  font-weight: 500;
+}
+
+.ngc-level-h3 {
   margin-left: 12px;
 }

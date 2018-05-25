@@ -1,58 +1,532 @@
-<html>
+<div class="ngc-markdown"><h1 id="the-tao-of-microservices">The Tao of Microservices</h1>
+<h2 id="chapter-1-brave-new-world" class="ngc-header-link"><span header-link="chapter-1-brave-new-world"></span>Chapter 1: Brave new World</h2>
+<p>Software development is an art. It isn't predictable enough to be engineering. It isn't rigorous enough to be science.</p>
+<p>Unlike art, software has to work.</p>
+<h3 id="the-technical-debt-crisis" class="ngc-header-link"><span header-link="the-technical-debt-crisis"></span>The technical debt crisis</h3>
+<dl>
+<dt>Business Logic</dt>
+<dd>
+Logic that is directly specific to the business goal at hand. It is the representation of your business using the structures of your programming language. The term is suggestive, not prescriptive.
+</dd>
+<dt>Composition</dt>
+<dd>
+Making big things out of small things in an additive process.
+</dd>
+</dl>
+<h3 id="case-study-a-microblogging-startup" class="ngc-header-link"><span header-link="case-study-a-microblogging-startup"></span>Case study: A microblogging startup</h3>
+<h4 id="iteration-0-posting-entries">Iteration 0: Posting entries</h4>
+<dl>
+<dt>Minimum Viable Product</dt>
+<dd>
+Build the minimum set of features that lets you validate your assumptions about a market, and then iterate on those features and assumptions until the product fits the market.
+</dd>
+</dl>
+<p>Suppose a microblogging site has decided on a system that lets users post <em>entries</em>, or short pieces of text. The <em>MVP</em> includes the following <em>activities</em> and associated <em>messages</em></p>
+<ul>
+<li>Posting and entry
+<em> <code>post:entry</code>
+</em> <code>info:entry</code></li>
+<li>Listing previous entries
+<em> <code>store:list,kind:entry</code>
+</em> <code>store:load,kind:entry</code>
+<em> <code>store:save,kind:entry</code>
+</em> <code>store:remove,kind:entry</code></li>
+</ul>
+<blockquote>
+<p>Instead of getting lost in implementation, focus on the messages first and think about interaction.</p>
+</blockquote>
+<p>Once the messages have been fleshed out, they are grouped into sensible <em>services</em>. One such implementation is provided in the diagram below.</p>
+<p><img src="https://drive.google.com/uc?id=15or1k9CkpwEJadWjr9yW_T7tdN-CdLbT"></p>
+<h4 id="iteration-1-a-search-index">Iteration 1: A search index</h4>
+<p>In this iteration, a new activity and associated messages are added to the system</p>
+<ul>
+<li>Search through entries
+<em> <code>search:insert</code>
+</em> <code>search:query</code></li>
+</ul>
+<p>The search activity is added into the system as seen in the diagram below</p>
+<p><img src="https://drive.google.com/uc?id=1hrqvRUuu3rq3zI8_BQtXyINW7FmVPtk0"></p>
+<blockquote>
+<p>Notice the choice in implementation. <em>post</em> could have just as easily sent <code>search:insert</code> to <em>index</em>. However, doing so would couple <em>post</em> to <em>index</em>. Additionally, the decision for <em>index</em> to convert <code>info:entry</code> into <code>search:insert</code> messages can be made at runtime to maintain loose coupling.</p>
+</blockquote>
+<p><em>index</em> can be added without any effect to the system. Since a previous version of <em>front</em> is already in production, the principle of <em>additivity</em> can be applied. Deploy the new version of the <em>front</em> service alongside the older version. Since both versions provide the same legacy functionality, nothing is broken. Both versions can used according to taste as the old version is gradually swapped out.</p>
+<h4 id="iteration-2-simple-composition">Iteration 2: Simple composition</h4>
+<p>While monitoring the system, suppose <em>entry-store</em> exhibits high latency while talking to the database. One possible solution is to implement a cache in a new service, <em>entry-cache</em>.</p>
+<p>The service captures messages intended for <em>entry-store</em>. One such way to capture messages is to add an extra property such as <code>cache:true</code> to <code>store:*</code> messages. <em>entry-cache</em> will take the place of <em>entry-store</em> and <em>entry-store</em> will act as a fallback only listening to messages with the added property <code>cache:true</code>.</p>
+<p><em>entry-cache</em> is trivial to introduce into the system but <em>entry-store</em> is a bit more complicated and will involve a transition phase. Using the process of <em>additivity</em> introduce the new version of <em>entry-cache</em> but with a runtime configuration that accepts both <code>store:*</code> and <code>store:*,cache:true</code> messages. Load-balancing would make it so some messages go strait to <em>entry-store</em> while others pass through <em>entry-cache</em> first. Once the new functionality proves itself, change the runtime configuration of <em>entry-store</em> to only accept <code>store:*,cache:true</code> messages.</p>
+<p>The system now looks like the diagram below</p>
+<p><img src="https://drive.google.com/uc?id=1wr5tkpeh8kZFCrSp_nuE37hAC_-dY5pX"></p>
+<h4 id="iteration-3-timelines">Iteration 3: Timelines</h4>
+<p>Another core activity inside a microblogging framework is users following other users. Following the usual process, the first step is to come up with a set of messages representative of the activity,</p>
+<ul>
+<li>Follow user
+<em> <code>follow:user</code>
+</em> <code>follow:list,kind:followers|following</code>
+<em> <code>timeline:insert</code>
+</em> <code>timeline:list</code></li>
+</ul>
+<p>The naming of the messages suggest two new services, <em>follow</em> and <em>timeline</em>.</p>
+<blockquote>
+<p>By now a pattern should be forming, new functionality begets new services. This avoids technical debt by moving complexity into the message-routing configuration and out of the conditional code and intricate data structures.</p>
+</blockquote>
+<p>Similar to the <em>index</em> service, we will have the new microservices react to <code>info:entry</code> with an orchestration of <code>follow:list,kind:followers</code> and <code>timeline:insert</code> messages. Instead of making complex routing and workflow rules, it is perfectly reasonable to make a service with the sole purpose of performing this orchestration. We will call this service <em>fanout</em>.</p>
+<p>The system now looks like the diagram below</p>
+<p><img src="https://drive.google.com/uc?id=1N6ibwy6TL07WREyFm3WlvUgdD_HR_j0d"></p>
+<h4 id="iteration-4-scaling">Iteration 4: Scaling</h4>
+<p>The microservices are scaling fine, but the underlying database of <em>timeline</em> cannot handle the data volume, and must be split into multiple databases.</p>
+<p>One such technique, called <em>sharding</em>, assigns each item to a separate database, based on key values in the data. Though sharding can work at the database level, the microservice level is a good choice because it maintains flexibility. The <code>timeline:*</code> messages will have added <code>shard</code> property.</p>
+<p>Adding the new sharding <em>timeline</em> microservice to the system looks similar to the process in Iteration 1 by using the principle of additivity. However, the transition will take longer due to batch-transferring the old database into the new database shards.</p>
+<p>With that, this case study comes to a close with the final system diagram pictured below</p>
+<p><img src="https://drive.google.com/uc?id=1mswOZtkR94i8atf_9TRcKL1i78a7B2Rr"></p>
+<h3 id="how-the-monolith-betrays-the-promise-of-components" class="ngc-header-link"><span header-link="how-the-monolith-betrays-the-promise-of-components"></span>How the monolith betrays the promise of components</h3>
+<dl>
+<dt>Monolith</dt>
+<dd>
+Large, object-oriented, body of code that executes in a single process. The Monolith is long-lived, undergoes constant modification and is essential to the health of the business.
+</dd>
+</dl>
+<p>Components in a monolith</p>
+<ul>
+<li><strong> have lost encapsulation</strong>: Boundaries between components are weak. Once breached, internals leak into other components.</li>
+<li><strong>don't deliver on reusability</strong>: After loss of encapsulation, components become difficult to extract and reuse again.</li>
+<li><strong> don't have well-defined interfaces</strong>: Although strict, there are too many different ways to interact with an object.</li>
+<li><strong> don't compose</strong>: Baring special cases like inheritance and mixins, combining two objects does not create enhanced functionality.</li>
+</ul>
+<p>In particular, composition is critical because it helps</p>
+<ul>
+<li><strong>manage complexity</strong>: Elements of a composition are hidden and inaccessible.</li>
+<li><strong>minimize shared state</strong>: Components communicate with each other using a stateless model.</li>
+<li><strong>promote additivity</strong>: Adding functionality does not involve modifying existing components. Instead, new components are added.</li>
+</ul>
+<h3 id="the-microservice-idea" class="ngc-header-link"><span header-link="the-microservice-idea"></span>The microservice idea</h3>
+<p>Microservices are characterized by the following axioms</p>
+<ul>
+<li><strong>Small</strong>: Components avoid accumulation of technical debt.</li>
+<li><strong>Distributed</strong>: Components are not constrained to a single process or machine.</li>
+<li><strong>No privilege</strong>: No components are privileged.</li>
+<li><strong>Uniform communication</strong>: All components communicate homogeneously.</li>
+<li><strong>Composition</strong>: Components can be composed from other components.</li>
+</ul>
+<h4 id="the-core-technical-principles">The core technical principles</h4>
+<dl>
+<dt>Transport independence</dt>
+<dd>
+The ability to move messages from one microservice to another without requiring microservices to know about each other or the underlying message sending infrastructure.
+</dd>
+<dt>Pattern matching</dt>
+<dd>
+The ability to route messages based on the data inside the message.
+</dd>
+<dt>Additivity</dt>
+<dd>
+The ability to change a system by adding new parts.
+</dd>
+</dl>
+<h3 id="practical-implementations" class="ngc-header-link"><span header-link="practical-implementations"></span>Practical implementations</h3>
+<h4 id="specification">Specification</h4>
+<p>Take informal business requirements, determine the behaviors of the system, and map the behaviors to messages.</p>
+<blockquote>
+<p>Move from general to specific. Focus on simple problems that provide high value first. </p>
+</blockquote>
+<h4 id="deployment">Deployment</h4>
+<p>Deployment of microservices is complex enough to make automation a requirement.</p>
+<h4 id="security">Security</h4>
+<p>External entry points to the system shouldn't be presented in the same way as internally gen</p>
+<h2 id="chapter-2-services" class="ngc-header-link"><span header-link="chapter-2-services"></span>Chapter 2: Services</h2>
+<h3 id="microservice-architectures" class="ngc-header-link"><span header-link="microservice-architectures"></span>Microservice architectures</h3>
+<dl>
+<dt>The mini web servers architecture</dt>
+<dd>
+Microservices are web servers that offer small REST interfaces. Messages are synchronous HTTP requests and responses. Message content is JSON, XML, etc. Microservices communicate point-to-point or to a load-balancer.
+</dd>
+<dt>The asynchronous message architecture</dt>
+<dd>
+Microservices publish messages to one or more message queues and listening microservices retrieve them. Gathering responses is asynchronous. If a response is not produced in time, the application moves on without that content.
+</dd>
+</dl>
+<h3 id="monolithic-projects-vs-microservice-projects" class="ngc-header-link"><span header-link="monolithic-projects-vs-microservice-projects"></span>Monolithic projects vs. microservice projects</h3>
+<h4 id="monolithic-projects">Monolithic projects</h4>
+<ul>
+<li>All members of the software development team must carefully coordinate so as to not block each other. There's only one code base.</li>
+<li>There are too many ways to create dependencies and gather technical debt rapidly.</li>
+<li>Deployment is all or nothing. Mitigating risk with techniques such as <em>blue-green</em> deployments costs infrastructure.</li>
+</ul>
+<h4 id="microservice-projects">Microservice projects</h4>
+<ul>
+<li>Development of a microservice can and should be completed by one person in one iteration.</li>
+<li>The small size of a microservices increases estimation accuracy.</li>
+<li>The small size of a microservice makes it easier to dispose without large impact on the company.</li>
+<li>Important microservices can be prioritized over less important microservices.</li>
+<li>It is easy to separate business logic from infrastructure.</li>
+</ul>
+<h3 id="case-study-the-digital-edition-of-a-newspaper" class="ngc-header-link"><span header-link="case-study-the-digital-edition-of-a-newspaper"></span>Case Study: The digital edition of a newspaper</h3>
+<h4 id="informal-requirements">Informal requirements</h4>
+<ul>
+<li>The content consists of articles, each of which has its own separate page.</li>
+<li>There are also special article-listing pages, such as the front page, and special-interest sections.</li>
+<li>The website, tablet, and app versions should all use a common REST API, provided by the server side of the system.</li>
+<li>The website should deliver static versions of primary content for search engines to index, but it can load secondary content dynamically.</li>
+<li>The system needs to have a concept of <em>users</em> that includes both readers and authors, with appropriate rights for different levels of access.</li>
+<li>Content on pages needs to be targeted to the current user by matching content ot the user's profile using business rules or optimization algorithms.</li>
+<li>The site is under continuous development, because online newspapers are in fierce compitition, so new features need to be asdded quickly. These include special short-term mini apps, such as special interactive content for elections.</li>
+</ul>
+<h4 id="functional-breakdown">Functional breakdown</h4>
+<ul>
+<li>Handle article data and have the expected read, write, and query operations</li>
+<li>Cnstruct content pages and provide a cache for scaling</li>
+<li>Handle user accounts: login, logout, profiles, and so on</li>
+<li>Deliver targeted content and map user indentities to appropriate articles</li>
+</ul>
+<h4 id="requirements-to-messages-to-services">Requirements to messages to services</h4>
+<p>First, requirements are described by messages. The table below provides a mapping of requirements to messages </p>
 
-<head></head>
 
-<body>
-  <div class="ngc-markdown">
-    <h1 class="ngc-markdown-h1">Angular Material bi-directionality</h1>
-    <h3 id="setting-a-text-direction-for-your-application" class="ngc-header-link ngc-markdown-h3">
-      <span header-link="setting-a-text-direction-for-your-application"></span> Setting a text-direction for your application</h3>
-    <p class="ngc-markdown-p">The
-      <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/dir" class="ngc-markdown-a">
-        <code class="ngc-markdown-code">dir</code> attribute</a> is typically applied to
-      <code class="ngc-markdown-code">&lt;html&gt;</code> or
-      <code class="ngc-markdown-code">&lt;body&gt;</code> element of a page. However, it can be used on any element, within your Angular app, to apply a text-direction to a
-      smaller subset of the page.</p>
-    <p class="ngc-markdown-p">All Angular Material components automatically reflect the LTR/RTL direction of their container.</p>
-    <h3 id="reading-the-text-direction-in-your-own-components" class="ngc-header-link ngc-markdown-h3">
-      <span header-link="reading-the-text-direction-in-your-own-components"></span> Reading the text-direction in your own components</h3>
-    <p class="ngc-markdown-p">
-      <code class="ngc-markdown-code">@angular/cdk/bidi</code> provides a
-      <code class="ngc-markdown-code">Directionality</code> injectable that can be used by any component in your application. To consume it, you must import
-      <code class="ngc-markdown-code">BidiModule</code> from
-      <code class="ngc-markdown-code">@angular/cdk/bidi</code>.</p>
-    <p class="ngc-markdown-p">
-      <code class="ngc-markdown-code">Directionality</code> provides two useful properties:</p>
-    <ul class="ngc-markdown-ul">
-      <li class="ngc-markdown-li">
-        <code class="ngc-markdown-code">value</code>: the current text direction, either
-        <code class="ngc-markdown-code">'ltr'</code> or
-        <code class="ngc-markdown-code">'rtl'</code>.</li>
-      <li class="ngc-markdown-li">
-        <code class="ngc-markdown-code">change</code>: an
-        <code class="ngc-markdown-code">Observable</code> that emits whenever the text-direction changes. Note that this only captures changes from
-        <code class="ngc-markdown-code">dir</code> attributes
-        <em>inside the Angular application context</em>. It will not emit for changes to
-        <code class="ngc-markdown-code">dir</code> on
-        <code class="ngc-markdown-code">&lt;html&gt;</code> and
-        <code class="ngc-markdown-code">&lt;body&gt;</code>, as they are assumed to be static.</li>
-    </ul>
-    <h4 id="example" class="ngc-header-link ngc-markdown-h4">
-      <span header-link="example"></span> Example</h4>
-    <pre class="ngc-markdown-pre"><code class="lang-ts ngc-markdown-code"><span class="hljs-meta">@Component</span>({ <span class="hljs-comment">/* ... */</span> })
-  <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> MyCustomComponent {
-    <span class="hljs-keyword">private</span> dir: Direction;
-  
-    <span class="hljs-keyword">constructor</span>(<span class="hljs-params">directionality: Directionality</span>) {
-      <span class="hljs-keyword">this</span>.dir = directionality.value;
-  
-      directionality.change.subscribe(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-         <span class="hljs-keyword">this</span>.dir = directionality.value;
-      });
-    }
-  }
-  </code></pre>
-  </div>
-</body>
 
-</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Requirement</th><th>Messages</th></tr></thead><tbody><tr><td>Article pages</td><td><code>build-article, get-article, article-view</code></td></tr><tr><td>Article list pages</td><td><code>build-article-list, list article</code></td></tr><tr><td>REST API</td><td><code>get-article, add-article, remove-article, list-article</code></td></tr><tr><td>Static and dynamic content</td><td><code>article-need, article-collect</code></td></tr><tr><td>User management</td><td><code>login, logout, register, get-profile</code></td></tr><tr><td>Content targeting</td><td><code>visitor-need, visitor-collect</code></td></tr><tr><td>Special-purpose mini apps</td><td>App-specific</td></tr></tbody></table>
+<blockquote>
+<p>Though not necessary here, in large systems, some activities will inevitably share messages. Shared messages should be namespaced.</p>
+</blockquote>
+<p> Finally, messages are organized into services. A diagram of the system is provided below</p>
+<p><img src="https://drive.google.com/uc?id=1jr4UgsCG5uRFuXsGbFhVUA0iamFPpYyW"></p>
+<h3 id="microservices-are-software-components" class="ngc-header-link"><span header-link="microservices-are-software-components"></span>Microservices are software components</h3>
+<p>Microservices make excellent software components because they are</p>
+<ul>
+<li><strong>Encapsulated</strong>: Microservices are individual processes which do not share internals by nature.</li>
+<li><strong>Reusable</strong>: Microservices are network services that can be called by anyone.</li>
+<li><strong>Well-defined interfaces</strong>: Microservice messages are well-defined interfaces by design.</li>
+<li><strong>Composable</strong>: The network flow of messages can be manipulated by other microservices as desired.</li>
+</ul>
+<h2 id="chapter-3-messages" class="ngc-header-link"><span header-link="chapter-3-messages"></span>Chapter 3: Messages</h2>
+<h3 id="messages-are-first-class-citizens" class="ngc-header-link"><span header-link="messages-are-first-class-citizens"></span>Messages are first class citizens</h3>
+<p>Traditionally, OO practice has taught us to extract nouns from business requirements to build objects but, it's more intuitive to express buisiness requirements as activities. Messages are intended to represent activities which is why they are first class citizens.</p>
+<h4 id="synchronous-vs-asynchronous">Synchronous vs. asynchronous</h4>
+<dl>
+<dt>Synchronous message</dt>
+<dd>
+Originator of the message is blocked until a response is received. Synchronous messages are commands to do something. The response is an acknowledgment that something was done.
+</dd>
+<dt>Asynchronous message</dt>
+<dd>
+Originator of the message isn't blocked, can wait for results, and handle scenarios where there are no results. Asynchronous messages are events. Subscribers to events are free to choose how they react to the event.
+</dd>
+</dl>
+<h3 id="pattern-matching" class="ngc-header-link"><span header-link="pattern-matching"></span>Pattern matching</h3>
+<p>A large part of complexity in a microservices system is the routing of messages. Pattern matching attemps to aleviate hat problem by allowing the network architecture to emerge dynamically from the properties of the messages. Using patern matching, message routing is reduced to the following steps:</p>
+<ol>
+<li>Represent the message as key-value pairs (regardless of the actual message data).</li>
+<li>Map key-value pairs to microservices, using the simplest algorithm you can think of.</li>
+</ol>
+<h4 id="case-study-sales-tax-rules">Case study: sales-tax rules</h4>
+<p>Suppose an online retailer begins work on calculating sales tax as one part of a general e-commerce solution. When the user adds a product to their shopping cart, the cart will have an update entry for the total sales tax due.</p>
+<p>The retailer decides to model this business requirement with a synchronous <code>add-product</code> message that responds with an updated cart and a synchronous <code>calculate-sales-tax</code> message that responds with the gross price.</p>
+<p>The properties of the <code>calculate-sales-tax</code> make it hard to distinguish between other messages with similar properties like the <code>add-product</code> message. Adding a label to the message (e.g. <code>label:sales-tax</code>) utilizes pattern matching to identify messages. </p>
+<p>Pattern matching is also a good way to deal with changing business requirements. For example, suppose a product falls under one of two different sales tax categories, standard or reduced. A new microservice <code>sales-tax-reduced</code> will handle the reduced sales tax category while <code>sales-tax</code> will handle the standard category. Using pattern matching, a new key-value pair, <code>category:*</code> is added to the <code>calculate-sales-tax</code> message and routed according to the table below.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Pattern</th><th>Microservice</th></tr></thead><tbody><tr><td><code>label:sales-tax</code></td><td><code>sales-tax</code></td></tr><tr><td><code>label:sales-tax,category:standard</code></td><td><code>sales-tax</code></td></tr><tr><td><code>label:sales-tax,category:reduced</code></td><td><code>sales-tax-reduced</code></td></tr></tbody></table>
+<h3 id="message-patterns" class="ngc-header-link"><span header-link="message-patterns"></span>Message patterns</h3>
+<blockquote>
+<p>The patterns below are categorized using the form <em>m/n</em> where <em>m</em> is the number of message patterns and <em>n</em> is the number of microservices (not instances!).</p>
+</blockquote>
+<dl>
+<dt>1/2: Request/response</dt>
+<dd>
+<p><img src="https://drive.google.com/uc?id=1itnx6uqidWC4KGHhXbAxLnM3ASeA4Cng"></p>
+</dd>
+<dt>1/2: Sidewinder</dt>
+<dd>
+<p><img src="https://drive.google.com/uc?id=1Rt7AdI99__XQOo94tnmJjjIWzwq4y6Ga"></p>
+</dd>
+<dt>1/2: Winner-take-all</dt>
+<dd>
+<p><img src="https://drive.google.com/uc?id=1wRoqhD8Lbi339sMII3uaCuB7kT4I8Hw2"></p>
+</dd>
+<dt>1/2: Fire-and-forget</dt>
+<dd>
+<p><img src="https://drive.google.com/uc?id=1IjrezGbpMl2E0RVNgaIwjhH_F-9vFoIU"></p>
+</dd>
+<dt> 2/2: Request/react</dt>
+<dd>
+Useful when the listener is expected to take a nontrivial amount of time to complete a request.
+<p><img src="https://drive.google.com/uc?id=1h2O5nmoIFMWCCvp0JCxEvMAgjHZVM-dm"></p>
+</dd>
+<dt>2/2: Batch progress reporter</dt>
+<dd>
+Similar to request/react, but a series of reaction messages announce the state of the batch process to subscribing microservices.
+<p><img src="https://drive.google.com/uc?id=1ZJocJCkpztoh6jlKUiWG7uyX2qz70NpZ"></p>
+</dd>
+<dt>1/n: Orchestra</dt>
+<dd>
+Orchestration microservices can remove the need for a specialist network component to perform this role.
+<p><img src="https://drive.google.com/uc?id=1jPhuUOyqoGvhZzvfbAdzIxDKfNhLiiYL"></p>
+</dd><dt>1/n: Scatter/gather
+</dt><dd>
+Announce a need and collect results as they come in.
+<p><img src="https://drive.google.com/uc?id=1kznU2EIh4TsCcro0evfYsDNSHPy-3WwH"></p>
+</dd><dt>1/n: Multiversion deployment
+</dt><dd>
+Duplicate traffic and compare output across versions of a microservice.
+<p><img src="https://drive.google.com/uc?id=1YdeqyFoDHNfik_XLiljtJtF_ZjyrDwEY"></p>
+</dd><dt>1/n: Multi-implementation deployment</dt>
+<dd>
+Useful for A/B testing features.
+<p><img src="https://drive.google.com/uc?id=1U0H9pZmLrbpZTvUzBVaYs_1wJKyxHALx"></p>
+</dd>
+<dt>m/n: Choreography</dt>
+<dd>
+Typical for actions that are gated by conditions that must be met before further work can be processed.
+<p><img src="https://drive.google.com/uc?id=1kaZ57Hc4NKs9ZhCeanKGh3V463TSNJM1"></p>
+</dd><dt>m/n: Tree</dt>
+<dd>
+Typical for workflows with parallel choreography.
+<p><img src="https://drive.google.com/uc?id=1HNhGpoCOniqmQx4yJFYph2-K_ZWO9Kwz"></p>
+</dd>
+</dl>
+<h3 id="when-messages-go-bad" class="ngc-header-link"><span header-link="when-messages-go-bad"></span>When messages go bad</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Problem</th><th>Interaction</th><th>Description</th><th>Mitigation</th></tr></thead><tbody><tr><td><strong>Slow downstream</strong></td><td>request/response</td><td>B is slow to respond to messages from A</td><td>Remove B from interaction when it performs below a throughput threshold, giving it time to recover or be replaced.</td></tr><tr><td><strong>Upstream overload</strong></td><td>request/response</td><td>A is generating too much work for B</td><td>Have B selectively drop messages from A once B is pushed beyond a load threshold</td></tr><tr><td><strong>Lost actions</strong></td><td>sidewinder</td><td>Changes to A's message content causes either B or listener C to fail</td><td>Measure the system while performing updates of A in stages.If system health drops below a threshold, roll back and review.</td></tr><tr><td><strong>Poison messages</strong></td><td>winner-take-all</td><td>All instances of B crash on a particular message from A</td><td>Place message from A on a dead-letter queue. If A sends a duplicate message, consume and drop it before it gets to B.</td></tr><tr><td><strong>Guaranteed delivery</strong></td><td>winner-take-all</td><td>Message fails to reach B, unbeknownst to A</td><td>Prefer a at-least-once message delivery behavior and have a way to deal with duplicate messages.</td></tr><tr><td><strong>Emergent behavior</strong></td><td>fire-and-forget</td><td>System contains unexpected messages or message volume</td><td>Have each message contain metadata to identify messages to help trace the flow of messages for debugging.</td></tr><tr><td><strong>Catastrophic colapse</strong></td><td>fire-and-forget</td><td>Emergent behavior with a feedback loop</td><td>Progressively bring down parts of the system with a goal of breaking the feedback loop.</td></tr></tbody></table>
+<h2 id="chapter-4-data" class="ngc-header-link"><span header-link="chapter-4-data"></span>Chapter 4: Data</h2>
+<dl>
+<dt>Data entity</dt>
+<dd>
+A single coherent data type from the perspective of a given system domain with a internal representation subject to constraints imposed by the database
+</dd>
+</dl>
+<h3 id="data-doesnt-mean-what-you-think-it-means" class="ngc-header-link"><span header-link="data-doesnt-mean-what-you-think-it-means"></span>Data doesn't mean what you think it means</h3>
+<ul>
+<li><strong>Data is heterogenous, not homogeneous</strong>: Some data is mission critical; other data is useful. Constraints on each data entity in a system are different and can favor one data-storage solution over another.</li>
+<li><strong>Data can be private</strong>: It is an anti-pattern to use the database as a communication mechanism between software components. Access to a data entity should be represented by messages rather than a database schema.</li>
+<li><strong>Data can be local</strong>: Microservices can have their own private database. Local databases make initial development smoother. A strategy to synchronize data with the rest of the system can be used as needed later on.</li>
+<li><strong>Data can be disposable</strong>: Backing up hundreds of microservice database instances isn't necessary. Upgrade a database by deploying new instances, not modifying old ones. Important data can be stored on a system of record (SOR).</li>
+<li><strong>Data doesn't have to be accurate</strong>: Different data has different accuracy constraints. Don't waste time when the cost of improving accuracy outweighs it't benefits. </li>
+</ul>
+<h3 id="data-strategies-for-microservices" class="ngc-header-link"><span header-link="data-strategies-for-microservices"></span>Data strategies for microservices</h3>
+<h4 id="using-messages-to-expose-data">Using messages to expose data</h4>
+<p>Messages are designed for the sole purpose of preventing the coupling that a shared database creates. This unlocks the ability to choose and change the database underneath a microservice without breaking other microservices.</p>
+<h4 id="using-composition-to-manipulate-data">Using composition to manipulate data</h4>
+<p>Representing data operations as messages gives you the ability to:</p>
+<ul>
+<li>Extend data operations with a well-defined component model. A good example is adding a caching microservice.</li>
+<li>Use alternative data-flow models like asynchronous write and syncronous read operations known as Command Query Responsibility Segregation (CQRS).</li>
+<li>Adopt a reactive approach to data operations. More than one microservice can listen to data-operation messages.</li>
+<li>Test microservices easily. You can mock up data operations in unit tests without overhead or dependencies.</li>
+</ul>
+<h4 id="using-the-system-configuration-to-control-data">Using the system configuration to control data</h4>
+<p>When data operations are represented as messages, yo can scale databases by changing the way the messages are routed. </p>
+<p>For example, the diagram below details a typical deployment sequence for replacing a database shard with zero downtime.</p>
+<p><img src="https://drive.google.com/uc?id=1_OnNt5AXcHCR3JzXlcaIJ1UiapoTGQHc"></p>
+<p>Similarly, you may also want to add to scale up or remove a shard to reduce complexity. The diagram below details the deployment sequence for spliting a shard.</p>
+<p><img src="https://drive.google.com/uc?id=1cQsZrmXTNIPB7w95eC3pPWfErLiTHp_8"></p>
+<h4 id="using-weaker-constraints-to-distribute-data">Using weaker constraints to distribute data</h4>
+<p>Traditionaly, duplicating data in a database is undesired. In a distributed system, duplicating data using strategies such as <em>denormalization</em> can lead to significant performance increases. </p>
+<dl>
+<dt>Denormalization</dt>
+<dd>
+Keep a copy of local data entities. At a later time, propagate the local entities to the primary entities using methods such as batch process or change-announcement messages. This strategy trades data consistency for performance.
+</dd>
+<h3 id="rethinking-traditional-data-patterns" class="ngc-header-link"><span header-link="rethinking-traditional-data-patterns"></span>Rethinking traditional data patterns</h3>
+<h4 id="primary-keys">Primary keys</h4>
+<ul>
+<li>Synthetic keys are preferred, because they can be permanent and avoid the need to modify references.</li>
+<li>GUIDs aren't an automatic choice. Although eminently suited to distributed systems, they have negative effects on performance, especially in relation to traditional database indexes.</li>
+<li>You can use integer keys. They can still be unique, but they're weaker than traditional autoincrementing database keys.</li>
+</ul>
+<h4 id="foreign-keys">Foreign keys</h4>
+<p>In the world of distributed databases, JOIN is an operation that cannot be relied on because there is no guarentee that any given data entities are stored in the same database. There are alturnative to JOIN.</p>
+<h4 id="transactions">Transactions</h4>
+<p>Database transactions promise to satisfy the ACID (Atomicity, Consistency, Isolation, Durability) properties. While these properties are nice to have, consider other options such as reservations, which relax these properties for performance gains.</p>
+<h4 id="schemas">Schemas</h4>
+<p> Schemas build technical debt. As business requirements change, the original schema is extended so that it doesn't break other parts of the system, while other parts of the schema become legacy structures that must be handled in the code base.</p>
+<p>The microservices architecture approaches this problem as a matter of configuration, directing messages that make old assumtions to legacy microservices and new messages to new microservices.</p>
+<h2 id="chapter-5-deployment" class="ngc-header-link"><span header-link="chapter-5-deployment"></span>Chapter 5: Deployment</h2>
+<h3 id="a-model-for-failure-in-software-systems" class="ngc-header-link"><span header-link="a-model-for-failure-in-software-systems"></span>A model for failure in software systems</h3>
+<ul>
+<li>Failure is not an absolute binary condition, but a quantity that can be measured over many iterations. Therefore, it is more useful to consider the <em>failure rate</em> and define some meaningful threshold that marks success or failure.</li>
+<li>A software system is not as unreliable as it's most unreliable component - it's <em>much more unreliable</em>, because other dependent components can fail, too.</li>
+<li>Load balancing over multiple instances doesn't give you strong redundancy, it gives you capacity. Redundancy works for hardware because hardware eventually breaks. Redundancy does not work for software because software eventually works.</li>
+<li>Software systems are not static, they suffer from deployments where several components change simultaneously. This strategy is inherently risky and almost always fails. Resolving production issues is equivalent to making another deployment attempt.</li>
+</ul>
+<h3 id="continuous-delivery" class="ngc-header-link"><span header-link="continuous-delivery"></span>Continuous delivery</h3>
+<dl>
+<dt>Continuous delivery</dt>
+<dd>
+In the microservices context, create a specific version of a microservice and run one or more instances of that version in production, on demand.
+</dd>
+<dt>Primitive operation</dt>
+<dd>
+Adding/removing a microservice instance.
+</dd>
+<dt>Microservice artifact</dt>
+<dd>
+A microservice artifact can be a container, a virtual machine image or some other abstraction.
+</dd>
+</dl>
+<p>A continuous delivery pipeline contains a</p>
+<ul>
+<li><strong>Version-controlled local development environment</strong> for each service, supported by small and medium tests.</li>
+<li><strong>Staging environment</strong> to validate the microservice and build, reproducibly, an artifact for deployment. Validation is automated but can be manual.</li>
+<li><strong>Management system</strong> to execute combinations of primitive operations against staging and production.</li>
+<li><strong>Production environment</strong> constructed from deployed artifacts to the fullest extent possible. It contains a audit history of primitive operations, a self-correcting mechanism for dealing with crashes, and a load balancing solution.</li>
+<li><strong>Monitoring and diagnostics system</strong> that verifies the health of the production system after a primitive operation is performed and generates alerts when the system is unhealthy.</li>
+</ul>
+<h4 id="pipeline">Pipeline</h4>
+<ul>
+<li>The pipeline requires tooling. Do not roll your own tooling; rely on the community first.</li>
+<li>Be able trace all stages of the pipeline.</li>
+<li>Mark and tag the source code so that artifact generation can be <em>hermetic</em>.</li>
+<li>Artifacts are <em>immutable</em>.</li>
+</ul>
+<h4 id="protection">Protection</h4>
+<p>Measure risk at each stage of production.</p>
+<ul>
+<li>In development, the key risk-measuring tools are code reviews and unit tests.</li>
+<li>In staging, measure risk by monitoring message flows.</li>
+<li>Continue to measure risk in production.</li>
+</ul>
+<h3 id="running-a-microservice-system" class="ngc-header-link"><span header-link="running-a-microservice-system"></span>Running a microservice system</h3>
+<h4 id="immutability">Immutability</h4>
+<p>A microservice artifact is <em>immutible</em> if it can't be changed internally and it has only two active states: active and inactive. This preserves the ability to act as primitive operations.</p>
+<h4 id="automation">Automation</h4>
+<p>Microservice systems in production contain too many parts to be managed manually.</p>
+<p>To determine which task to automate next, divide the tasks into two categories:  </p>
+<ul>
+<li><em>Toil</em> - tasks where human effort grows with at least O(n).  </li>
+<li><em>Win</em> - tasks where human effort grows with less than O(n) </li>
+</ul>
+<p>where n is the number of microservice types. The next task to automate should be the task that most negatively impacts business goals from the <em>Toil</em> category.</p>
+<h4 id="validation">Validation</h4>
+<p>Continuous validation is essential to risk reduction and value in a CD pipeline. One valuable measurement is the ratio of one messages flow-rate to another messages flow-rate.</p>
+<p>Deliberately test failure capabilities as a form of insurance. Take small, frequent losses to avoid large, infrequent, losses that are fatal.</p>
+<h4 id="discovery">Discovery</h4>
+<p>When microservice A knows that microservice B will receive it's messages, then A is <em>coupled</em> to B. Transport independence hides the mechanism of transportation from A, pattern matching hides the identity of B, and together, they decouple services.</p>
+<p>Decoupled services need some way to discover each other. Some solutions include</p>
+<ul>
+<li><strong>Intelligent load balancing:</strong> Direct all traffic messages through load balancers that know where to find services.</li>
+<li><strong>Service registries:</strong> Services register their location with a central registry, and other services look them up.</li>
+<li><strong>DNS:</strong> Use the DNS protocol to resolve the location of a service.</li>
+<li><strong>Message bus:</strong> Use a message bus to separate publishers from subscribers.</li>
+<li><strong>Gossip:</strong> Use a peer-to-peer membership gossip protocol to share service locations.</li>
+</ul>
+<h4 id="configuration">Configuration</h4>
+<p>Configuration can live immutably with the artifact or dynamically on the network. A total solution for a system will likely be a hybrid of the two.</p>
+<p>Beware two dangerous configuration anti-patterns:</p>
+<ul>
+<li><strong>Automation workarounds:</strong> Using configuration to code around limitations to automation tooling.</li>
+<li>
+<p><strong>Turing's revenge:</strong>  Making a complex configuration language over the course of many extensions to the language.</p>
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbLTE0MzIzNjA0MzUsLTE2NjIzODA5NTcsLT
+U3MjA1Njg4MiwtNzU5MDAwNjUsLTE2NTc2NjE4MTIsLTI2NTQz
+NzczLC0yMjgxNDUwNCwtMTg4MzQ4MzMyLC0xMDgxODQ3ODQwLD
+EzMzg2NTU0NywxMTA3MDgyMDMzLDEwNzQzMjc2ODAsLTE3MDU0
+NTM4MjQsMjExNjIzNDQwMywtMTcxMTQyNDUzNSwtMjAyMTgwNj
+U5NCwxMzI1MzA4NjcyLC0yMDIzMjYyMDAxLC0xMTIzNDgyMjIw
+LDEyMTgyNjkyMzVdfQ==
+-->
+</li>
+</ul></dl></div>

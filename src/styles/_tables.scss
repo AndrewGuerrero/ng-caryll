@@ -1,43 +1,34 @@
 @import './constants';
-
-.ngc-api table,
-.ngc-markdown-table {
+.ngc-markdown table {
   border-collapse: collapse;
   border-radius: 2px;
   border-spacing: 0;
   margin: 0 0 32px 0;
   width: 100%;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24), 0 0 2px rgba(0, 0, 0, 0.12);
 }
 
-.ngc-api th,
-.ngc-markdown-th {
-  font-weight: 400;
+.ngc-markdown th {
+  font-weight: 500;
   max-width: 100px;
   padding: 13px 32px;
   text-align: left;
 }
 
-.ngc-api td,
-.ngc-markdown-td {
+.ngc-markdown td {
   font-weight: 400;
   padding: 8px 16px;
 }
 
-
 @media (max-width: $small-breakpoint-width) {
-  .ngc-api table,
-  .ngc-markdown-table {
+  .ngc-markdown table {
     margin: 0 0 32px 0;
   }
 
-  .ngc-api th,
-  .ngc-markdown-th {
+  .ngc-markdown th {
     padding: 6px 16px;
   }
 
-  .ngc-api td,
-  .ngc-markdown-td {
+  .ngc-markdown td {
     padding: 4px 8px;
   }
 }

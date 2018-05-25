@@ -22,7 +22,6 @@ import { CARYLL_ROUTES } from './routes';
 import { DocumentComponent } from './shared/document/document.component';
 import { TableOfContentsComponent } from './shared/table-of-contents/table-of-contents.component';
 import { HeaderLinkComponent } from './shared/header-link/header-link.component';
-import { NavigationFocusDirective } from './shared/navigation-focus/navigation-focus.directive';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { ThemeToggleComponent } from './shared/theme-toggle/theme-toggle.component';
 
@@ -35,7 +34,6 @@ import { ThemeToggleComponent } from './shared/theme-toggle/theme-toggle.compone
     DocumentComponent,
     TableOfContentsComponent,
     HeaderLinkComponent,
-    NavigationFocusDirective,
     NavbarComponent,
     ThemeToggleComponent
   ],

@@ -1,8 +1,13 @@
-<mat-toolbar color="primary" class="ngc-navbar-header">
-  <button mat-button class="sidenav-toggle" (click)="toggleSidenav.emit()">
-    <mat-icon>code</mat-icon>
-  </button>
-  <h1>{{title}}</h1>
-  <div class="flex-spacer"></div>
-  <ngc-theme-toggle class="theme-toggle"></ngc-theme-toggle>
+<mat-toolbar class="ngc-navbar-header">
+  <mat-toolbar-row *ngIf="isScreenSmall()" class="ngc-navbar-header">
+    <h1>{{title}}</h1>
+  </mat-toolbar-row>
+  <mat-toolbar-row>
+    <button mat-button class="sidenav-toggle" (click)="toggleSidenav.emit()">
+      <mat-icon>code</mat-icon>
+    </button>
+    <h1 *ngIf="!isScreenSmall()">{{title}}</h1>
+    <div class="flex-spacer"></div>
+    <ngc-theme-toggle class="theme-toggle"></ngc-theme-toggle>
+  </mat-toolbar-row>
 </mat-toolbar>

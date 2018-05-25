@@ -5,11 +5,8 @@
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
 
-  ngc-navbar {
-    color: mat-color($primary);
-
-    .ngc-navbar-header {
-      background: mat-color($primary);
-    }
+  .ngc-navbar-header {
+    color: mat-color($primary, default-contrast);
+    background: mat-color($primary);
   }
 }

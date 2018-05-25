@@ -3,31 +3,31 @@
 $sidenav-width: 240px;
 
 .ngc-nav {
-   top: 25px;
- 
-   .ngc-nav-content {
-     margin: 15px;
-     width: $sidenav-width;
-     max-height: 75vh;
-     overflow: auto;
+  top: 25px;
+  padding-top: 20px;
 
-     .mat-nav-list {
-       padding-top: 0;
-     }
- 
-     &::-webkit-scrollbar {
-       height: 4px;
-       width: 4px;
-     }
+  .ngc-nav-content {
+    margin: 15px;
+    width: $sidenav-width;
+    max-height: 75vh;
+    overflow: auto;
 
-     .mat-list-item {
-       font-size: 14px;
-     }
-   }
- }
+    mat-nav-list {
+      padding-top: 0;
+    }
+
+    &::-webkit-scrollbar {
+      height: 4px;
+      width: 4px;
+    }
+
+    .mat-list-item {
+      font-size: 14px;
+    }
+  }
+}
 
 @media (max-width: $small-breakpoint-width) {
-
   .docs-component-viewer-nav {
     position: relative;
     top: 0;

@@ -57,13 +57,12 @@ export class DocumentComponent implements OnDestroy {
 
   private loadComponents(componentName: string, componentClass: any) {
     let elements = this.elementRef.nativeElement.querySelectorAll(`[${componentName}]`);
-    Array.prototype.slice.call(elements).forEach((element: Element) => {
+    Array.from(elements).forEach((element: Element) => {
       let component = element.getAttribute(componentName);
       let portalHost = new DomPortalHost(element, this.componentFactorResolver, this.appRef, this.injector);
       let componentPortal = new ComponentPortal(componentClass, this.viewContainerRef);
       let componentViewer = portalHost.attach(componentPortal);
       (componentViewer.instance as HeaderLinkComponent).input = component;
-
       this.portalHosts.push(portalHost);
     });
   }

@@ -1,65 +1,80 @@
 // Styles for overview and guide docs generated via `marked` from the material2 repo.
-
 .ngc-markdown {
   max-width: 100%;
-}
 
-.ngc-markdown-h1 {
-  display: inline-block;
-  font-size: 34px;
-  font-weight: 400;
-  padding: 5px;
-}
+  h1 {
+    display: inline-block;
+    font-size: 34px;
+    padding: 5px;
+  }
 
-.ngc-markdown-h2 {
-  font-size: 24px;
-}
+  h2 {
+    font-size: 24px;
+  }
 
-.ngc-markdown-h3 {
-  font-size: 20px;
-}
+  h3 {
+    font-size: 20px;
+  }
 
-.ngc-markdown-h2,
-.ngc-markdown-h4 {
-  margin-top: 40px;
-}
+  h2,
+  h4 {
+    margin-top: 30px;
+    margin-bottom: 0;
+  }
 
-.ngc-markdown-h5 {
-  font-size: 18px;
-}
+  h5 {
+    font-size: 18px;
+  }
 
-.ngc-markdown-p,
-.ngc-markdown-ul,
-.ngc-markdown-ol {
-  font-size: 16px;
-  line-height: 28px;
-}
+  p,
+  ul,
+  ol {
+    font-size: 16px;
+    line-height: 28px;
+  }
 
-.ngc-markdown-a {
-  text-decoration: none;
-}
+  blockquote {
+    margin: 0;
+    padding: 15px;
 
-.ngc-markdown-td code {
-  font-size: 14px;
-}
+    p {
+      margin: 0;
+    }
+  }
 
-.ngc-markdown-pre {
-  border-radius: 5px;
-  display: block;
-  margin: 16px auto;
-  overflow-x: auto;
-  padding: 20px;
+  dt {
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: 700;
+  }
 
-  .ngc-markdown-code {
-    padding: 0;
+  a {
+    text-decoration: none;
+  }
+
+  td code {
+    font-size: 14px;
+  }
+
+  pre {
+    border-radius: 5px;
+    display: block;
+    margin: 16px auto;
+    overflow-x: auto;
+    padding: 20px;
+
+    code {
+      padding: 0;
+    }
+  }
+
+  code {
+    padding: 3px;
   }
 }
 
-.ngc-markdown-code {
-  padding: 3px;
-}
-
-code, pre {
+code,
+pre {
   font-family: 'Roboto Mono', monospace;
 }
 
@@ -69,8 +84,7 @@ pre {
 
 .ngc-header-link {
   a {
-    text-decoration: none;
-    // deduct -30px so the anchor icon will be positioned outside the content
+    text-decoration: none; // deduct -30px so the anchor icon will be positioned outside the content
     margin-left: -30px;
     display: inline-block;
     vertical-align: middle;

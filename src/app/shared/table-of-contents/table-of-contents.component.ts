@@ -20,7 +20,7 @@ interface Link {
 export class TableOfContentsComponent implements OnInit {
   @Input() links: Link[] = [];
   @Input() container: string;
-  @Input() headerSelectors = '.ngc-markdown-h3, .ngc-markdown-h4';
+  @Input() headerSelectors = '.ngc-markdown h2, .ngc-markdown h3';
 
   rootUrl = this.router.url.split('#')[0];
   private scrollContainer: any;
@@ -57,10 +57,9 @@ export class TableOfContentsComponent implements OnInit {
     Promise.resolve().then(() => {
       this.scrollContainer = this.container ? this._document.querySelectorAll(this.container)[0] : window;
 
-      fromEvent(window, 'scroll').pipe(
-        takeUntil(this.destroyed), debounceTime(100)).subscribe(() => {
-          this.onScroll();
-        });
+      fromEvent(document, 'scroll').pipe(takeUntil(this.destroyed), debounceTime(100)).subscribe(() => {
+        this.onScroll();
+      });
     });
   }
 
@@ -70,11 +69,6 @@ export class TableOfContentsComponent implements OnInit {
 
   updateScrollPosition(): void {
     this.links = this.createLinks();
-
-    const target = document.getElementById(this.urlFragment);
-    if (target) {
-      setTimeout(() => target.scrollIntoView(), 100);
-    }
   }
 
   private createLinks(): Link[] {
@@ -94,6 +88,9 @@ export class TableOfContentsComponent implements OnInit {
         });
       }
     }
+    Array.from(links, (link) => {
+      console.log(link.id, link.top);
+    });
     return links;
   }
 
