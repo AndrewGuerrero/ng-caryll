@@ -1,4 +1,4 @@
-<ngc-navbar class="mat-elevation-z6" (toggleSidenav)="sidenav.toggle()"></ngc-navbar>
+<ngc-navbar (toggleSidenav)="sidenav.toggle()"></ngc-navbar>
 <mat-sidenav-container class="ngc-sidenav-container">
   <mat-sidenav #sidenav class="ngc-sidenav" [mode]="isScreenSmall() ? 'over' : 'side'" [opened]="!isScreenSmall()" fixedInViewport
     fixedTopGap="64">

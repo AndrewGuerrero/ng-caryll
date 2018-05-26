@@ -1,11 +1,13 @@
 <mat-toolbar class="ngc-navbar-header">
   <mat-toolbar-row *ngIf="isScreenSmall()" class="ngc-navbar-header">
+    <mat-icon class="ngc-logo" svgIcon="eye" matTooltip="{{eyeIconMessage}}"></mat-icon>
     <h1>{{title}}</h1>
   </mat-toolbar-row>
   <mat-toolbar-row>
-    <button mat-button class="sidenav-toggle" (click)="toggleSidenav.emit()">
-      <mat-icon>code</mat-icon>
+    <button mat-icon-button class="sidenav-toggle" (click)="toggleSidenav.emit()">
+      <mat-icon>menu</mat-icon>
     </button>
+    <mat-icon *ngIf="!isScreenSmall()" class="ngc-logo" svgIcon="eye" matTooltip="{{eyeIconMessage}}"></mat-icon>
     <h1 *ngIf="!isScreenSmall()">{{title}}</h1>
     <div class="flex-spacer"></div>
     <ngc-theme-toggle class="theme-toggle"></ngc-theme-toggle>

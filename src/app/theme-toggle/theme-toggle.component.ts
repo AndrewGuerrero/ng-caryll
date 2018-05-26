@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ThemeService } from '../theme/theme.service';
+import { ThemeService } from '../shared/theme.service';
 
 @Component({
   selector: 'ngc-theme-toggle',
@@ -10,7 +10,6 @@ export class ThemeToggleComponent {
   constructor(private theme: ThemeService) { }
 
   toggleTheme() {
-    console.log("toggleTheme");
     this.theme.toggleTheme();
   }
 }

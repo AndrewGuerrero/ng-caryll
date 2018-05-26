@@ -1,4 +1,4 @@
-@import '../../../styles/constants';
+@import '../../styles/constants';
 
 ngc-sidenav-component {
   display: flex;
@@ -11,6 +11,7 @@ ngc-sidenav-component {
 }
 
 .ngc-sidenav {
+  @include mat-elevation(4);
   overflow: auto;
 }
 

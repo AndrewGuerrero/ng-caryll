@@ -88,9 +88,6 @@ export class TableOfContentsComponent implements OnInit {
         });
       }
     }
-    Array.from(links, (link) => {
-      console.log(link.id, link.top);
-    });
     return links;
   }
 

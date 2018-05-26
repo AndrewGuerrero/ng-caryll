@@ -1,0 +1,41 @@
+@import '../../styles/constants';
+
+.sidenav-toggle, 
+.theme-toggle button {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  mat-icon {
+    font-size: 30px;
+    height: 32px;;
+    width: 32px;
+    line-height: 32px;
+
+    @media (max-width: $small-breakpoint-width) {
+      height: 18px;
+      line-height: 18px;
+    }
+  }
+}
+
+.ngc-logo {
+   height: 54px;
+   width: 54px;
+   padding-left: 30px;
+
+  @media (max-width: $small-breakpoint-width) {
+    padding-left: 0;
+    height: 32px;
+    width: 32px;
+  }
+}
+
+.ngc-navbar-header {
+  max-height: 86px;
+}
+
+.flex-spacer {
+  flex: 1 1 auto
+}

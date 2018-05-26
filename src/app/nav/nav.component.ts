@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DocumentationItemsService } from '../../shared/documentation-items/documentation-items.service';
+import { DocumentationItemsService } from '../shared/documentation-items.service';
 
 @Component({
   selector: 'ngc-nav',

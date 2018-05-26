@@ -21,7 +21,6 @@ export class ThemeService {
 
   toggleTheme() {
     this.isDark = !this.isDark;
-    console.log(this.isDark, this.theme);
     this.setTheme(this.theme);
   }
 

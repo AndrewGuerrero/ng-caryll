@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, NgZone, ViewChild } from '@angular/core';
 import { Observable, combineLatest } from 'rxjs';
 import { Router } from '@angular/router';
-import { DocumentationItemsService } from '../../shared/documentation-items/documentation-items.service';
+import { DocumentationItemsService } from '../shared/documentation-items.service';
 import { MatSidenav } from '@angular/material/sidenav';
 
 const SMALL_WIDTH_BREAKPOINT = 720;
