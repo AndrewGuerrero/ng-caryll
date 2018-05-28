@@ -3,15 +3,16 @@ const glob = require('glob');
 const matter = require('gray-matter');
 const removeMd = require('remove-markdown');
 const path = require('path');
+const lunr = require('lunr');
 
 const INPUT_DIR = 'content/**';
 const BASE_DIR = path.dirname(INPUT_DIR);
 const OUTPUT_FILE = 'src/assets/lunr/index.json';
-const JSON_LIST = [];
+const JSON_DOC = [];
 
 const stream = fs.createWriteStream(OUTPUT_FILE);
 readDirectory(INPUT_DIR);
-stream.write(JSON.stringify(JSON_LIST, null, 4));
+writeIndex();
 stream.end();
 
 function readDirectory(path) {
@@ -29,25 +30,27 @@ function readDirectory(path) {
 function readFile(filePath) {
   const ext = path.extname(filePath);
   const meta = matter.read(filePath);
-  var plainText = '';
-  if (ext == '.md') {
-    plainText = removeMd(meta.content);
-  }
-  var uri = '/' + filePath
-    .substring(0, filePath.lastIndexOf('.'))
-    .replace(BASE_DIR + '/', '');
-  if (meta.data.url != undefined) {
-    uri = meta.data.urla;
-  }
-  var tags = [];
-  if (meta.data.tags) {
-    tags = meta.data.tags;
-  }
   const item = {
-    'uri': uri,
+    'href': '/' + filePath
+      .substring(0, filePath.lastIndexOf('.'))
+      .replace(BASE_DIR + '/', ''),
     'title': meta.data.title,
-    'content': plainText,
-    'tags': tags
+    'tags': meta.data.tags,
+    'content': removeMd(meta.content),
   };
-  JSON_LIST.push(item);
+  JSON_DOC.push(item);
+}
+
+function writeIndex() {
+  const index = lunr(function () {
+    this.ref('href');
+    this.field('title', { boost: 10 });
+    this.field('tags', { boost: 2 });
+    this.field('content');
+
+    JSON_DOC.forEach(function (doc) {
+      this.add(doc);
+    }, this);
+  });
+  stream.write(JSON.stringify(index));
 }

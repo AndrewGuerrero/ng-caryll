@@ -1,0 +1,9 @@
+@import '../app-theme';
+@import '../styles/gruvbox-theming';
+
+@import '../app-theme';
+@import '../styles/gruvbox-theming';
+
+$light-yellow-primary: mat-palette($gruvbox-light-yellow);
+$light-yellow-accent:  mat-palette($gruvbox-light-gray);
+$light-yellow-theme: gruvbox-light-theme($light-yellow-primary, $light-yellow-accent);

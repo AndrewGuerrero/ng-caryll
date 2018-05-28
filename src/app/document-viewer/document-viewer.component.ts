@@ -1,13 +1,10 @@
-import { BreakpointObserver } from '@angular/cdk/layout';
-import { Component, OnInit, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
-import { DocItem, DocumentationItemsService } from '../shared/documentation-items.service';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { PageTitleService } from '../shared/page-title.service';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { mapChildrenIntoArray } from '@angular/router/src/url_tree';
-import { TableOfContentsComponent } from '../table-of-contents/table-of-contents.component';
 import { ThemeService } from '../shared/theme.service';
+import { ActivatedRoute } from '@angular/router';
+import { DocItem, DocumentationItemsService } from '../shared/documentation-items.service';
+import { DocumentService } from '../shared/document.service';
+import { ScrollService } from '../shared/scroll.service';
 
 @Component({
   selector: 'ngc-document-viewer',
@@ -16,27 +13,38 @@ import { ThemeService } from '../shared/theme.service';
   encapsulation: ViewEncapsulation.None
 })
 export class DocumentViewerComponent {
-  @ViewChild('toc') tableOfContents: TableOfContentsComponent;
+  currentDocument: string;
 
-  docItem: DocItem;
+  private currentLocation: string;
+  private docItem: DocItem;
+
 
   constructor(
     private route: ActivatedRoute,
-    private pageTitle: PageTitleService,
-    private breakpointObserver: BreakpointObserver,
-    public docItems: DocumentationItemsService,
-    private theme: ThemeService,
+    private pageTitleService: PageTitleService,
+    private themeService: ThemeService,
+    private documentService: DocumentService,
+    private docItemService: DocumentationItemsService,
+    private scrollService: ScrollService,
   ) {
     route.params.subscribe(p => {
-      this.docItem = docItems.getItemById(p['id']);
-      this.pageTitle.title = this.docItem.name;
+      if (p['id'] === this.currentLocation) {
+        this.scrollService.scroll();
+      }
+      this.docItem = docItemService.getItemById(p['id']);
+      this.themeService.setTheme(this.docItem.theme);
+      this.pageTitleService.title = this.docItem.name;
+      this.documentService
+        .getDocument(this.docItem.id)
+        .subscribe(doc => this.currentDocument = doc);
     });
   }
 
-  onContentLoaded(): void {
-    this.theme.setTheme(this.docItem.theme);
-    if (this.tableOfContents) {
-      this.tableOfContents.updateScrollPosition();
-    }
+  onDocRemoved() {
+    this.scrollService.scrollToTop();
+  }
+
+  onDocInserted() {
+    setTimeout(() => this.scrollService.scroll(), 500);
   }
 }

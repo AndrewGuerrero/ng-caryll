@@ -1,0 +1,6 @@
+@import '../app-theme';
+@import '../styles/gruvbox-theming';
+
+$light-red-primary: mat-palette($gruvbox-light-red);
+$light-red-accent:  mat-palette($gruvbox-light-gray);
+$light-red-theme: gruvbox-light-theme($light-red-primary, $light-red-accent);

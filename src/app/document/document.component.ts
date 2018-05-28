@@ -1,90 +1,152 @@
-import { ComponentPortal, DomPortalHost } from '@angular/cdk/portal';
-import { Component, OnInit, Input, Output, EventEmitter, ElementRef, ComponentFactoryResolver, ApplicationRef, Injector, ViewContainerRef, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { HeaderLinkComponent } from '../header-link/header-link.component';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, EventEmitter, Input, Output, ElementRef, ViewContainerRef } from "@angular/core";
+import { of, Observable, timer } from "rxjs";
+import { ActivatedRoute } from "@angular/router";
+import { DocItem, DocumentationItemsService } from "../shared/documentation-items.service";
+import { ElementLoaderService } from "../shared/element-loader.service";
+import { TableOfContentsService } from "../shared/table-of-contents.service";
+import { switchMap, takeUntil, tap, catchError } from "rxjs/operators";
+
+const initialDocViewerElement = document.querySelector('ngc-document-viewer');
+const initialDocViewerContent = initialDocViewerElement ? initialDocViewerElement.innerHTML : '';
 
 @Component({
   selector: 'ngc-document',
-  template: 'Loading document...',
+  template: '',
 })
 export class DocumentComponent implements OnDestroy {
-  private documentFetchSubscription: Subscription;
-  private portalHosts: DomPortalHost[] = [];
 
-  @Input() set documentUrl(url: string) {
-    this.fetchDocument(url);
+  private docItem: DocItem;
+  private hostElement: HTMLElement;
+  private void = of<void>(undefined);
+  private destroyed = new EventEmitter<void>();
+  private docContents = new EventEmitter<string>();
+
+  private currViewContainer: HTMLElement = document.createElement('div');
+  private nextViewContainer: HTMLElement = document.createElement('div');
+
+  @Input() set doc(newDoc: string) {
+    if (newDoc) {
+      this.docContents.emit(newDoc);
+    }
   }
 
-  @Output() contentLoaded = new EventEmitter<void>();
-
-  textContent = '';
+  @Output() docReady = new EventEmitter<void>();
+  @Output() docRemoved = new EventEmitter<void>();
+  @Output() docInserted = new EventEmitter<void>();
+  @Output() docRendered = new EventEmitter<void>();
 
   constructor(
-    private http: HttpClient,
-    private elementRef: ElementRef,
-    private componentFactorResolver: ComponentFactoryResolver,
-    private appRef: ApplicationRef,
-    private injector: Injector,
+    elementRef: ElementRef,
+    private route: ActivatedRoute,
     private viewContainerRef: ViewContainerRef,
-    private router: Router,
-  ) { }
+    private docItemService: DocumentationItemsService,
+    private elementLoaderService: ElementLoaderService,
+    private tableOfContentsService: TableOfContentsService,
+  ) {
+    route.params.subscribe(p => {
+      this.docItem = docItemService.getItemById(p['id']);
+    });
 
-  private fetchDocument(url: string): void {
-    if (this.documentFetchSubscription) {
-      this.documentFetchSubscription.unsubscribe();
+    this.hostElement = elementRef.nativeElement;
+    this.hostElement.innerHTML = initialDocViewerContent;
+
+    if (this.hostElement.firstElementChild) {
+      this.currViewContainer = this.hostElement.firstElementChild as HTMLElement;
     }
 
-    this.documentFetchSubscription = this.http.get(url, { responseType: 'text' }).subscribe(
-      document => this.updateDocument(document),
-      error => this.showError(url, error)
+    this.docContents
+      .pipe(switchMap(newDoc => this.render(newDoc)),
+        takeUntil(this.destroyed))
+      .subscribe();
+  }
+
+  ngOnDestroy() {
+    this.elementLoaderService.clearHeaderLinks();
+    this.destroyed.emit();
+  }
+
+  private render(doc: string): Observable<void> {
+    let generateTableOfContents: () => void;
+    return this.void.pipe(
+      tap(() => this.nextViewContainer.innerHTML = doc || ''),
+      tap(() => generateTableOfContents = this.generateTableOfContents(this.nextViewContainer)),
+      tap(() => this.elementLoaderService.loadHeaderLinks(this.nextViewContainer, this.viewContainerRef)),
+      tap(() => this.docReady.emit()),
+      switchMap(() => this.swapViews(generateTableOfContents)),
+      tap(() => this.docRendered.emit()),
+      catchError(err => {
+        console.log(err);
+        this.nextViewContainer.innerHTML = '';
+        return this.void;
+      }),
     );
   }
 
-  private updateDocument(document: string): void {
-    this.elementRef.nativeElement.innerHTML = document;
-    this.textContent = this.elementRef.nativeElement.textContent;
-    this.loadComponents('header-link', HeaderLinkComponent)
-    this.fixFragmentUrls();
-    this.contentLoaded.next();
-  }
-
-  private showError(url: string, error: HttpErrorResponse) {
-    console.log(error);
-    this.elementRef.nativeElement.innerText = `Failed to load document: ${url}. Error: ${error.statusText}`;
-  }
-
-  private loadComponents(componentName: string, componentClass: any) {
-    let elements = this.elementRef.nativeElement.querySelectorAll(`[${componentName}]`);
-    Array.from(elements).forEach((element: Element) => {
-      let component = element.getAttribute(componentName);
-      let portalHost = new DomPortalHost(element, this.componentFactorResolver, this.appRef, this.injector);
-      let componentPortal = new ComponentPortal(componentClass, this.viewContainerRef);
-      let componentViewer = portalHost.attach(componentPortal);
-      (componentViewer.instance as HeaderLinkComponent).input = component;
-      this.portalHosts.push(portalHost);
-    });
-  }
-
-  private fixFragmentUrls() {
-    const baseUrl = this.router.url.split('#')[0];
-    const anchorElements = [].slice.call(this.elementRef.nativeElement.querySelectorAll('a')) as HTMLAnchorElement[];
-
-    anchorElements.filter(anchorEl => anchorEl.hash && anchorEl.host === location.host)
-      .forEach(anchorEl => anchorEl.href = `${baseUrl}${anchorEl.hash}`);
-  }
-
-  private clearLoadedComponents() {
-    this.portalHosts.forEach(h => h.dispose());
-    this.portalHosts = [];
-  }
-
-  ngOnDestroy(): void {
-    this.clearLoadedComponents();
-
-    if (this.documentFetchSubscription) {
-      this.documentFetchSubscription.unsubscribe();
+  private generateTableOfContents(targetElem: HTMLElement): () => void {
+    return () => {
+      this.tableOfContentsService.reset();
+      this.tableOfContentsService.genToc(targetElem, this.docItem.id);
     }
+  }
+
+  private swapViews(onInsertedCd = () => { }): Observable<void> {
+    const raf = new Observable<void>(subscriber => {
+      const rafId = requestAnimationFrame(() => {
+        subscriber.next();
+        subscriber.complete();
+      });
+      return () => cancelAnimationFrame(rafId);
+    });
+    let done = this.void;
+
+    if (this.currViewContainer.parentElement) {
+      done = done.pipe(
+        switchMap(() => this.animateLeave(this.currViewContainer, raf)),
+        tap(() => this.currViewContainer.parentElement!.removeChild(this.currViewContainer)),
+        tap(() => this.docRemoved.emit()),
+      );
+    }
+
+    return done.pipe(
+      tap(() => this.hostElement.appendChild(this.nextViewContainer)),
+      tap(() => onInsertedCd()),
+      tap(() => this.docInserted.emit()),
+      switchMap(() => this.animateEnter(this.currViewContainer, raf)),
+      tap(() => {
+        const prevViewContainer = this.currViewContainer;
+        this.currViewContainer = this.nextViewContainer;
+        this.nextViewContainer = prevViewContainer;
+        this.nextViewContainer.innerHTML = '';
+      }),
+    );
+  }
+
+  private getActualDruation(elem: HTMLElement) {
+    const cssValue = getComputedStyle(elem).transitionDuration || '';
+    const milliseconds = Number(cssValue.replace(/s$/, ''));
+    return 1000 * milliseconds;
+  };
+
+  private animateLeave(elem: HTMLElement, raf: Observable<void>): Observable<void> {
+    return this.animateProp(elem, 'opacity', '1', '0.1', raf);
+  }
+
+  private animateEnter(elem: HTMLElement, raf: Observable<void>): Observable<void> {
+    return this.animateProp(elem, 'opacity', '0.1', '1', raf);
+  }
+
+  private animateProp(elem: HTMLElement, prop: keyof CSSStyleDeclaration, from: string, to: string, raf: Observable<void>, duration = 200): Observable<void> {
+    if (prop === 'length' || prop === 'parentRule') {
+      return this.void;
+    }
+    elem.style.transition = '';
+
+    return this.void.pipe(
+      switchMap(() => raf), tap(() => elem.style[prop] = from),
+      switchMap(() => raf), tap(() => elem.style.transition = `all ${duration}ms ease-in-out`),
+      switchMap(() => raf), tap(() => (elem.style as any)[prop] = to),
+      switchMap(() => timer(this.getActualDruation(elem))),
+      switchMap(() => this.void),
+    );
   }
 }

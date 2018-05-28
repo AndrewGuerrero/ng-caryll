@@ -1,15 +1,109 @@
 @import '~@angular/material/theming';
 @import './styles/gruvbox-theming';
-@import './app-theme';
 @import './styles/markdown';
 @import './styles/tables';
 @import './styles/general';
+@import './styles/hljs-gruvbox-dark';
+@import './styles/hljs-gruvbox-light';
+@import './app-theme';
+
+@import './themes/dark-aqua';
+@import './themes/dark-blue';
+@import './themes/dark-green';
+@import './themes/dark-orange';
+@import './themes/dark-purple';
+@import './themes/dark-red';
+@import './themes/dark-yellow';
+@import './themes/light-aqua';
+@import './themes/light-blue';
+@import './themes/light-green';
+@import './themes/light-orange';
+@import './themes/light-purple';
+@import './themes/light-red';
+@import './themes/light-yellow';
 
 @include mat-core();
 
-$primary: mat-palette($gruvbox-light-purple);
-$accent:  mat-palette($gruvbox-light-gray);
+.dark-aqua-theme {
+  @include angular-material-theme($dark-aqua-theme);
+  @include ng-caryll-app-theme($dark-aqua-theme);
+  @include hljs-gruvbox-dark();
+}
 
-$theme: gruvbox-light-theme($primary, $accent);
-@include angular-material-theme($theme);
-@include ng-caryll-app-theme($theme);
+.dark-blue-theme {
+  @include angular-material-theme($dark-blue-theme);
+  @include ng-caryll-app-theme($dark-blue-theme);
+  @include hljs-gruvbox-dark();
+}
+
+.dark-green-theme {
+  @include angular-material-theme($dark-green-theme);
+  @include ng-caryll-app-theme($dark-green-theme);
+  @include hljs-gruvbox-dark();
+}
+
+.dark-orange-theme {
+  @include angular-material-theme($dark-orange-theme);
+  @include ng-caryll-app-theme($dark-orange-theme);
+  @include hljs-gruvbox-dark();
+}
+
+.dark-purple-theme {
+  @include angular-material-theme($dark-purple-theme);
+  @include ng-caryll-app-theme($dark-purple-theme);
+  @include hljs-gruvbox-dark();
+}
+
+.dark-red-theme {
+  @include angular-material-theme($dark-red-theme);
+  @include ng-caryll-app-theme($dark-red-theme);
+  @include hljs-gruvbox-dark();
+}
+
+.dark-yellow-theme {
+  @include angular-material-theme($dark-yellow-theme);
+  @include ng-caryll-app-theme($dark-yellow-theme);
+  @include hljs-gruvbox-dark();
+}
+
+.light-aqua-theme {
+  @include angular-material-theme($light-aqua-theme);
+  @include ng-caryll-app-theme($light-aqua-theme);
+  @include hljs-gruvbox-light();
+}
+
+.light-blue-theme {
+  @include angular-material-theme($light-blue-theme);
+  @include ng-caryll-app-theme($light-blue-theme);
+  @include hljs-gruvbox-light();
+}
+
+.light-green-theme {
+  @include angular-material-theme($light-green-theme);
+  @include ng-caryll-app-theme($light-green-theme);
+  @include hljs-gruvbox-light();
+}
+
+.light-orange-theme {
+  @include angular-material-theme($light-orange-theme);
+  @include ng-caryll-app-theme($light-orange-theme);
+  @include hljs-gruvbox-light();
+}
+
+.light-purple-theme {
+  @include angular-material-theme($light-purple-theme);
+  @include ng-caryll-app-theme($light-purple-theme);
+  @include hljs-gruvbox-light();
+}
+
+.light-red-theme {
+  @include angular-material-theme($light-red-theme);
+  @include ng-caryll-app-theme($light-red-theme);
+  @include hljs-gruvbox-light();
+}
+
+.light-yellow-theme {
+  @include angular-material-theme($light-yellow-theme);
+  @include ng-caryll-app-theme($light-yellow-theme);
+  @include hljs-gruvbox-light();
+}

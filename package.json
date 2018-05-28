@@ -9,8 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "prestart": "npm run build-themes && npm run lunr-index && npm run remark-documents",
-    "build-themes": "bash ./tools/build-themes.sh",
+    "prestart": "npm run lunr-index && npm run remark-documents",
     "lunr-index": "node ./tools/lunr-index",
     "remark-documents": "node ./tools/remark-documents"
   },

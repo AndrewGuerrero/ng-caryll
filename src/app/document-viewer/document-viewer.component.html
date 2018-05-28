@@ -1,6 +1,5 @@
 <div class="ngc-document-viewer-content">
-  <span class="cdk-visually-hidden" tabindex="-1" #initialFocusTarget>{{docItem.id}}</span>
-  <ngc-document documentUrl="/assets/documents/{{docItem.id}}.html" class="ngc-document-viewer-text-content" (contentLoaded)="onContentLoaded()">
+  <ngc-document [doc]="currentDocument" class="ngc-document-viewer-text-content">
   </ngc-document>
   <ngc-table-of-contents #toc container="ngc-navbar">
   </ngc-table-of-contents>

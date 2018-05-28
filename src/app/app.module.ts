@@ -15,16 +15,22 @@ import { NgCaryllApp } from './ng-caryll-app';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { NavComponent } from './nav/nav.component';
 import { DocumentViewerComponent } from './document-viewer/document-viewer.component';
-
-import { DocumentationItemsService } from './shared/documentation-items.service';
-import { PageTitleService } from './shared/page-title.service';
-
-import { CARYLL_ROUTES } from './routes';
-import { DocumentComponent } from './document/document.component';
+import { DocumentComponent } from './document/document.component'
 import { TableOfContentsComponent } from './table-of-contents/table-of-contents.component';
 import { HeaderLinkComponent } from './header-link/header-link.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ThemeToggleComponent } from './theme-toggle/theme-toggle.component';
+
+import { DocumentationItemsService } from './shared/documentation-items.service';
+import { PageTitleService } from './shared/page-title.service';
+import { TableOfContentsService } from './shared/table-of-contents.service';
+import { ThemeService } from './shared/theme.service';
+import { ScrollSpyService } from './shared/scroll-spy.service';
+import { ScrollService } from './shared/scroll.service';
+import { DocumentService } from './shared/document.service';
+import { ElementLoaderService } from './shared/element-loader.service';
+
+import { CARYLL_ROUTES } from './routes';
 
 @NgModule({
   declarations: [
@@ -53,6 +59,12 @@ import { ThemeToggleComponent } from './theme-toggle/theme-toggle.component';
   providers: [
     DocumentationItemsService,
     PageTitleService,
+    TableOfContentsService,
+    ThemeService,
+    ScrollSpyService,
+    ScrollService,
+    DocumentService,
+    ElementLoaderService,
   ],
   entryComponents: [
     HeaderLinkComponent,
