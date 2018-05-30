@@ -13,6 +13,7 @@ ngc-sidenav-component {
 .ngc-sidenav {
   @include mat-elevation(4);
   overflow: auto;
+  width: 215px;
 }
 
 .ngc-sidenav-inner-content {

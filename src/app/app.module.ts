@@ -10,6 +10,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatInputModule } from '@angular/material/input';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet'
 
 import { NgCaryllApp } from './ng-caryll-app';
 import { SidenavComponent } from './sidenav/sidenav.component';
@@ -29,8 +32,11 @@ import { ScrollSpyService } from './shared/scroll-spy.service';
 import { ScrollService } from './shared/scroll.service';
 import { DocumentService } from './shared/document.service';
 import { ElementLoaderService } from './shared/element-loader.service';
+import { SearchService } from './shared/search.service';
 
 import { CARYLL_ROUTES } from './routes';
+import { SearchBoxComponent } from './search-box/search-box.component';
+import { SearchResultsComponent } from './search-results/search-results.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +48,9 @@ import { CARYLL_ROUTES } from './routes';
     TableOfContentsComponent,
     HeaderLinkComponent,
     NavbarComponent,
-    ThemeToggleComponent
+    ThemeToggleComponent,
+    SearchBoxComponent,
+    SearchResultsComponent
   ],
   imports: [
     BrowserModule,
@@ -53,6 +61,9 @@ import { CARYLL_ROUTES } from './routes';
     MatButtonModule,
     MatToolbarModule,
     MatTooltipModule,
+    MatDividerModule,
+    MatInputModule,
+    MatBottomSheetModule,
     RouterModule.forRoot(CARYLL_ROUTES),
     HttpClientModule
   ],
@@ -65,10 +76,13 @@ import { CARYLL_ROUTES } from './routes';
     ScrollService,
     DocumentService,
     ElementLoaderService,
+    SearchService,
   ],
   entryComponents: [
     HeaderLinkComponent,
     TableOfContentsComponent,
+    SearchBoxComponent,
+    SearchResultsComponent,
   ],
   bootstrap: [NgCaryllApp]
 })

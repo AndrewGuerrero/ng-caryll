@@ -11,18 +11,24 @@
 }
 
 .ngc-toc-container {
-  width: 100%;
-  padding: 5px 0 10px 10px;
   position: fixed;
+  top: 80px;
+  bottom: 12px;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   @media (max-width: $small-breakpoint-width) {
     position: inherit;
   }
 }
 
-.ngc-toc-heading {
+.ngc-toc-list {
+  padding: 5px 0 10px 10px;
+}
+
+.ngc-level-h1 {
   margin: 0;
-  padding: 0;
+  padding-bottom: 5px;
   font-size: 16px;
   font-weight: bold;
 }

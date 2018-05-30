@@ -3,7 +3,6 @@
   max-width: 100%;
 
   h1 {
-    display: inline-block;
     font-size: 34px;
     padding: 5px;
   }
@@ -86,7 +85,6 @@ pre {
   a {
     text-decoration: none; // deduct -30px so the anchor icon will be positioned outside the content
     margin-left: -30px;
-    display: inline-block;
     vertical-align: middle;
   }
 

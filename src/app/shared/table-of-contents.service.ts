@@ -51,7 +51,7 @@ export class TableOfContentsService {
   }
 
   private findTocHeadings(docElement: Element): HTMLHeadingElement[] {
-    return Array.from(docElement.querySelectorAll('h2,h3'));
+    return Array.from(docElement.querySelectorAll('h1,h2,h3'));
   }
 
   private extractHeadingSafeHtml(heading: HTMLHeadingElement) {

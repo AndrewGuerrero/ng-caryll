@@ -2,7 +2,7 @@ const fs = require('fs');
 const extend = require('extend');
 const path = require('path');
 const glob = require('glob');
-const matter = require('gray-matter');
+const requestImageSize = require('request-image-size');
 const unified = require('unified');
 const markdown = require('remark-parse');
 const remark2rehype = require('remark-rehype');
@@ -33,7 +33,7 @@ function remarkDirectory(path) {
 }
 
 function remarkFile(filePath) {
-  const meta = matter.read(filePath);
+  const doc = fs.readFileSync(filePath).toString();
   unified()
     .use(markdown)
     .use(remark2rehype, { allowDangerousHTML: true })
@@ -42,8 +42,9 @@ function remarkFile(filePath) {
     .use(slug)
     .use(wrapInDiv, { className: "ngc-markdown" })
     .use(attachHeaderLink)
+    .use(addImageDimensions)
     .use(html)
-    .process(meta.content, function (err, file) {
+    .process(doc, function (err, file) {
       if (err) throw err;
       const output_file = path.basename(filePath.substring(0, filePath.lastIndexOf('.')));
       const stream = fs.createWriteStream(OUTPUT_DIR + '/' + output_file + '.html');
@@ -56,7 +57,7 @@ function wrapInDiv(options) {
   const className = (options || {}).className;
   return function transformer(tree) {
     return hast('.' + className, [tree.children]);
-  }
+  };
 }
 
 function attachHeaderLink() {
@@ -72,5 +73,25 @@ function attachHeaderLink() {
         });
       }
     });
-  }
+  };
+}
+
+function addImageDimensions() {
+  return function transformer(tree, file, next) {
+    var promises = [];
+    visit(tree, 'element', function (node) {
+      if (isElement(node, 'img')) {
+        const props = node.properties;
+        const src = props.src;
+        if (src && props.width === undefined && props.height === undefined) {
+          promises.push(requestImageSize(src)
+            .then(function (size) {
+              extend(props, { width: '' + size.width });
+              extend(props, { height: '' + size.height });
+            }));
+        }
+      }
+    });
+    Promise.all(promises).then(function () { next(); });
+  };
 }

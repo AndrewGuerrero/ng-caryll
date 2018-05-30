@@ -36,7 +36,7 @@ Build the minimum set of features that lets you validate your assumptions about 
 <p>Instead of getting lost in implementation, focus on the messages first and think about interaction.</p>
 </blockquote>
 <p>Once the messages have been fleshed out, they are grouped into sensible <em>services</em>. One such implementation is provided in the diagram below.</p>
-<p><img src="https://drive.google.com/uc?id=15or1k9CkpwEJadWjr9yW_T7tdN-CdLbT"></p>
+<p><img src="https://drive.google.com/uc?id=15or1k9CkpwEJadWjr9yW_T7tdN-CdLbT" width="590" height="361"></p>
 <h4 id="iteration-1-a-search-index">Iteration 1: A search index</h4>
 <p>In this iteration, a new activity and associated messages are added to the system</p>
 <ul>
@@ -45,7 +45,7 @@ Build the minimum set of features that lets you validate your assumptions about 
 </em> <code>search:query</code></li>
 </ul>
 <p>The search activity is added into the system as seen in the diagram below</p>
-<p><img src="https://drive.google.com/uc?id=1hrqvRUuu3rq3zI8_BQtXyINW7FmVPtk0"></p>
+<p><img src="https://drive.google.com/uc?id=1hrqvRUuu3rq3zI8_BQtXyINW7FmVPtk0" width="590" height="366"></p>
 <blockquote>
 <p>Notice the choice in implementation. <em>post</em> could have just as easily sent <code>search:insert</code> to <em>index</em>. However, doing so would couple <em>post</em> to <em>index</em>. Additionally, the decision for <em>index</em> to convert <code>info:entry</code> into <code>search:insert</code> messages can be made at runtime to maintain loose coupling.</p>
 </blockquote>
@@ -55,7 +55,7 @@ Build the minimum set of features that lets you validate your assumptions about 
 <p>The service captures messages intended for <em>entry-store</em>. One such way to capture messages is to add an extra property such as <code>cache:true</code> to <code>store:*</code> messages. <em>entry-cache</em> will take the place of <em>entry-store</em> and <em>entry-store</em> will act as a fallback only listening to messages with the added property <code>cache:true</code>.</p>
 <p><em>entry-cache</em> is trivial to introduce into the system but <em>entry-store</em> is a bit more complicated and will involve a transition phase. Using the process of <em>additivity</em> introduce the new version of <em>entry-cache</em> but with a runtime configuration that accepts both <code>store:*</code> and <code>store:*,cache:true</code> messages. Load-balancing would make it so some messages go strait to <em>entry-store</em> while others pass through <em>entry-cache</em> first. Once the new functionality proves itself, change the runtime configuration of <em>entry-store</em> to only accept <code>store:*,cache:true</code> messages.</p>
 <p>The system now looks like the diagram below</p>
-<p><img src="https://drive.google.com/uc?id=1wr5tkpeh8kZFCrSp_nuE37hAC_-dY5pX"></p>
+<p><img src="https://drive.google.com/uc?id=1wr5tkpeh8kZFCrSp_nuE37hAC_-dY5pX" width="590" height="449"></p>
 <h4 id="iteration-3-timelines">Iteration 3: Timelines</h4>
 <p>Another core activity inside a microblogging framework is users following other users. Following the usual process, the first step is to come up with a set of messages representative of the activity,</p>
 <ul>
@@ -71,13 +71,13 @@ Build the minimum set of features that lets you validate your assumptions about 
 </blockquote>
 <p>Similar to the <em>index</em> service, we will have the new microservices react to <code>info:entry</code> with an orchestration of <code>follow:list,kind:followers</code> and <code>timeline:insert</code> messages. Instead of making complex routing and workflow rules, it is perfectly reasonable to make a service with the sole purpose of performing this orchestration. We will call this service <em>fanout</em>.</p>
 <p>The system now looks like the diagram below</p>
-<p><img src="https://drive.google.com/uc?id=1N6ibwy6TL07WREyFm3WlvUgdD_HR_j0d"></p>
+<p><img src="https://drive.google.com/uc?id=1N6ibwy6TL07WREyFm3WlvUgdD_HR_j0d" width="590" height="624"></p>
 <h4 id="iteration-4-scaling">Iteration 4: Scaling</h4>
 <p>The microservices are scaling fine, but the underlying database of <em>timeline</em> cannot handle the data volume, and must be split into multiple databases.</p>
 <p>One such technique, called <em>sharding</em>, assigns each item to a separate database, based on key values in the data. Though sharding can work at the database level, the microservice level is a good choice because it maintains flexibility. The <code>timeline:*</code> messages will have added <code>shard</code> property.</p>
 <p>Adding the new sharding <em>timeline</em> microservice to the system looks similar to the process in Iteration 1 by using the principle of additivity. However, the transition will take longer due to batch-transferring the old database into the new database shards.</p>
 <p>With that, this case study comes to a close with the final system diagram pictured below</p>
-<p><img src="https://drive.google.com/uc?id=1mswOZtkR94i8atf_9TRcKL1i78a7B2Rr"></p>
+<p><img src="https://drive.google.com/uc?id=1mswOZtkR94i8atf_9TRcKL1i78a7B2Rr" width="590" height="529"></p>
 <h3 id="how-the-monolith-betrays-the-promise-of-components" class="ngc-header-link"><span header-link="how-the-monolith-betrays-the-promise-of-components"></span>How the monolith betrays the promise of components</h3>
 <dl>
 <dt>Monolith</dt>
@@ -221,7 +221,7 @@ Microservices publish messages to one or more message queues and listening micro
 <p>Though not necessary here, in large systems, some activities will inevitably share messages. Shared messages should be namespaced.</p>
 </blockquote>
 <p> Finally, messages are organized into services. A diagram of the system is provided below</p>
-<p><img src="https://drive.google.com/uc?id=1jr4UgsCG5uRFuXsGbFhVUA0iamFPpYyW"></p>
+<p><img src="https://drive.google.com/uc?id=1jr4UgsCG5uRFuXsGbFhVUA0iamFPpYyW" width="590" height="605"></p>
 <h3 id="microservices-are-software-components" class="ngc-header-link"><span header-link="microservices-are-software-components"></span>Microservices are software components</h3>
 <p>Microservices make excellent software components because they are</p>
 <ul>
@@ -284,55 +284,55 @@ Originator of the message isn't blocked, can wait for results, and handle scenar
 <dl>
 <dt>1/2: Request/response</dt>
 <dd>
-<p><img src="https://drive.google.com/uc?id=1itnx6uqidWC4KGHhXbAxLnM3ASeA4Cng"></p>
+<p><img src="https://drive.google.com/uc?id=1itnx6uqidWC4KGHhXbAxLnM3ASeA4Cng" width="577" height="220"></p>
 </dd>
 <dt>1/2: Sidewinder</dt>
 <dd>
-<p><img src="https://drive.google.com/uc?id=1Rt7AdI99__XQOo94tnmJjjIWzwq4y6Ga"></p>
+<p><img src="https://drive.google.com/uc?id=1Rt7AdI99__XQOo94tnmJjjIWzwq4y6Ga" width="494" height="161"></p>
 </dd>
 <dt>1/2: Winner-take-all</dt>
 <dd>
-<p><img src="https://drive.google.com/uc?id=1wRoqhD8Lbi339sMII3uaCuB7kT4I8Hw2"></p>
+<p><img src="https://drive.google.com/uc?id=1wRoqhD8Lbi339sMII3uaCuB7kT4I8Hw2" width="511" height="162"></p>
 </dd>
 <dt>1/2: Fire-and-forget</dt>
 <dd>
-<p><img src="https://drive.google.com/uc?id=1IjrezGbpMl2E0RVNgaIwjhH_F-9vFoIU"></p>
+<p><img src="https://drive.google.com/uc?id=1IjrezGbpMl2E0RVNgaIwjhH_F-9vFoIU" width="511" height="161"></p>
 </dd>
 <dt> 2/2: Request/react</dt>
 <dd>
 Useful when the listener is expected to take a nontrivial amount of time to complete a request.
-<p><img src="https://drive.google.com/uc?id=1h2O5nmoIFMWCCvp0JCxEvMAgjHZVM-dm"></p>
+<p><img src="https://drive.google.com/uc?id=1h2O5nmoIFMWCCvp0JCxEvMAgjHZVM-dm" width="436" height="189"></p>
 </dd>
 <dt>2/2: Batch progress reporter</dt>
 <dd>
 Similar to request/react, but a series of reaction messages announce the state of the batch process to subscribing microservices.
-<p><img src="https://drive.google.com/uc?id=1ZJocJCkpztoh6jlKUiWG7uyX2qz70NpZ"></p>
+<p><img src="https://drive.google.com/uc?id=1ZJocJCkpztoh6jlKUiWG7uyX2qz70NpZ" width="440" height="189"></p>
 </dd>
 <dt>1/n: Orchestra</dt>
 <dd>
 Orchestration microservices can remove the need for a specialist network component to perform this role.
-<p><img src="https://drive.google.com/uc?id=1jPhuUOyqoGvhZzvfbAdzIxDKfNhLiiYL"></p>
+<p><img src="https://drive.google.com/uc?id=1jPhuUOyqoGvhZzvfbAdzIxDKfNhLiiYL" width="267" height="277"></p>
 </dd><dt>1/n: Scatter/gather
 </dt><dd>
 Announce a need and collect results as they come in.
-<p><img src="https://drive.google.com/uc?id=1kznU2EIh4TsCcro0evfYsDNSHPy-3WwH"></p>
+<p><img src="https://drive.google.com/uc?id=1kznU2EIh4TsCcro0evfYsDNSHPy-3WwH" width="267" height="278"></p>
 </dd><dt>1/n: Multiversion deployment
 </dt><dd>
 Duplicate traffic and compare output across versions of a microservice.
-<p><img src="https://drive.google.com/uc?id=1YdeqyFoDHNfik_XLiljtJtF_ZjyrDwEY"></p>
+<p><img src="https://drive.google.com/uc?id=1YdeqyFoDHNfik_XLiljtJtF_ZjyrDwEY" width="267" height="278"></p>
 </dd><dt>1/n: Multi-implementation deployment</dt>
 <dd>
 Useful for A/B testing features.
-<p><img src="https://drive.google.com/uc?id=1U0H9pZmLrbpZTvUzBVaYs_1wJKyxHALx"></p>
+<p><img src="https://drive.google.com/uc?id=1U0H9pZmLrbpZTvUzBVaYs_1wJKyxHALx" width="265" height="278"></p>
 </dd>
 <dt>m/n: Choreography</dt>
 <dd>
 Typical for actions that are gated by conditions that must be met before further work can be processed.
-<p><img src="https://drive.google.com/uc?id=1kaZ57Hc4NKs9ZhCeanKGh3V463TSNJM1"></p>
+<p><img src="https://drive.google.com/uc?id=1kaZ57Hc4NKs9ZhCeanKGh3V463TSNJM1" width="585" height="185"></p>
 </dd><dt>m/n: Tree</dt>
 <dd>
 Typical for workflows with parallel choreography.
-<p><img src="https://drive.google.com/uc?id=1HNhGpoCOniqmQx4yJFYph2-K_ZWO9Kwz"></p>
+<p><img src="https://drive.google.com/uc?id=1HNhGpoCOniqmQx4yJFYph2-K_ZWO9Kwz" width="585" height="463"></p>
 </dd>
 </dl>
 <h3 id="when-messages-go-bad" class="ngc-header-link"><span header-link="when-messages-go-bad"></span>When messages go bad</h3>
@@ -419,9 +419,9 @@ A single coherent data type from the perspective of a given system domain with a
 <h4 id="using-the-system-configuration-to-control-data">Using the system configuration to control data</h4>
 <p>When data operations are represented as messages, yo can scale databases by changing the way the messages are routed. </p>
 <p>For example, the diagram below details a typical deployment sequence for replacing a database shard with zero downtime.</p>
-<p><img src="https://drive.google.com/uc?id=1_OnNt5AXcHCR3JzXlcaIJ1UiapoTGQHc"></p>
+<p><img src="https://drive.google.com/uc?id=1_OnNt5AXcHCR3JzXlcaIJ1UiapoTGQHc" width="590" height="725"></p>
 <p>Similarly, you may also want to add to scale up or remove a shard to reduce complexity. The diagram below details the deployment sequence for spliting a shard.</p>
-<p><img src="https://drive.google.com/uc?id=1cQsZrmXTNIPB7w95eC3pPWfErLiTHp_8"></p>
+<p><img src="https://drive.google.com/uc?id=1cQsZrmXTNIPB7w95eC3pPWfErLiTHp_8" width="590" height="500"></p>
 <h4 id="using-weaker-constraints-to-distribute-data">Using weaker constraints to distribute data</h4>
 <p>Traditionaly, duplicating data in a database is undesired. In a distributed system, duplicating data using strategies such as <em>denormalization</em> can lead to significant performance increases. </p>
 <dl>

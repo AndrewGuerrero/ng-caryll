@@ -2,6 +2,11 @@ import { Component, Output, EventEmitter, NgZone } from '@angular/core';
 import { PageTitleService } from '../shared/page-title.service';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Observable } from 'rxjs';
+import { SearchService } from '../shared/search.service';
+import { query } from '@angular/animations';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { SearchResultsComponent } from '../search-results/search-results.component';
 
 const SMALL_WIDTH_BREAKPOINT = 720;
 
@@ -31,6 +36,8 @@ export class NavbarComponent {
 
   constructor(
     private pageTitle: PageTitleService,
+    private searchService: SearchService,
+    private bottomSheet: MatBottomSheet,
     private zone: NgZone,
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer) {
@@ -50,5 +57,13 @@ export class NavbarComponent {
 
   isScreenSmall(): boolean {
     return this.mediaMatcher.matches;
+  }
+
+  doSearch(query: string) {
+    this.searchService.search(query).subscribe((hits) => {
+      if (hits.results.length) {
+        this.bottomSheet.open(SearchResultsComponent, { data: hits });
+      }
+    });
   }
 }

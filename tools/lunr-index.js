@@ -1,14 +1,15 @@
 const fs = require('fs');
 const glob = require('glob');
-const matter = require('gray-matter');
-const removeMd = require('remove-markdown');
 const path = require('path');
 const lunr = require('lunr');
+const sanitize = require('sanitize-html');
 
-const INPUT_DIR = 'content/**';
+const INPUT_DIR = 'src/assets/documents/**';
 const BASE_DIR = path.dirname(INPUT_DIR);
 const OUTPUT_FILE = 'src/assets/lunr/index.json';
+
 const JSON_DOC = [];
+const JSON_STORE = {};
 
 const stream = fs.createWriteStream(OUTPUT_FILE);
 readDirectory(INPUT_DIR);
@@ -28,29 +29,49 @@ function readDirectory(path) {
 }
 
 function readFile(filePath) {
-  const ext = path.extname(filePath);
-  const meta = matter.read(filePath);
-  const item = {
-    'href': '/' + filePath
-      .substring(0, filePath.lastIndexOf('.'))
-      .replace(BASE_DIR + '/', ''),
-    'title': meta.data.title,
-    'tags': meta.data.tags,
-    'content': removeMd(meta.content),
-  };
-  JSON_DOC.push(item);
+  const doc = fs.readFileSync(filePath).toString();
+  const href = '/' + filePath
+    .substring(0, filePath.lastIndexOf('.'))
+    .replace(BASE_DIR + '/', '');
+
+  const docTitle = doc.match(/<h1.*>(.*)<\/h1>/)[1];
+  const chapters = readChapters(doc);
+  chapters.forEach(chapter => {
+    const item = {
+      'href': `${href}#${chapter[0]}`,
+      'title': `${docTitle}: ${chapter[1]}`,
+      'content': sanitize(chapter[2], { allowedTags: [] }),
+    };
+    JSON_DOC.push(item);
+  });
+}
+
+function readChapters(doc) {
+  let chapters = doc.split(/<h2.*id="([\w-]+)".*>(.*)<\/h2>/);
+  chapters = chapters.slice(chapters.length % 3, chapters.length);
+  chapters = chapters.reduce((result, value, index, array) => {
+    if (index % 3 === 0) {
+      result.push(array.slice(index, index + 3));
+    }
+    return result;
+  }, []);
+
+  return chapters;
 }
 
 function writeIndex() {
   const index = lunr(function () {
     this.ref('href');
     this.field('title', { boost: 10 });
-    this.field('tags', { boost: 2 });
     this.field('content');
 
     JSON_DOC.forEach(function (doc) {
       this.add(doc);
+      JSON_STORE[doc.href] = { title: doc.title };
     }, this);
   });
-  stream.write(JSON.stringify(index));
+  stream.write(JSON.stringify({
+    index: index.toJSON(),
+    store: JSON_STORE,
+  }));
 }

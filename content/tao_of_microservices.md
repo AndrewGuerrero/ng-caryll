@@ -1,10 +1,3 @@
----
-title: The Tao of Microservices
-tags: 
-- architecture
-- microservices
----
-
 # The Tao of Microservices
 
 ##  Chapter 1: Brave new World

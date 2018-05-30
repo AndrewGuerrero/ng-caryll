@@ -10,6 +10,7 @@
     <mat-icon *ngIf="!isScreenSmall()" class="ngc-logo" svgIcon="eye" matTooltip="{{eyeIconMessage}}"></mat-icon>
     <h1 *ngIf="!isScreenSmall()">{{title}}</h1>
     <div class="flex-spacer"></div>
+    <ngc-search-box (onSearch)="doSearch($event)" (onFocus)="doSearch($event)"></ngc-search-box>
     <ngc-theme-toggle class="theme-toggle"></ngc-theme-toggle>
   </mat-toolbar-row>
 </mat-toolbar>

@@ -1,14 +1,10 @@
 @import '../../styles/constants';
 
-$sidenav-width: 240px;
-
 .ngc-nav {
   top: 25px;
   padding-top: 20px;
 
   .ngc-nav-content {
-    margin: 15px;
-    width: $sidenav-width;
     max-height: 75vh;
     overflow: auto;
 

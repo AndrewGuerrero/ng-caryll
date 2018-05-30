@@ -6,7 +6,10 @@
   $foreground: map-get($theme, foreground);
 
   .ngc-toc-container {
+
+    .ngc-toc-list {
     border-left: solid 4px mat-color($primary);
+    }
 
     .ngc-link {
       color: mat-color($foreground, secondary-text);
