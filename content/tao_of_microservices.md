@@ -1,5 +1,7 @@
 # The Tao of Microservices
 
+*2018 Richard Rodger*
+
 ##  Chapter 1: Brave new World
 
 Software development is an art. It isn't predictable enough to be engineering. It isn't rigorous enough to be science.

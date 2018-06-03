@@ -1,4 +1,6 @@
-# Effective Cpp
+# Effective C++
+
+*2005 Scott Meyers*
 
 ## Accustoming Yourself to C++
 

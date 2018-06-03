@@ -37,6 +37,8 @@ import { SearchService } from './shared/search.service';
 import { CARYLL_ROUTES } from './routes';
 import { SearchBoxComponent } from './search-box/search-box.component';
 import { SearchResultsComponent } from './search-results/search-results.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -65,7 +67,8 @@ import { SearchResultsComponent } from './search-results/search-results.componen
     MatInputModule,
     MatBottomSheetModule,
     RouterModule.forRoot(CARYLL_ROUTES),
-    HttpClientModule
+    HttpClientModule,
+    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     DocumentationItemsService,

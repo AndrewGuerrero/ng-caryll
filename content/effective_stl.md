@@ -1,5 +1,7 @@
 # Effective STL
 
+*2008 Scott Meyers*
+
 ## Containers
 
 ### Item 1: Choose your containers with care

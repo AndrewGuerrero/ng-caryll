@@ -1,5 +1,7 @@
 # More Effective C++
 
+*1996 Scott Meyers*
+
 ## Basics
 
 ### Item 1: Distinguish between pointers and references

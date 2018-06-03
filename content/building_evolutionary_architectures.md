@@ -1,5 +1,7 @@
 # Building Evolutionary Architectures
 
+*2017 Neal Ford, Rebecca Parsons, Patrick Kua*
+
 ## Software Architecture
 
 <dl>

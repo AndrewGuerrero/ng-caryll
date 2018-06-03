@@ -1,0 +1,50 @@
+{
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/*.bundle.css",
+          "/*.bundle.js",
+          "/*.chunk.js",
+          "assets/js/**"
+        ]
+      }
+    },
+    {
+      "name": "prefetch-assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/documents/**",
+          "/assets/lunr/index.json"
+        ]
+      }
+    },
+    {
+      "name": "lazy-assets",
+      "installMode": "lazy",
+      "resources": {
+        "files": [
+          "/assets/img/**"
+        ]
+      }
+    },
+    {
+      "name": "static-assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "urls": [
+          "https://fonts.googleapis.com/icon?family=Material+Icons",
+          "https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono"
+        ]
+      }
+    }
+  ]
+}
