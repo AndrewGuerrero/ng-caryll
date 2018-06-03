@@ -2,7 +2,11 @@
   .hljs {
     display: block;
     overflow-x: auto;
-    padding: 0.5em;
+    padding: 1em;
+    -webkit-font-smoothing: antialiased;
+    text-size-adjust: 100%;
+    font: 300 100%/1 Roboto Mono,monospace;
+    font-size: 14px;
   }
   
   .hljs,

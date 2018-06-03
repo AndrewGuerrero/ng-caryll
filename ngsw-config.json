@@ -10,8 +10,7 @@
           "/index.html",
           "/*.bundle.css",
           "/*.bundle.js",
-          "/*.chunk.js",
-          "assets/js/**"
+          "/*.chunk.js"
         ]
       }
     },
@@ -22,6 +21,7 @@
       "resources": {
         "files": [
           "/assets/documents/**",
+          "/assets/js/**",
           "/assets/lunr/index.json"
         ]
       }
