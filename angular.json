@@ -19,7 +19,7 @@
             "assets": [
               "src/assets",
               "src/favicon.ico",
-              "src/app/shared/search-worker.js"
+              "src/assets/js/search-worker.js"
             ],
             "styles": [
               {
@@ -80,7 +80,7 @@
             "assets": [
               "src/assets",
               "src/favicon.ico",
-              "src/app/shared/search-worker.js"
+              "src/assets/js/search-worker.js"
             ]
           }
         },

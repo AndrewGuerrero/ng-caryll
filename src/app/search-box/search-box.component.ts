@@ -19,7 +19,7 @@ export class SearchBoxComponent implements OnInit {
 
   ngOnInit() {
     if ('Worker' in window) {
-      this.searchSevice.initWorker('app/shared/search-worker.js', 2000);
+      this.searchSevice.initWorker('assets/js/search-worker.js', 2000);
     }
   }
 
