@@ -47,7 +47,7 @@ function readFile(filePath) {
 }
 
 function readChapters(doc) {
-  let chapters = doc.split(/<h2.*id="([\w-]+)".*>(.*)<\/h2>/);
+  let chapters = doc.split(/<h(?:2|3).*id="([\w-]+)".*\/span>(.*)<\/h(?:2|3)>/);
   chapters = chapters.slice(chapters.length % 3, chapters.length);
   chapters = chapters.reduce((result, value, index, array) => {
     if (index % 3 === 0) {

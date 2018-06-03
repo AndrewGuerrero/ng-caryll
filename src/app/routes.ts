@@ -4,10 +4,11 @@ import { DocumentViewerComponent } from './document-viewer/document-viewer.compo
 
 
 export const CARYLL_ROUTES: Routes = [
-  {
-    path: '', component: SidenavComponent,
-    children: [
-      { path: ':id', component: DocumentViewerComponent, pathMatch: 'full' }
-    ]
-  }
+   { path: '', redirectTo: 'building_evolutionary_architectures', pathMatch: 'full' },
+   {
+      path: '', component: SidenavComponent,
+      children: [
+         { path: ':id', component: DocumentViewerComponent, pathMatch: 'full' }
+      ]
+   }
 ];

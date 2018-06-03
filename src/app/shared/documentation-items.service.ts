@@ -10,12 +10,27 @@ const DOCS: DocItem[] = [
   {
     id: 'building_evolutionary_architectures',
     name: 'Building Evolutionary Architectures',
-    theme: "purple",
+    theme: 'purple',
+  },
+  //  {
+  //    id: 'tao_of_microservices',
+  //    name: 'The Tao of Microservices',
+  //    theme: 'green',
+  //  },
+  {
+    id: 'effective_cpp',
+    name: 'Effective Cpp',
+    theme: 'red',
   },
   {
-    id: 'tao_of_microservices',
-    name: 'The Tao of Microservices',
-    theme: "green",
+    id: 'more_effective_cpp',
+    name: 'More Effective Cpp',
+    theme: 'orange',
+  },
+  {
+    id: 'effective_stl',
+    name: 'Effective STL',
+    theme: 'yellow',
   },
 ];
 

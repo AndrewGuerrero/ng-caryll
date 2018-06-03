@@ -15,6 +15,7 @@
   .ngc-markdown blockquote {
     background: mat-color($background, card);
     @include mat-elevation(2);
+
     .ngc-markdown code {
       background: transparent;
     }
@@ -22,5 +23,9 @@
 
   .ngc-markdown blockquote {
     border-left: solid 8px mat-color($primary);
+
+    pre {
+      @include mat-elevation(0);
+    }
   }
 }

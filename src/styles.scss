@@ -24,9 +24,6 @@
 
 @include mat-core();
 
-  @include angular-material-theme($light-purple-theme);
-  @include ng-caryll-app-theme($light-purple-theme);
-  @include hljs-gruvbox-light();
 
 .dark-aqua-theme {
   @include angular-material-theme($dark-aqua-theme);
@@ -91,6 +88,12 @@
 .light-orange-theme {
   @include angular-material-theme($light-orange-theme);
   @include ng-caryll-app-theme($light-orange-theme);
+  @include hljs-gruvbox-light();
+}
+
+.light-purple-theme {
+  @include angular-material-theme($light-purple-theme);
+  @include ng-caryll-app-theme($light-purple-theme);
   @include hljs-gruvbox-light();
 }
 

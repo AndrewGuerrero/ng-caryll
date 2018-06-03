@@ -3,7 +3,7 @@ import { Title } from '@angular/platform-browser';
 
 @Injectable()
 export class PageTitleService {
-  _title = 'NgCaryll';
+  _title = 'Caryll';
 
   get title(): string { return this._title; }
 
@@ -12,7 +12,7 @@ export class PageTitleService {
     if (title !== '') {
       title = `${title} | `;
     } else {
-      this._title = 'Ng-Caryll';
+      this._title = 'Caryll';
     }
     this.bodyTitle.setTitle(`${title}Caryll`);
   }

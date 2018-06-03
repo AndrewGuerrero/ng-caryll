@@ -1,2 +1,520 @@
-<div class="ngc-markdown"><h1 id="building-evolutionary-architectues">Building Evolutionary Architectues</h1>
-<p>This is a placeholder.</p></div>
+<div class="ngc-markdown"><h1 id="building-evolutionary-architectures">Building Evolutionary Architectures</h1>
+<h2 id="software-architecture" class="ngc-header-link"><span header-link="software-architecture"></span>Software Architecture</h2>
+<dl>
+<dt>Evolutionary Architecture</dt>
+<dd>
+Software architecture that supports guided, incremental change across multiple dimensions.
+</dd>
+<h3 id="guided-change" class="ngc-header-link"><span header-link="guided-change"></span>Guided Change</h3>
+<dl>
+  <dt>Fitness Function</dt>
+  <dd>
+  An objective integrity assessment of some architectural characteristics.
+  </dd>
+  <dt>Dimension</dt>
+  <dd>
+  Dimensions are absract nouns such as: security, agility, readability, scalability, etc.
+  </dd>
+</dl>
+<h3 id="multiple-architectural-dimensions" class="ngc-header-link"><span header-link="multiple-architectural-dimensions"></span>Multiple Architectural Dimensions</h3>
+<p>Rather than a single concept, architecture is formed from both requirements and <em>dimensions</em>, each
+protected by <em>fitness functions</em>. Common categories for dimensions found in modern software architectures
+include:</p>
+<ul>
+<li><strong>Technical:</strong> The implementation parts of the architecture: the frameworks, dependent libraries, and
+implementation languages.</li>
+<li><strong>Data:</strong> Database schema, table layouts, optimization planning, etc. The database administrator generally
+handles this type of architecture.</li>
+<li><strong>Security:</strong> Defines security policies, guidelines, and specifies tools to help uncover deficiencies.</li>
+<li><strong>Operational/System:</strong> Concerns how the architecture maps to existing physical and/or virtual
+infrastructure: servers, machine clusters, switches, cloud resources, and so on.</li>
+</ul>
+<h3 id="conways-law" class="ngc-header-link"><span header-link="conways-law"></span>Conway's Law</h3>
+<blockquote>
+<p>Organizations which design systems... are constrained to produce designs which are copies of the communication
+structures of these organizations.  <em>--Melvin Conway</em> </p>
+</blockquote>
+<p>In other words, its hard for a person to change something if that thing is owned by someone else. </p>
+<blockquote>
+<p>Structure teams to look like your target architecture, and it will be easier to achieve it.</p>
+</blockquote>
+<h2 id="fitness-functions" class="ngc-header-link"><span header-link="fitness-functions"></span>Fitness Functions</h2>
+<p><em>Dimensions</em> are not always orthogonal. It is likely impossible to fully optimize an architecture and the
+architect will be forced to make a trade-off. In these situations it is necessary to consider <em>system-wide
+fitness function</em>s.</p>
+<dl>
+  <dt>System-wide Fitness Function</dt>
+  <dd>
+  A set of guidelines used to compare a collection of <i>fitness function</i>s against one another.
+  </dd>
+</dl>
+<h3 id="categories" class="ngc-header-link"><span header-link="categories"></span>Categories</h3>
+<dl>
+  <dt>Atomic</dt>
+  <dd>
+  Run against a singular context and exercise one particular dimension of the architecture.
+  </dd>
+  <dt>Holistic</dt>
+  <dd>
+  Run against a shared context and exercise a combination of architectural dimensions.
+  </dd>
+  <dt>Triggered</dt>
+  <dd>
+  Run based on a particular event.
+  </dd>
+  <dt>Continual</dt>
+  <dd>
+  Run constantly.
+  </dd>
+  <dt>Temporal</dt>
+  <dd>
+  Run on a scheduled basis.
+  </dd>
+  <dt>Static</dt>
+  <dd>
+  Result relies on a fixed enumeration.
+  </dd>
+  <dt>Dynamic</dt>
+  <dd>
+  Result relies on a shifting definition based on extra content.
+  </dd>
+  <dt>Automated</dt>
+  <dd>
+  Run without reliance on human interaction.
+  </dd>
+  <dt>Manual</dt>
+  <dd>
+  Run with reliance on human interaction.
+  </dd>
+  <dt>Intentional</dt>
+  <dd>
+  Created during project inception.
+  </dd>
+  <dt>Emergent</dt>
+  <dd>
+  Created during project development.
+  </dd>
+  <dt>Domain-specific</dt>
+  <dd>
+  Created because your project is a special snowflake.
+  </dd>
+</dl>
+<h3 id="identify-fitness-functions-early" class="ngc-header-link"><span header-link="identify-fitness-functions-early"></span>Identify Fitness Functions Early</h3>
+<p><em>Dimensions</em> can be classified into three simple categories to distinguish priority:</p>
+<ul>
+<li><strong>Key</strong>: These dimensions are critical in making technology or design choices.</li>
+<li><strong>Relevant</strong>: These dimensions are considered at the feature level, but are unlikely to guide architecture
+choices.</li>
+<li><strong>Not relevant</strong>: Design and technology choices are not impacted by these dimensions.</li>
+</ul>
+<p>Teams that do not identify their <em>fitness function</em>s face the following risks:</p>
+<ul>
+<li>Making the wrong design choices that ultimately lead to building software that fails in its environment.</li>
+<li>Making design choices that cost time and/or money but are unnecessary.</li>
+<li>Not being able to evolve the system easily in the future when the environment changes.</li>
+</ul>
+<h3 id="review-fitness-functions" class="ngc-header-link"><span header-link="review-fitness-functions"></span>Review Fitness Functions</h3>
+<p><em>Fitness functions</em> must evolve with the architecture. Key events in a lifetime of a business should warrant a
+review.</p>
+<p>A review should include:</p>
+<ul>
+<li>Reviewing existing <em>fitness function</em>s</li>
+<li>Checking the relevancy of the current <em>fitness function</em>s</li>
+<li>Determining change in scale or magnitude of each <em>fitness function</em> </li>
+<li>Deciding if there are better approaches for measuring or testing the system's <em>fitness function</em>s</li>
+<li>Discovering new <em>fitness function</em>s that the system might need to support</li>
+</ul>
+<blockquote>
+<p>Review your <em>fitness function</em>s at least once a year</p>
+</blockquote>
+<h2 id="engineering-incremental-change" class="ngc-header-link"><span header-link="engineering-incremental-change"></span>Engineering Incremental Change</h2>
+<p><em>Incremental change</em> can be bifurcated into two aspects:</p>
+<ul>
+<li><strong>Development</strong>: How developers build software.</li>
+<li><strong>Operation</strong>: How teams deploy software.</li>
+</ul>
+<h3 id="development" class="ngc-header-link"><span header-link="development"></span>Development</h3>
+<p>We live in a 4D world. Thus, when an architect models an architecture in 2D using boxes and arrows, that
+architect is only merely taking the first step. Once the design is proven in a real environment using real
+software, the model becomes 3D. Finally, once the architecture withstands upgrade and inevitable change, the
+model becomes 4D.</p>
+<blockquote>
+<p>Architecture is abstract until operationalized, when it becomes a living thing.</p>
+</blockquote>
+<h4 id="testablility">Testablility</h4>
+<p>Prefer building tests and metrics to catch architecture violations over using strict development guidelines (and
+bureaucratic scolding).</p>
+<blockquote>
+<p>Dependency analysis tools like <a href="https://github.com/clarkware/jdepend">JDepend</a> can help control the coupling
+between components.</p>
+</blockquote>
+<h3 id="operation" class="ngc-header-link"><span header-link="operation"></span>Operation</h3>
+<dl>
+  <dt>Deployment Pipeline</dt>
+  <dd>
+  Continuous integration is a well-known agile practice that encourages developers to integrate as early as 
+  possible. A deployment pipeline broadens the scope of this practice to verify production readiness including
+  the application of <em>fitness function</em>s.
+  </dd>
+</dl>
+<blockquote>
+<p>Open source tools like <a href="https://www.go.cd">GoCD</a> facilitate building deployment pipelines.</p>
+<p>A typical deployment pipeline builds the deployment environment in a container like
+<a href="https://www.docker.com">Docker</a> or a bespoke environment generated by a tool like
+<a href="https://puppet.com">Puppet</a> or <a href="https://www.chef.io/chef">Chef</a>.</p>
+</blockquote>
+<h4 id="conflicting-goals">Conflicting goals</h4>
+<p>The sooner a developer can detect problems, the less effort is
+required to fix them. One of the side effects of broadly considering all the dimensions in software architecture
+is the early identification of goals that conflict across dimensions.</p>
+<p>Using architecture dimensions as a technique for identifying portions of concern in architecture (plus fitness
+functions to evaluate them) allows an apples-to-apples comparison, making the prioritization exercise more
+informed.</p>
+<h4 id="hypothesis--and-data-driven-development">Hypothesis- and Data-Driven Development</h4>
+<dl>
+  <dt>Data-driven development</dt>
+  <dd>
+  Allow data to drive change and focus efforts on technical change.
+  </dd>
+  <dt>Hypothesis-driven development</dt>
+  <dd>
+  Use the scientific method on features. State a feature as a hypothesis, run experiments via A/B testing and 
+  measure user decisions to inform whether the feature is beneficial or not.
+  </dd>
+</dl>
+<p>Agile development software methodologies incorperate nested feedback loops such as testing, continuous
+integration, iterations, etc. Yet, feedback loops that incorporate the ultimate users of the application have
+eluded teams. Hypothesis-Driven Development is a way to silently collect important feature-driving data without
+annoying users with surveys.</p>
+<h4 id="case-studies">Case Studies</h4>
+<ul>
+<li><a href="http://githubengineering.com/move-fast/">Github: Move Fast and Fix Things</a> - Github has long used a shell
+script wrapped around command-line Git to handle merges. To address scalability, the script was replaced with
+<code>libgit2</code>. To address technical debt, GitHub open sourced <a href="https://github.com/github/scientist">Scientist</a>,
+a framework that provides holistic, continual testing to vet changes to code.</li>
+<li><a href="http://www.radiolab.org/story/trust-engineers/">Facebook: The Trust Engineers</a> - In the week between Christmas
+2013 and New Year's Day 2014 more than a million photos were flagged as offensive. There was not enough staff to
+review the photos. To solve the issue, Facebook had to perform experiments on users to determine why so many
+photos were flagged as offensive. Turns out, a lot of the offensive photos were false positives due to quirks
+of human psychology.</li>
+<li><a href="http://bit.ly/hypothesis-driven-ux-design">mobile.de: Hypothesis driven UX design</a> - mobile.de created three
+distinct user interfaces and let the customers decide which design to go with.</li>
+</ul>
+<h2 id="architectural-coupling" class="ngc-header-link"><span header-link="architectural-coupling"></span>Architectural Coupling</h2>
+<dl>
+  <dt>Module</dt>
+  <dd>
+  Logical grouping
+  </dd>
+  <dt>Component</dt>
+  <dd>
+  Physical partition
+  </dd>
+  <dt>Quantum</dt>
+  <dd>
+  Smallest deployable unit that includes all the facilities required to function, including data.
+</dd></dl>
+<p><img src="https://drive.google.com/uc?id=1ZZTuZPNES8vdvtG-UhN57lA7A4jCMrEl" width="444" height="474"></p>
+<h3 id="evolvability-of-architectural-styles" class="ngc-header-link"><span header-link="evolvability-of-architectural-styles"></span>Evolvability of Architectural Styles</h3>
+<h4 id="big-ball-of-mud">Big Ball of Mud</h4>
+<p>Anti-pattern. Change is difficult and expensive because every part depends on every other part.</p>
+<h4 id="unstructured-monolith">Unstructured Monolith</h4>
+<p><img src="https://drive.google.com/uc?id=1FmlNio4Wy_lPjr5hqP5wFNTtsNSYV3SG" width="444" height="515"></p>
+<p>Lack of structure means that its only a matter of time before this architecture degenerates into a Big Ball of
+Mud.</p>
+<h4 id="layered-monolith">Layered Monolith</h4>
+<p><img src="https://drive.google.com/uc?id=16jqIG2QXQ4AVVmmxyxd3o8Va1oQeBGjR" width="428" height="358"></p>
+<p>Layers provide <em>isolation</em> and <em>separation of concerns</em>. Low coupling between layers makes each layer easier to
+test in isolation.
+High coupling exists between components within the layer.</p>
+<h4 id="modular-monolith">Modular Monolith</h4>
+<p><img src="https://drive.google.com/uc?id=1uK9SIvJTzS7azyOAtLP21V1Fch4UlXcz" width="444" height="536"></p>
+<p>Requires good discipline regarding coupling to prevent degeneration into a Big Ball of Mud. The degree of
+deployability of the components determines the rate of incremental change.</p>
+<h4 id="microkernel-monolith">Microkernel Monolith</h4>
+<p><img src="https://drive.google.com/uc?id=1lD6qEkiHCE0iLuWXM5RZT6obGG0TNNzC" width="382" height="203"></p>
+<p>Core is stable so that future development comes in the form of plugins. Semantic coupling between plugins and the
+core can become challenging evolve. If plugins become dependent on other plugins, coupling becomes even more
+challenging. Holistic fitness functions should be used to ensure contract and message consistency.</p>
+<h4 id="broker-event-driven">Broker Event-Driven</h4>
+<p><img src="https://drive.google.com/uc?id=10L0xh4Xx3aGSiJ9ZJDBG-XBuUclIdO-_" width="680" height="625"></p>
+<p>Provides very low coupling between modules. This makes atomic <em>fitness function</em>s easy to develop but, in
+exchange, holistic <em>fitness function</em>s become harder to develop. </p>
+<h4 id="mediator-event-driven">Mediator Event-Driven</h4>
+<p><img src="https://drive.google.com/uc?id=1c6X3LPCe8nMl8eSqAaW7T3Il604SgO2M" width="665" height="456"></p>
+<p>Compared to the Broker, the mediator makes creating holistic <em>fitness function</em>s easier at the expense of reduced
+coupling.</p>
+<h4 id="esb-driven-soa">ESB-driven SOA</h4>
+<p><img src="https://drive.google.com/uc?id=1hE0fcinLZgxO6Rg5T-kT5kfEOYVgFCe2" width="429" height="409"></p>
+<p>ESB-driven SOA takes code reuse to the point of abuse. Common changes require large amounts or coordination.
+Atomic <em>fitness function</em>s are almost impossible to create, forcing all testing to be holistic. ESB-driven SOA
+is unsuitable for evolution.</p>
+<h4 id="microservices-soa">Microservices SOA</h4>
+<p><img src="https://drive.google.com/uc?id=1ytCc5bpBcucJZx_QS4r_Y73JXSKgBZa1" width="714" height="439"></p>
+<p>Each service is physically separate allowing for maximal decoupling and evolution potential. Atomic and holistic
+<em>fitness function</em>s are easy to create and critical to the success of the architecture. Recent advancements in
+the deployment pipeline make this architecture possible.</p>
+<h4 id="serverless-service-based">Serverless Service-Based</h4>
+<p><img src="https://drive.google.com/uc?id=1ByRYxxwBdYyAC-vkucALgSK8aoJyOy5x" width="569" height="282"></p>
+<p>Shares many evolutionary similarities with the Microservices architecture. Serverless architectures are capable
+of eliminating entire dimensions away from concern. Holistic <em>fitness function</em> are critical to maintaining
+consistency between services.</p>
+<blockquote>
+<p>Make sure your architecture matches the problem domain. Don't try to force fit an unsuitable architecture.</p>
+<p>The smaller your architectural quanta, the more evolvable your architecture will be.</p>
+</blockquote>
+<h2 id="evolutionary-data" class="ngc-header-link"><span header-link="evolutionary-data"></span>Evolutionary Data</h2>
+<p>The key to evolving database design lies in evolving schemas alongside code.</p>
+<h3 id="shared-database-integration" class="ngc-header-link"><span header-link="shared-database-integration"></span>Shared Database Integration</h3>
+<p>When multiple applications share the same relational database, it becomes tougher to evolve the database due to
+breaking changes. The <em>expand/contract pattern</em> is a common technique to avoid timing problems.</p>
+<dl>
+  <dt>Expand/contract pattern</dt>
+  <dd>
+  Support both schemas for a period of time while all dependent applications migrate to the new schema. when 
+  ready, remove support for the old schema.
+  </dd>
+</dl>
+<h3 id="inappropriate-data-coupling" class="ngc-header-link"><span header-link="inappropriate-data-coupling"></span>Inappropriate Data Coupling</h3>
+<p>While systems typically cannot avoid database transactions, architects should try to limit transactional contexts
+as much as possible because they form a tight coupling knot with the code.</p>
+<blockquote>
+<p>Database transactions act as a strong nuclear force, binding quanta together.</p>
+</blockquote>
+<h3 id="age-and-quality-of-data" class="ngc-header-link"><span header-link="age-and-quality-of-data"></span>Age and Quality of data</h3>
+<p>Keeping legacy data around encourages poor structuring which becomes increasing difficult to refactor as the
+codebase continues to evolve.</p>
+<blockquote>
+<p>Refusing to refactor schemas or eliminate old data couples your architecture to the past.</p>
+</blockquote>
+<h2 id="building-evolvable-architectures" class="ngc-header-link"><span header-link="building-evolvable-architectures"></span>Building Evolvable Architectures</h2>
+<p>Evolutionary architecture can be realized in three steps:</p>
+<ol>
+<li><strong>Identify Dimensions Affected by Evolution</strong>: Be sure to involve all interested teams within the organization.
+Keep a living document (such as a wiki) as documentation on which dimensions deserve ongoing attention.</li>
+<li><strong>Define Fitness Function(s) for Each Dimension</strong>: For each dimension, decide what parts may exhibit
+undesirable behavior when evolving, eventually defining <em>fitness function</em>s. Ingenuity is necessary.</li>
+<li><strong>Use Deployment Pipelines to Automate Fitness Functions</strong>: Define stages in the pipeline to apply <em>fitness
+function</em>s and deployment practices. Keep an eye on <em>Cycle Time</em> since it is proportional to the velocity of
+new generations appearing in an architecture.</li>
+</ol>
+<h3 id="retrofitting-existing-architecture" class="ngc-header-link"><span header-link="retrofitting-existing-architecture"></span>Retrofitting Existing Architecture</h3>
+<h4 id="appropriate-coupling-and-cohesion">Appropriate Coupling and Cohesion</h4>
+<p>Component coupling largely determines the evolvability of an architecture. </p>
+<p>Functional cohesion determines the ultimate granularity of restructured components. Taking decoupling to the
+extreme will jeopardize cohesion.</p>
+<blockquote>
+<p>Understand the business problem before choosing an architecture.</p>
+</blockquote>
+<h4 id="engineering-practices">Engineering Practices</h4>
+<ul>
+<li>Continuous delivery and continuous integration are essential for evolution. </li>
+<li>Manual stages in the pipeline are perfectly okay. Incrementally work towards automating them as needed.</li>
+<li>The biggest common impediment to building evolutionary architecture is intractable operations.</li>
+</ul>
+<h4 id="fitness-functions-1">Fitness Functions</h4>
+<p>Fitness functions allow equal treatment for formerly disparate concerns; any architectural verification is
+considered a fitness function.</p>
+<h3 id="migrating-architectures" class="ngc-header-link"><span header-link="migrating-architectures"></span>Migrating Architectures</h3>
+<h4 id="migration-steps">Migration steps</h4>
+<p>A common direction of migration is from monolithic to service-based architectures. When decomposing a monolithic
+architecture, finding service granularity that maximizes cohesion is key.</p>
+<blockquote>
+<p>Don't build an architecture just because it will be fun meta-work.</p>
+</blockquote>
+<h4 id="evolving-module-interactions">Evolving Module Interactions</h4>
+<p>For monolithic architectures, its common for a collection of modules to share another module.</p>
+<p><img src="https://drive.google.com/uc?id=1LHkyVWLFmXtpjCgREjNF1XZeGh6DEJ31" width="238" height="133"></p>
+<p>When migrating to a service-based architecture sharing modules introduces a kind of coupling that is strongly
+discouraged. If the developer is lucky, the module can be cleanly split down the middle.</p>
+<p><img src="https://drive.google.com/uc?id=1q-LEY5GaMLOY-Sn3bxEAD1PlhLVH_VAU" width="300" height="212"></p>
+<p>Otherwise, the module should be duplicated.</p>
+<p><img src="https://drive.google.com/uc?id=1nynBFLMiYKljef0oWnj9AUiFtwD88I-M" width="238" height="216"></p>
+<h3 id="guidelines-for-building-evolutionary-architectures" class="ngc-header-link"><span header-link="guidelines-for-building-evolutionary-architectures"></span>Guidelines for Building Evolutionary Architectures</h3>
+<ul>
+<li>
+<p><strong>Remove needless variability:</strong> Keep unknowns under as much control as possible by making changeable parts
+constants that can be changed by your will.</p>
+</li>
+<li>
+<p><strong>Make decisions reversible:</strong> Evolvability involves dealing with the unknown. Wherever possible, be able to go
+back should failure occur.</p>
+</li>
+<li>
+<p><strong>Prefer evolvable over predictable:</strong> Evolvability and the underlying agile processes it entails were born
+from the need to recover from unknown unknowns.</p>
+</li>
+<li>
+<p><strong>Build anticorruption layers:</strong> Provide a layer of insulation around components not under your control. This
+means wrapping a third party library in an abstraction layer. When the time comes, it should be easy to abandon
+the third party library, possibly swapping it out for another.</p>
+</li>
+<li>
+<p><strong>Build sacrificial architectures:</strong> Growth, a side-effect of success, empirically dictates an inevitable need
+to throw away perfectly functioning code. Building sacrificial architecture means employing good engineering
+practices, like <em>anticorruption layers</em>, to mitigate the pains of migrating.</p>
+</li>
+<li>
+<p><strong>Mitigate external change:</strong> Set up an internal version-control repository to act as a third-party component
+store, and treat changes from the outside world as pull requests to that repository. For each pull request,
+the deployment pipeline performs a build and smoke test on the affected applications. Upon success, the
+change can be allowed into the ecosystem.</p>
+</li>
+<li>
+<p><strong>Updating libraries versus frameworks:</strong> Frameworks call you code whereas your code calls a library. Due to
+these differences in coupling, strive to update framework dependencies aggressively and update libraries
+passively.</p>
+</li>
+<li>
+<p><strong>Prefer continuous delivery to snapshots:</strong> Developers should introduce two designations for external
+dependencies: <em>fluid</em> and <em>guarded</em>. <em>Fluid</em> dependencies should always try to automatically update themselves.
+If the deployment pipeline encounters a problem, the dependency is updated to <em>guarded</em> meaning it cannot be
+updated further. Once a developer determines and fixes the problem, the dependency goes back to <em>fluid</em>.</p>
+</li>
+<li>
+<p><strong>Version services internally:</strong> Severely limit the number of supported versions. The more versions, the
+engineering burden. Strive to support only two versions at a time, and only temporarily.</p>
+</li>
+</ul>
+<h3 id="case-studies-1" class="ngc-header-link"><span header-link="case-studies-1"></span>Case Studies</h3>
+<ul>
+<li>
+<p><a href="http://chadfowler.com/2013/06/23/immutable-deployments.html">Trash Your Servers and Burn Your Code: Immutable Infrastructure and Disposable Components</a> -
+Reliance on handcrafted DevOps infrastructure is a good example of <em>needless variability</em>. The solution in this
+article, coined immutable infrastructure, sounds like the opposite of evolvable. That's because its a needless
+variable.</p>
+</li>
+<li>
+<p><a href="http://dougseven.com/2014/04/17/knightmare-a-devops-cautionary-tale">Knightmare: A DevOps Cautionary Tale</a> -
+Another example of <em>removing needless variability</em> applied to the deployment pipeline in a automation scenario
+where a toggle feature didn't completely toggle.</p>
+</li>
+<li>
+<p><a href="https://martinfowler.com/bliki/SacrificialArchitecture.html">Sacrifical Architecture</a> - Formal definition of
+<em>sacrificial architecture</em> formulated from studying the actions of eBay and Google.</p>
+</li>
+</ul>
+<h2 id="evolutionary-architecture-pitfalls-and-antipatterns" class="ngc-header-link"><span header-link="evolutionary-architecture-pitfalls-and-antipatterns"></span>Evolutionary Architecture Pitfalls and Antipatterns</h2>
+<dl>
+  <dt>Antipattern</dt>
+  <dd>
+  Looks like a good idea, but in hindsight turns out to be a mistake.
+  </dd>
+  <dt>Pitfall</dt>
+  <dd>
+  Looks like a good idea, but immediately turns out to be a mistake.
+  </dd>
+</dl>
+<h3 id="antipatterns" class="ngc-header-link"><span header-link="antipatterns"></span>Antipatterns</h3>
+<dl>
+  <dt>Vendor King</dt>
+  <dd>
+  An architecture built around a vendor product that pathologically couples the organization to a tool. Avoid 
+  vendor kings. If unavoidable, treat the vendor king as an integration point, making it easy to dethrone the 
+  king.
+  </dd>
+  <dt>Last 10% Trap</dt>
+  <dd>
+  A tool, framework, or specialized language that while easy to use, only takes you 90% of the way to the 
+  providing all solutions to all of the clients needs. General purpose languages don't suffer from this 
+  antipattern.
+  </dd>
+  <dt>Code Reuse Abuse</dt>
+  <dd>
+  Code reuse introduces more coupling to the code as it gets reused. Once the coupling points conflict with the 
+  goals of the architecture, code reuse becomes a liability. At that time, break the coupling by forking or 
+  duplication. Fitness function should be able to evaluate when that time comes.
+  </dd>
+  <dt>Inappropriate Governance</dt>
+  <dd>
+  A governance model that values a single technology stack that is overly complex because it tries to solve all 
+  the problems. Instead, split the problems up and use a technology stack that is most suitable for solving each 
+  problem.
+  </dd>
+  <dt>Reporting</dt>
+  <dd>
+  A good example of inadvertent coupling is when architects want to use the same database schema for both system
+  of record and reporting, but encounter problems because a design for both is optimized for neither. To avoid 
+  conflicting business goals, keep reporting as isolated as possible.
+  </dd>
+</dl>
+<h3 id="pitfalls" class="ngc-header-link"><span header-link="pitfalls"></span>Pitfalls</h3>
+<dl>
+  <dt>Leaky Abstractions</dt>
+  <dd>
+  A breaking abstraction at a low level causes unexpected havoc. This is a side effect of increasing complexity
+  in the technology stack. Understand the fragile places within your complex technology stack and automate 
+  protections via fitness functions.
+  </dd>
+  <dt>Resume-Driven Development</dt>
+  <dd>
+  Utilizing every framework and library possible to tout that knowledge on a resume. Remember, you are trying to 
+  solve a problem, not play with shiny new toys.
+  </dd>
+  <dt>Lack of Speed to Release</dt>
+  <dd>
+  The velocity of a company is proportional to its cycle time. Developers cannot evolve the system any faster
+  than the projects cycle time. Good engineering, deployment, and release practices are critical to success with
+  an evolutionary architecture.
+  </dd>
+  <dt>Product Customization</dt>
+  <dd>
+  Customization software comes at a cost. Thought not to be discouraged, customization does impede evolvability so
+  it is important to realistically assess the associated costs.
+  </dd>
+  <dt>Planning Horizons</dt>
+  <dd>
+  The more time and/or effort put into something, the harder it becomes to abandon it. Beware of long planning
+  cycles that force architects into irreversible decisions.
+</dd></dl>
+<h3 id="case-study" class="ngc-header-link"><span header-link="case-study"></span>Case Study</h3>
+<ul>
+<li><a href="http://www.drdobbs.com/ibms-san-francisco-project/184415597">IBM's San Francisco Project</a> - An example of the
+<em>last 10% trap</em> in action where inherent instincts to categorize and taxonomize everything result in an
+infinite regress problem.</li>
+</ul>
+<h2 id="putting-evolutionary-architecture-into-practice" class="ngc-header-link"><span header-link="putting-evolutionary-architecture-into-practice"></span>Putting Evolutionary Architecture into Practice</h2>
+<h3 id="organizational-factors" class="ngc-header-link"><span header-link="organizational-factors"></span>Organizational Factors</h3>
+<ul>
+<li>
+<p>Teams should be focused around a business capability, not a job title. </p>
+</li>
+<li>
+<p>Projects should be viewed as products in the sense that a products lifespan is forever. Developer should
+approach a project like they will be caring for it for the rest of their life</p>
+</li>
+<li>
+<p>Each team should be small enough to be fed with two pizzas.</p>
+</li>
+<li>
+<p>Each team member should be able to work on any part/role of the project.</p>
+</li>
+<li>
+<p>Keep the number of people a team member needs to communicate with, both inside and outside the team, as small as
+possible.</p>
+</li>
+</ul>
+<h3 id="where-do-you-start" class="ngc-header-link"><span header-link="where-do-you-start"></span>Where Do You Start?</h3>
+<h4 id="low-hanging-fruit">Low-Hanging Fruit</h4>
+<ul>
+<li>Choose the easiest problem that highlights the evolutionary approach. </li>
+<li>Demonstration defeats discussion.</li>
+<li>Favor minimizing risk at the expense of value.</li>
+</ul>
+<h4 id="highest-value">Highest-Value</h4>
+<ul>
+<li>Choosing the highest value portion indicates commitment.</li>
+<li>Gives a good long-term view of what evolutionary architecture can do.</li>
+<li>Quick feedback on whether to proceed to other parts or go back.</li>
+</ul>
+<h4 id="testing">Testing</h4>
+<ul>
+<li>Add coarse-grained tests around behavior before restructuring code allowing verification that the overall
+behavior has not changed.</li>
+<li>
+<p>Coarse-grained tests serve as a precursor to fitness functions.</p>
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbLTE5MTg1MzIxODhdfQ==
+-->
+</li>
+</ul></dl></div>
