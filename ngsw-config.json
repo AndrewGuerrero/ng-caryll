@@ -10,7 +10,8 @@
           "/index.html",
           "/*.bundle.css",
           "/*.bundle.js",
-          "/*.chunk.js"
+          "/*.chunk.js",
+          "/assets/js/**"
         ]
       }
     },
@@ -21,7 +22,6 @@
       "resources": {
         "files": [
           "/assets/documents/**",
-          "/assets/js/**",
           "/assets/lunr/index.json"
         ]
       }
@@ -42,7 +42,9 @@
       "resources": {
         "urls": [
           "https://fonts.googleapis.com/icon?family=Material+Icons",
-          "https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono"
+          "https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono",
+          "https://ajax.googleapis.com/ajax/libs/hammerjs/2.0.8/hammer.min.js",
+          "https://cdnjs.cloudflare.com/ajax/libs/web-animations/2.2.5/web-animations.min.js"
         ]
       }
     }

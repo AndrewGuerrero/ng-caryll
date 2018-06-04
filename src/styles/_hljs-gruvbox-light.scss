@@ -4,8 +4,7 @@
     overflow-x: auto;
     padding: 1em;
     -webkit-font-smoothing: antialiased;
-    text-size-adjust: 100%;
-    font: 300 100%/1 Roboto Mono,monospace;
+    font: Roboto Mono,monospace;
     font-size: 14px;
   }
   
@@ -110,6 +109,6 @@
   
   .hljs-section,
   .hljs-strong {
-    font-weight: bold;
+    font-weight: 500;
   }
 }
