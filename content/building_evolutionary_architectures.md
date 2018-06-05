@@ -23,6 +23,7 @@ Software architecture that supports guided, incremental change across multiple d
   architecture is complex and multi-dimensional.
   </dd>
   <dt>Requirements</dt>
+  <dd>
   Abstract nouns that are considered core to a project such as: security, agility, flexibility, scalability, etc.
   </dd>
 </dl>
