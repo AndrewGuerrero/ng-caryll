@@ -17,15 +17,19 @@ Software architecture that supports guided, incremental change across multiple d
   <dd>
   An objective integrity assessment of some architectural characteristics.
   </dd>
-  <dt>Dimension</dt>
+  <dt>Dimensions</dt>
   <dd>
-  Dimensions are absract nouns such as: security, agility, readability, scalability, etc.
+  Perspectives of an architecture. Often, only the technical perspective of architecture is considered. However, 
+  architecture is complex and multi-dimensional.
+  </dd>
+  <dt>Requirements</dt>
+  Abstract nouns that are considered core to a project such as: security, agility, flexibility, scalability, etc.
   </dd>
 </dl>
 
 ### Multiple Architectural Dimensions
  
-Rather than a single concept, architecture is formed from both requirements and *dimensions*, each
+Rather than a single concept, architecture is formed from both *requirements* and *dimensions*, each
 protected by *fitness functions*. Common categories for dimensions found in modern software architectures
 include:
 

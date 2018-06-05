@@ -7,39 +7,18 @@
       "resources": {
         "files": [
           "/favicon.ico",
-          "/index.html",
-          "/*.bundle.css",
-          "/*.bundle.js",
-          "/*.chunk.js",
-          "/assets/js/**"
+          "/index.html"
         ]
       }
     },
     {
-      "name": "prefetch-assets",
+      "name": "assets",
       "installMode": "lazy",
       "updateMode": "prefetch",
       "resources": {
         "files": [
-          "/assets/documents/**",
-          "/assets/lunr/index.json"
-        ]
-      }
-    },
-    {
-      "name": "lazy-assets",
-      "installMode": "lazy",
-      "resources": {
-        "files": [
-          "/assets/img/**"
-        ]
-      }
-    },
-    {
-      "name": "static-assets",
-      "installMode": "lazy",
-      "updateMode": "prefetch",
-      "resources": {
+          "/assets/**"
+        ],
         "urls": [
           "https://fonts.googleapis.com/icon?family=Material+Icons",
           "https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono",
