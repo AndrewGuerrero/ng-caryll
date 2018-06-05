@@ -5,10 +5,11 @@
 ## Software Architecture
 
 <dl>
-<dt>Evolutionary Architecture</dt>
-<dd>
-Software architecture that supports guided, incremental change across multiple dimensions.
-</dd>
+  <dt>Evolutionary Architecture</dt>
+  <dd>
+  Software architecture that supports guided, incremental change across multiple dimensions.
+  </dd>
+</dl>
 
 ### Guided Change
 
