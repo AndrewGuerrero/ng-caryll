@@ -32,7 +32,6 @@ export class DocumentViewerComponent {
     route.params.subscribe(p => {
       this.scrollService.scroll();
       this.docItem = docItemService.getItemById(p['id']);
-      this.themeService.setTheme(this.docItem.theme);
       this.pageTitleService.title = this.docItem.name;
       this.documentService
         .getDocument(this.docItem.id)
@@ -45,6 +44,7 @@ export class DocumentViewerComponent {
   }
 
   onDocInserted() {
+    this.themeService.setTheme(this.docItem.theme);
     setTimeout(() => this.scrollService.scroll(), 500);
   }
 }
