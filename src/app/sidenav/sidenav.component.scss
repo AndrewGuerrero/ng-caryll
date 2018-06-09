@@ -12,6 +12,12 @@
 
 .ngc-sidenav-end {
   @include mat-elevation(4);
+  overflow: auto;
+  width: 365px;
+}
+
+.ngc-sidenav-end {
+  @include mat-elevation(4);
   width: 285px;
 }
 
