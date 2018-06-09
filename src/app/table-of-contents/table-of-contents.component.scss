@@ -1,25 +1,12 @@
 @import '../../styles/constants';
 
-:host {
-  font-size: 13px;
-  // Width is container width minus content width
-  width: 19%;
-  top: 0;
-  padding-left: 25px;
-  box-sizing: border-box;
-  display: inline-flex;
-}
-
 .ngc-toc-container {
+  font-size: 13px;
   position: fixed;
-  top: 80px;
+  top: 25px;
   bottom: 12px;
   overflow-y: auto;
   overflow-x: hidden;
-
-  @media (max-width: $small-breakpoint-width) {
-    position: inherit;
-  }
 }
 
 .ngc-toc-list {
@@ -27,7 +14,6 @@
 }
 
 .ngc-level-h1 {
-  margin: 0;
   padding-bottom: 5px;
   font-size: 16px;
   font-weight: bold;
@@ -36,12 +22,8 @@
 a {
   line-height: 16px;
   margin: 8px 0 0;
-  position: relative;
   text-decoration: none;
   display: block;
-  text-overflow: ellipsis;
-  width: 100%;
-  overflow: hidden;
 }
 
 .ngc-level-h2 {

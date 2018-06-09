@@ -12,11 +12,11 @@ const DOCS: DocItem[] = [
     name: 'Building Evolutionary Architectures',
     theme: 'purple',
   },
-  //  {
-  //    id: 'tao_of_microservices',
-  //    name: 'The Tao of Microservices',
-  //    theme: 'green',
-  //  },
+  {
+    id: 'tao_of_microservices',
+    name: 'The Tao of Microservices',
+    theme: 'green',
+  },
   {
     id: 'guide_to_writing_testable_code',
     name: 'Guide to Writing Testable Code',

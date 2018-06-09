@@ -50,6 +50,7 @@ export class NavbarComponent {
   }
 
   @Output() toggleSidenav = new EventEmitter<void>();
+  @Output() toggleSidenavEnd = new EventEmitter<void>();
 
   get title() {
     return this.pageTitle.title;

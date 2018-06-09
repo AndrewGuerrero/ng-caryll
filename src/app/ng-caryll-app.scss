@@ -1,8 +1,7 @@
 @import '../../node_modules/@angular/material/theming';
+@import '../styles/constants';
 
 ng-caryll-app {
-  display: flex;
-  flex-direction: column;
   position: absolute;
   top: 56px;
   bottom: 0;
@@ -19,11 +18,7 @@ ngc-navbar {
   z-index: 2;
 }
 
-ng-caryll-app > ngc-sidenav {
-  flex: 1;
-}
-
-@media (max-width: 720px) {
+@media (max-width: $small-breakpoint-width) {
   ng-caryll-app {
     top: 92px;
   }

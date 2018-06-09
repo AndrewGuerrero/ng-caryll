@@ -7,7 +7,8 @@
   $foreground: map-get($theme, foreground);
   $is-dark-theme: map-get($theme, is-dark);
 
-  .ngc-sidenav {
+  .ngc-sidenav,
+  .ngc-sidenav-end {
     background: mat-color($background, background);
   }
 }

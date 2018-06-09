@@ -1,6 +1,4 @@
 <div class="ngc-document-viewer-content">
-  <ngc-document [doc]="currentDocument" class="ngc-document-viewer-text-content" (docInserted)="onDocInserted()" (docRemoved)="onDocRemoved()">
+  <ngc-document [doc]="currentDocument" (docInserted)="onDocInserted()" (docRemoved)="onDocRemoved()">
   </ngc-document>
-  <ngc-table-of-contents #toc container="ngc-navbar">
-  </ngc-table-of-contents>
 </div>

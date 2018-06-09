@@ -23,17 +23,15 @@
 .ngc-logo {
    height: 54px;
    width: 54px;
-   padding-left: 30px;
 
   @media (max-width: $small-breakpoint-width) {
-    padding-left: 0;
     height: 32px;
     width: 32px;
   }
 }
 
 .ngc-navbar {
-  max-height: 86px;
+  max-height: 92px;
 }
 
 .flex-spacer {

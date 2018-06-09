@@ -12,5 +12,8 @@
     <div class="flex-spacer"></div>
     <ngc-search-box (onSearch)="doSearch($event)" (onFocus)="doSearch($event)"></ngc-search-box>
     <ngc-theme-toggle class="theme-toggle"></ngc-theme-toggle>
+    <button mat-icon-button class="sidenav-toggle" (click)="toggleSidenavEnd.emit()">
+      <mat-icon>menu</mat-icon>
+    </button>
   </mat-toolbar-row>
 </mat-toolbar>

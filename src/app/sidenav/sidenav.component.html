@@ -1,14 +1,17 @@
-<ngc-navbar (toggleSidenav)="sidenav.toggle()"></ngc-navbar>
+<ngc-navbar (toggleSidenav)="sidenav.toggle()" (toggleSidenavEnd)="sidenavEnd.toggle()"></ngc-navbar>
 <mat-sidenav-container class="ngc-sidenav-container">
   <mat-sidenav #sidenav class="ngc-sidenav" [mode]="isScreenSmall() ? 'over' : 'side'" [opened]="!isScreenSmall()" fixedInViewport
-    fixedTopGap="64">
+    [fixedTopGap]="isScreenSmall() ? 92 : 64">
     <ngc-nav></ngc-nav>
   </mat-sidenav>
+  <mat-sidenav #sidenavEnd class="ngc-sidenav" position="end" [mode]="isScreenLarge() ? 'over' : 'side'" [opened]="!isScreenLarge()"
+    fixedInViewport [fixedTopGap]="isScreenSmall() ? 92 : 64">
+    <ngc-table-of-contents #toc container="ngc-navbar">
+    </ngc-table-of-contents>
+  </mat-sidenav>
   <mat-sidenav-content class="ngc-sidenav-content">
-    <div class="ngc-sidenav-inner-content">
-      <div class="ngc-sidenav-body-content">
-        <router-outlet></router-outlet>
-      </div>
+    <div class="ngc-sidenav-body-content">
+      <router-outlet></router-outlet>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
