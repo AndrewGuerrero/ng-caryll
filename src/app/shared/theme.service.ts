@@ -3,22 +3,29 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Injectable()
 export class ThemeService {
-  isDark: boolean = false;
-  theme: string = "purple";
+  contrast: string;
+  theme: string;
 
-  constructor(private overlayContainer: OverlayContainer) { }
+  static storageKey = 'ngc-theme-dark';
+
+  constructor(private overlayContainer: OverlayContainer) {
+    this.contrast = window.localStorage.getItem(ThemeService.storageKey) || 'light';
+  }
 
   setTheme(theme: string) {
     this.theme = theme;
-    const contrast = this.isDark ? 'dark' : 'light';
-    const themeClass = `${contrast}-${this.theme}-theme`;
-
+    const themeClass = `${this.contrast}-${this.theme}-theme`;
     this.addThemeToElement(themeClass, this.overlayContainer.getContainerElement());
     this.addThemeToElement(themeClass, document.body);
   }
 
   toggleTheme() {
-    this.isDark = !this.isDark;
+    if (this.contrast === 'dark') {
+      this.contrast = 'light';
+    } else {
+      this.contrast = 'dark';
+    }
+    window.localStorage.setItem(ThemeService.storageKey, this.contrast);
     this.setTheme(this.theme);
   }
 
