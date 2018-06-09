@@ -1,14 +1,18 @@
 @import './constants';
+
 .ngc-markdown table {
   border-collapse: collapse;
   border-radius: 2px;
   border-spacing: 0;
-  margin: 0 0 32px 0;
+  margin: 12px 0;
+  overflow-x: auto;
+  display: block;
+  width: fit-content;
+  max-width: 100%; 
 }
 
 .ngc-markdown th {
   font-weight: bold;
-  max-width: 100px;
   padding: 13px 32px;
   text-align: left;
 }
@@ -18,10 +22,6 @@
 }
 
 @media (max-width: $small-breakpoint-width) {
-  .ngc-markdown table {
-    margin: 0 0 32px 0;
-  }
-
   .ngc-markdown th {
     padding: 6px 16px;
   }
