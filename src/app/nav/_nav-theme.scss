@@ -10,7 +10,7 @@
   $nav-background-focus-opacity: if($is-dark-theme, 0.25, 0.08);
 
   .ngc-nav-content {
-    background: rgba(0, 0, 0, $nav-background-opacity);
+    background: none;
 
     &::-webkit-scrollbar-thumb {
       background: rgba(0, 0, 0, .26);
@@ -27,10 +27,6 @@
   }
 
   @media (max-width: $small-breakpoint-width) {
-    .ngc-nav-content {
-      background: none;
-    }
-
     .mat-drawer {
       &::-webkit-scrollbar-thumb {
         background: rgba(0, 0, 0, .26);
