@@ -8,7 +8,7 @@ import { query } from '@angular/animations';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { SearchResultsComponent } from '../search-results/search-results.component';
 
-const SMALL_WIDTH_BREAKPOINT = 720;
+const SMALL_WIDTH_BREAKPOINT = 750;
 
 @Component({
   selector: 'ngc-navbar',
