@@ -37,7 +37,9 @@
     margin: 0;
     padding: 15px;
 
-    p {
+    p,
+    ul,
+    ol {
       font-size: 14px;
       margin: 0;
     }
@@ -87,7 +89,7 @@
 
 code,
 pre {
-  font-family: 'Roboto Mono', monospace;
+  font-family: 'Source code Pro', monospace;
 }
 
 pre {

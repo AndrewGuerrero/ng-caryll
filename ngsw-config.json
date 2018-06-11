@@ -21,7 +21,7 @@
         ],
         "urls": [
           "https://fonts.googleapis.com/icon?family=Material+Icons",
-          "https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono",
+          "https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro",
           "https://ajax.googleapis.com/ajax/libs/hammerjs/2.0.8/hammer.min.js",
           "https://cdnjs.cloudflare.com/ajax/libs/web-animations/2.2.5/web-animations.min.js"
         ]
