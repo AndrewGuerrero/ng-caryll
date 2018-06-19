@@ -37,6 +37,7 @@
     "rehype-slug": "^2.0.1",
     "rehype-stringify": "^3.0.0",
     "remark-parse": "^5.0.0",
+    "remark-preset-lint-markdown-style-guide": "^2.1.2",
     "remark-rehype": "^3.0.0",
     "remove-markdown": "^0.3.0",
     "request-image-size": "^2.1.0",
@@ -45,6 +46,7 @@
     "sanitize-html": "^1.18.2",
     "uglify-js": "^3.3.27",
     "unified": "^7.0.0",
+    "vfile-reporter": "^5.0.0",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {

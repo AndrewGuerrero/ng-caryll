@@ -10,13 +10,13 @@ behavior. Too much work in the constructor prevents instantiation or altering co
 
 ### Warning Signs
 
-* "new" keyword in a constructor or at field declaration
-* Static method calls in a constructor or at field declaration
-* Anything more than field assignment in constructors
-* Object not fully initialized after the constructor finishes (watch out for initialize methods)
-* Control flow (conditional or looping logic) in a constructor
-* CL does complex object graph construction inside a constructor rather than using a factory or builder
-* Adding or using an initialization block
+- "new" keyword in a constructor or at field declaration
+- Static method calls in a constructor or at field declaration
+- Anything more than field assignment in constructors
+- Object not fully initialized after the constructor finishes (watch out for initialize methods)
+- Control flow (conditional or looping logic) in a constructor
+- CL does complex object graph construction inside a constructor rather than using a factory or builder
+- Adding or using an initialization block
 
 ### Why This Is a Flaw
 
@@ -24,40 +24,42 @@ When your constructor has to instantiate and initialize its collaborators, the r
 inflexible and prematurely coupled design. Such constructors shut off the ability to inject test collaborators
 when testing.
 
-* **It violates the Single Responsibility Principle:** When collaborator construction is mixed with
-  initialization, it suggests that there is only one way to configure the class, which closes off reuse
-  opportunities that might otherwise be available. Object graph creation is a full fledged responsibility — a
-  different one from why a class exists in the first place. Doing such work in a constructor violates the
-  *Single Responsibility Principle*.
-* **Testing Directly is Difficult:** Testing such constructors is difficult. To instantiate an object, the
-  constructor must execute. And if that constructor does lots of work, you are forced to do that work when
-  creating the object in tests. If collaborators access external resources (e.g. files, network services, or
-  databases), subtle changes in collaborators may need to be reflected in the constructor, but may be missed
-  due to missing test coverage from tests that weren’t written because the constructor is so difficult to
-  test. We end up in a vicious cycle.
-* **Subclassing and Overriding to Test is Still Flawed:** Other times a constructor does little work itself,
-  but delegates to a method that is expected to be overridden in a test subclass. This may work around the
-  problem of difficult construction, but using the “subclass to test” trick is something you only should do as
-  a last resort. Additionally, by subclassing, you will fail to test the method that you override. And that
-  method does lots of work (remember – that’s why it was created in the first place), so it probably should be
-  tested.
-* **It Forces Collaborators on You:** Sometimes when you test an object, you don’t want to actually create all
-  of its collaborators. For instance, you don’t want a real `MySqlRepository` object that talks to the `MySql`
-  service. However, if they are directly created using new `MySqlRepositoryServiceThatTalksToOtherServers()`
-  inside your *System Under Test* (SUT), then you will be forced to use that heavyweight object.
-* **It Erases a “Seam”:** Seams are places you can slice your codebase to remove dependencies and instantiate
-  small, focused objects. When you do new `XYZ()` in a constructor, you’ll never be able to get a different
-  (subclass) object created. (See Michael Feathers book Working Effectively with Legacy Code for more about
-  seams).
-* **It Still is a Flaw even if you have Multiple Constructors (Some for “Test Only”):** Creating a separate
-  “test only” constructor does not solve the problem. The constructors that do work will still be used by
-  other classes. Even if you can test this object in isolation (creating it with the test specific
-  constructor), you’re going to run into other classes that use the hard-to-test constructor. And when testing
-  those other classes, your hands will be tied.
-* **Bottom Line:** It all comes down to how hard or easy it is to construct the class in isolation or with
-  test-double collaborators.
-    * If it’s hard, you’re doing too much work in the constructor!
-    * If it’s easy, pat yourself on the back.
+-   **It violates the Single Responsibility Principle:** When collaborator construction is mixed with
+    initialization, it suggests that there is only one way to configure the class, which closes off reuse
+    opportunities that might otherwise be available. Object graph creation is a full fledged responsibility — a
+    different one from why a class exists in the first place. Doing such work in a constructor violates the
+    *Single Responsibility Principle*.
+-   **Testing Directly is Difficult:** Testing such constructors is difficult. To instantiate an object, the
+    constructor must execute. And if that constructor does lots of work, you are forced to do that work when
+    creating the object in tests. If collaborators access external resources (e.g. files, network services, or
+    databases), subtle changes in collaborators may need to be reflected in the constructor, but may be missed
+    due to missing test coverage from tests that weren’t written because the constructor is so difficult to
+    test. We end up in a vicious cycle.
+-   **Subclassing and Overriding to Test is Still Flawed:** Other times a constructor does little work itself,
+    but delegates to a method that is expected to be overridden in a test subclass. This may work around the
+    problem of difficult construction, but using the “subclass to test” trick is something you only should do as
+    a last resort. Additionally, by subclassing, you will fail to test the method that you override. And that
+    method does lots of work (remember – that’s why it was created in the first place), so it probably should be
+    tested.
+-   **It Forces Collaborators on You:** Sometimes when you test an object, you don’t want to actually create all
+    of its collaborators. For instance, you don’t want a real `MySqlRepository` object that talks to the `MySql`
+    service. However, if they are directly created using new `MySqlRepositoryServiceThatTalksToOtherServers()`
+    inside your *System Under Test* (SUT), then you will be forced to use that heavyweight object.
+-   **It Erases a “Seam”:** Seams are places you can slice your codebase to remove dependencies and instantiate
+    small, focused objects. When you do new `XYZ()` in a constructor, you’ll never be able to get a different
+    (subclass) object created. (See Michael Feathers book Working Effectively with Legacy Code for more about
+    seams).
+-   **It Still is a Flaw even if you have Multiple Constructors (Some for “Test Only”):** Creating a separate
+    “test only” constructor does not solve the problem. The constructors that do work will still be used by
+    other classes. Even if you can test this object in isolation (creating it with the test specific
+    constructor), you’re going to run into other classes that use the hard-to-test constructor. And when testing
+    those other classes, your hands will be tied.
+-   **Bottom Line:** It all comes down to how hard or easy it is to construct the class in isolation or with
+    test-double collaborators.
+    
+    - If it’s hard, you’re doing too much work in the constructor!
+    - If it’s easy, pat yourself on the back.
+       
     Always think about how hard it will be to test the object while you are writing it. Will it be easy to
     instantiate it via the constructor you’re writing? (Keep in mind that your test-class will not be the only
     code where this class will be instantiated.)
@@ -70,14 +72,14 @@ when testing.
 
 Examine for these symptoms:
 
-* The new keyword constructs anything you would like to replace with a test-double in a test? (Typically this
-  is anything bigger than a simple value object).
-* Any static method calls? (Remember: static calls are non-mockable, and non-injectable, so if you see
+- The new keyword constructs anything you would like to replace with a test-double in a test? (Typically this is
+  anything bigger than a simple value object).
+- Any static method calls? (Remember: static calls are non-mockable, and non-injectable, so if you see
   `Server.init()` or anything of that ilk, warning sirens should go off in your head!)
-* Any conditional or loop logic? (You will have to successfully navigate the logic every time you instantiate
-  the object. This will result in excessive setup code not only when you test the class directly, but also if
-  you happen to need this class while testing any of the related classes.)
-  
+- Any conditional or loop logic? (You will have to successfully navigate the logic every time you instantiate the
+  object. This will result in excessive setup code not only when you test the class directly, but also if you happen to
+  need this class while testing any of the related classes.)
+
 Think about one fundamental question when writing or reviewing code:
 
 How am I going to test this?
@@ -87,13 +89,12 @@ How am I going to test this?
 > test, and your design will end up being far better for the effort.” *[Hunt, Thomas. Pragmatic Unit Testing
 > in Java with JUnit, p 103 (somewhat dated, but a decent and quick read)]*
 
-
-**Note:** Constructing value objects may be acceptable in many cases (examples: `LinkedList`, `HashMap`,
-`User`, `EmailAddress`, `CreditCard`). Value objects key attributes are:
+> **Note:** Constructing value objects may be acceptable in many cases (examples: `LinkedList`, `HashMap`,
+> `User`, `EmailAddress`, `CreditCard`). Value objects key attributes are:
 
 1. Trivial to construct 
-2. State focused (lots of getters/setters low on behavior) 
-3. Do not refer to any service object.
+1. State focused (lots of getters/setters low on behavior) 
+1. Do not refer to any service object.
 
 ### Fixing the Flaw
 
@@ -114,17 +115,17 @@ If there is initialization that needs to happen with the objects that get passed
    constructor arguments. Leave the responsibility of object initialization and graph construction to Guice.
    This will remove the need to initialize the objects on-the-go. Sometimes you will use `Builders` or
    `Factories` in addition to `Providers`, then pass in the builders and factories to the constructor.
-2. **Best Approach using manual *Dependency Injection*:** Use a `Builder`, or a `Factory`, for `YourObject`‘s
+1. **Best Approach using manual *Dependency Injection*:** Use a `Builder`, or a `Factory`, for `YourObject`‘s
    constructor arguments. Typically there is one factory for a whole graph of objects, see example below. (So
    you don’t have to worry about having class explosion due to one factory for every class) The responsibility
    of the factory is to create the object graph and to do no work. (All you should see in the factory is a
    whole lot of new keywords and passing around of references). The responsibility of the object graph is to
    do work, and to do no object instantiation (There should be a serious lack of new keywords in application
    logic classes).
-3. **Only as a Last Resort:** Have an `init(…)` method in your class that can be called after construction.
+1. **Only as a Last Resort:** Have an `init(…)` method in your class that can be called after construction.
    Avoid this wherever you can, preferring the use of another object who’s single responsibility is to
    configure the parameters for this object. (Often that is a `Provider` if you are using Guice)
-   
+
 (Also read the code examples below)
 
 ### Concrete Examples Before and After
@@ -218,12 +219,12 @@ than in production. Usually it is a smaller graph with some objects replaced wit
 new operators inline we will never be able to create a graph of objects for testing. See: “How to think about
 the new operator”
 
-* **Flaw:** inline object instantiation where fields are declared has the same problems that work in the
+- **Flaw:** inline object instantiation where fields are declared has the same problems that work in the
   constructor has.
-* **Flaw:** this may be easy to instantiate but if `Kitchen` represents something expensive such as
+- **Flaw:** this may be easy to instantiate but if `Kitchen` represents something expensive such as
   file/database access it is not very testable since we could never replace the `Kitchen` or `Bedroom` with a
   test-double.
-* **Flaw:** Your design is more brittle, because you can never polymorphically replace the behavior of the
+- **Flaw:** Your design is more brittle, because you can never polymorphically replace the behavior of the
   `Kitchen` or bedroom in the `House`.
 
 If the `Kitchen` is a value object such as: `LinkedList`, `Map`, `User`, `EmailAddress`, etc., then we can
@@ -232,7 +233,6 @@ most likely that need to be replaced with test-doubles, so you never want to loc
 instantiation or instantiation via static method calls.
 
 #### Problem: Constructor takes a partially initialized object and has to set it up
-
 
 <table>
 <tr>
@@ -338,12 +338,12 @@ responsibility than what the `Garden` should do. When configuration and instanti
 constructor, objects become more brittle and tied to concrete object graph structures. This makes code harder
 to modify, and (more or less) impossible to test.
 
-* **Flaw:** The `Garden` needs a `Gardener`, but it should not be the responsibility of the `Garden` to
+- **Flaw:** The `Garden` needs a `Gardener`, but it should not be the responsibility of the `Garden` to
   configure the `Gardener`.
-* **Flaw:** In a unit test for `Garden` the workday is set specifically in the constructor, thus forcing us to
+- **Flaw:** In a unit test for `Garden` the workday is set specifically in the constructor, thus forcing us to
   have Joe work a 12 hour workday. Forced dependencies like this can cause tests to run slow. In unit tests,
   you’ll want to pass in a shorter workday.
-* **Flaw:** You can’t change the boots. You will likely want to use a test-double for boots to avoid the
+- **Flaw:** You can’t change the boots. You will likely want to use a test-double for boots to avoid the
   problems with loading and using `BootsWithMassiveStaticInitBlock`. (Static initialization blocks are often
   dangerous and troublesome, especially if they interact with global state.)
 
@@ -423,11 +423,11 @@ In this example we reach into the global state of an application and get a hold 
 It turns out we don’t need the singleton, we only want the User. First: we are doing work (against static
 methods, which have zero seams). Second: this violates the “*Law of Demeter*”.
 
-* **Flaw:** We cannot easily intercept the call `RPCClient.getInstance()` to return a mock `RPCClient` for
+- **Flaw:** We cannot easily intercept the call `RPCClient.getInstance()` to return a mock `RPCClient` for
   testing. (Static methods are non-interceptable, and non-mockable).
-* **Flaw:** Why do we have to mock out `RPCClient` for testing if the class under test does not need
+- **Flaw:** Why do we have to mock out `RPCClient` for testing if the class under test does not need
   `PCClient`?(`AccountView` doesn’t persist the rpc instance in a field.) We only need to persist the `User`.
-* **Flaw:** Every test which needs to construct class `AccountView` will have to deal with the above points.
+- **Flaw:** Every test which needs to construct class `AccountView` will have to deal with the above points.
   Even if we solve the issues for one test, we don’t want to solve them again in other tests. For example
   `AccountServlet` may need `AccountView`. Hence in `AccountServlet` we will have to successfully navigate the
   constructor.
@@ -439,7 +439,7 @@ better testability.
 We use Guice to provide for us a `User`, that comes from the `RPCClient`. In unit tests we won’t use Guice,
 but directly create the `User` and `AccountView`.
 
-#### Problem: Creating Unneeded Third Party Objects in Constructor.
+#### Problem: Creating Unneeded Third Party Objects in Constructor
 
 <table>
 <tr>
@@ -534,20 +534,20 @@ engine. `Car`s should be given readymade engines, not figure out how to create t
 work shouldn’t have a reference back to its factory. In the same way, some constructors reach out to third
 party objects that aren’t directly needed — only something the third party object can create is needed.
 
-* **Flaw:** Passing in a file, when all that is ultimately needed is an `Engine`.
-* **Flaw:** Creating a third party object (`EngineFactory`) and paying any assorted costs in this
+- **Flaw:** Passing in a file, when all that is ultimately needed is an `Engine`.
+- **Flaw:** Creating a third party object (`EngineFactory`) and paying any assorted costs in this
   non-injectable and non-overridable creation. This makes your code more brittle because you can’t change the
   factory, you can’t decide to start caching them, and you can’t prevent it from running when a new `Car` is
   created.
-* **Flaw:** It’s silly for the `Car` to know how to build an `EngineFactory`, which then knows how to build an
+- **Flaw:** It’s silly for the `Car` to know how to build an `EngineFactory`, which then knows how to build an
   `Engine`. (Somehow when these objects are more abstract we tend to not realize we’re making this mistake).
-* **Flaw:** Every test which needs to construct class `Car` will have to deal with the above points. Even if
+- **Flaw:** Every test which needs to construct class `Car` will have to deal with the above points. Even if
   we solve the issues for one test, we don’t want to solve them again in other tests. For example another test
   for a `Garage` may need a `Car`. Hence in `Garage` test I will have to successfully navigate the `Car`
   constructor. And I will be forced to create a new `EngineFactory`.
-* **Flaw:** Every test will need a access a file when the `Car` constructor is called. This is slow, and
+- **Flaw:** Every test will need a access a file when the `Car` constructor is called. This is slow, and
   prevents test from being true unit tests.
-  
+
 Remove these third party objects, and replace the work in the constructor with simple variable assignment.
 Assign pre-configured variables into fields in the constructor. Have another object (a factory, builder, or
 Guice providers) do the actual construction of the constructor’s parameters. Split off of your primary objects
@@ -640,15 +640,15 @@ class PingServerTest extends TestCase {
 What looks like a simple no argument constructor actually has a lot of dependencies. Once again the API is
 lying to you, pretending it is easy to create, but actually `PingServer` is brittle and tied to global state.
 
-* **Flaw:** In your test you will have to rely on global variable `FLAG_PORT` in order to instantiate the
+- **Flaw:** In your test you will have to rely on global variable `FLAG_PORT` in order to instantiate the
   class. This will make your tests flaky as the order of tests matters.
-* **Flaw:** Depending on a statically accessed flag value prevents you from running tests in parallel. Because
+- **Flaw:** Depending on a statically accessed flag value prevents you from running tests in parallel. Because
   parallel running test could change the flag value at the same time, causing failures.
-* **Flaw:** If the socket needed additional configuration (i.e. calling `setSoTimeout()`), that can’t happen
+- **Flaw:** If the socket needed additional configuration (i.e. calling `setSoTimeout()`), that can’t happen
   because the object construction happens in the wrong place. `Socket` is created inside the `PingServer`,
   which is backwards. It needs to happen externally, in something whose sole responsibility is object graph
   construction — i.e. a Guice provider.
-  
+
 `PingServer` ultimately needs a socket not a port number. By passing in the port number we will have to tests
 with real sockets/threads. By passing in a socket we can create a mock socket in tests and test the class
 without any real sockets / threads. Explicitly passing in the port number removes the dependency on global
@@ -762,12 +762,12 @@ Guice has something called the `FlagBinder` which lets you–at a very low cost�
 replace them with injected values. Flags are pervasively used to change runtime parameters, yet we don’t have
 to directly read the flags for their global state.
 
-* **Flaw:** Directly reading flags is reaching out into global state to get a value. This is undesirable
+- **Flaw:** Directly reading flags is reaching out into global state to get a value. This is undesirable
   because global state is not isolated: previous tests could set it to a different value, or other threads
   could mutate it unexpectedly.
-* **Flaw:** Directly constructing the differing types of `Jersey`, depending on a flag’s value. Your tests
+- **Flaw:** Directly constructing the differing types of `Jersey`, depending on a flag’s value. Your tests
   that instantiate a `CurlingTeamMember` have no seam to inject a different `Jersey` collaborator for testing.
-* **Flaw:** The responsibility of the `CurlingTeamMember` is broad: both whatever the core purpose of the
+- **Flaw:** The responsibility of the `CurlingTeamMember` is broad: both whatever the core purpose of the
   class, and now also `Jersey` configuration. Passing in a preconfigured `Jersey` object instead is preferred.
   Another object can have the responsibility of configuring the `Jersey`.
 
@@ -898,17 +898,20 @@ class VisualVoicemailTest extends TestCase {
 Moving the “work” into an initialize method is not the solution. You need to decouple your objects into single
 responsibilities. (Where one single responsibility is to provide a fully-configured object graph).
 
-* **Flaw:** At first glance it may look like Guice is effectively used. For testing the `VisualVoicemail` object is very easy to construct. However the code is still brittle and tied to several Static initialization calls.
-* **Flaw:** The initialize method is a glaring sign that this object has too many responsibilities: whatever a
+- **Flaw:** At first glance it may look like Guice is effectively used. For testing the `VisualVoicemail` object is
+  very easy to construct. However the code is still brittle and tied to several Static initialization calls.
+- **Flaw:** The initialize method is a glaring sign that this object has too many responsibilities: whatever a
   `VisualVoicemail` needs to do, and initializing its dependencies. Dependency initialization should happen in
   another class, passing *all* of the ready-to-be-used objects into the constructor.
-* **Flaw:** The `Server.readConfigFromFile()` method is non interceptable when in a test, if you want to call
+- **Flaw:** The `Server.readConfigFromFile()` method is non interceptable when in a test, if you want to call
   the initialize method.
-* **Flaw:** The `Server` is non-initializable in a test. If you want to use it, you’re forced to get it from the global singleton state. If two tests run in parallel, or a previous test initializes the Server differently, global state will bite you.
-* **Flaw:** Usually, `@VisibleForTesting` annotation is a smell that the class was not written to be easily
+- **Flaw:** The `Server` is non-initializable in a test. If you want to use it, you’re forced to get it from the
+  global singleton state. If two tests run in parallel, or a previous test initializes the Server differently, global
+  state will bite you.
+- **Flaw:** Usually, `@VisibleForTesting` annotation is a smell that the class was not written to be easily
   tested. And even though it will let you set the list of calls, it is only a hack to get around the root
   problem in the `initialize()` method.
-  
+
 Solving this flaw, like so many others, involves removing JVM enforced global state and using *Dependency
 Injection*.
 
@@ -1037,10 +1040,10 @@ to test. On the left, the `VideoPlaylistIndex` is easy to test (you can pass in 
 `VideoRepository`). However, whichever dependant objects which use the no-arg constructor will be hard to
 test.
 
-* **Flaw:** `PlaylistGenerator` is hard to test, because it takes advantage of the no-arg constructor for
+- **Flaw:** `PlaylistGenerator` is hard to test, because it takes advantage of the no-arg constructor for
   `VideoPlaylistIndex`, which is hard coded to using the `FullLibraryIndex`.You wouldn’t really want to test
   the `FullLibraryIndex` in a test of the `PlaylistGenerator`, but you are forced to.
-* **Flaw:** Usually, the `@VisibleForTesting` annotation is a smell that the class was not written to be
+- **Flaw:** Usually, the `@VisibleForTesting` annotation is a smell that the class was not written to be
   easily tested. And even though it will let you set the list of calls, it is only a hack to get around the
   root problem.
 
@@ -1050,26 +1053,26 @@ dependency directly. Once `PlaylistGenerator` asks for its dependencies no one c
 
 ### Frequently Asked Questions
 
-Q1: Okay, so I think I get it. I’ll only do assignment in the constructor, and then I’ll have an `init()`
+**Q1:** Okay, so I think I get it. I’ll only do assignment in the constructor, and then I’ll have an `init()`
 method or `init(…)` to do all the work that used to be in the constructor. Does that sound okay?
 
-A: We discourage this, see the code example above.
+**A:** We discourage this, see the code example above.
 
-Q2: What about multiple constructors? Can I have one simple to construct, and the other with lots of work?
+**Q2:** What about multiple constructors? Can I have one simple to construct, and the other with lots of work?
 I’ll only use the easy one in my tests. I’ll even mark it `@VisibleForTesting`. Okay?
 
-A: We discourage this, see the code example above.
+**A:** We discourage this, see the code example above.
 
-Q3: Can I create named constructors as additional constructors which may do work? I’ll have a simple
+**Q3:** Can I create named constructors as additional constructors which may do work? I’ll have a simple
 assignment to fields only constructor to use for my tests.
 
-A: Someone actually ask this and we’ll elaborate.
+**A:** Someone actually ask this and we’ll elaborate.
 
-Q4: I keep hearing you guys talk about creating “Factories” and these objects whose responsibility is
+**Q4:** I keep hearing you guys talk about creating “Factories” and these objects whose responsibility is
 exclusively construction of object graphs. But seriously, that’s too many objects, and too much for such a
 simple thing.
 
-A: Typically there is one factory for a whole graph of objects, see example. So you don’t have to worry about
+**A:** Typically there is one factory for a whole graph of objects, see example. So you don’t have to worry about
 having class explosion due to one factory per class. The responsibility of the factory is to create the object
 graph and to do no work (All you should see is a whole lot of new keywords and passing around of references).
 The responsibility of the object graph is to do work, and to do no object instantiate.
@@ -1085,25 +1088,25 @@ flaw. Inject directly the object(s) that you need, rather than walking around an
 
 ### Warning Signs
 
-* Objects are passed in but never used directly (only used to get access to other objects)
-* *Law of Demeter* violation: method call chain walks an object graph with more than one dot (.)
-* Suspicious names: context, environment, principal, container, or manager
+- Objects are passed in but never used directly (only used to get access to other objects)
+- *Law of Demeter* violation: method call chain walks an object graph with more than one dot (.)
+- Suspicious names: context, environment, principal, container, or manager
 
 ### Why This Is a Flaw
 
-* **Deceitful API:** If your API says that all you need is a credit card number as a `String`, but then the
+- **Deceitful API:** If your API says that all you need is a credit card number as a `String`, but then the
   code secretly goes off and dig around to find a `CardProcessor`, or a `PaymentGateway`, the real
   dependencies are not clear. Declare your dependencies in your API (the method signature, or object’s
   constructor) the collaborators which you really need.
-* **Makes for Brittle Code:** Imagine when something needs to change, and you have all these “Middle Men” that
+- **Makes for Brittle Code:** Imagine when something needs to change, and you have all these “Middle Men” that
   are used to dig around in and get the objects you need. Many of them will need to be modified to accommodate
   new interactions. Instead, try to get the most specific object that you need, where you need it. (In the
   process you may discover a class needs to be split up, because it has more than one responsibility. Don’t be
   afraid; strive for the *Single Responsibility Principle*). Also, when digging around to find the object you
   need, you are intimate with the intermediaries, and they are now needed as dependencies for compilation.
-* **Bloats your Code and Complicates what’s Really Happening:** With all these intermediary steps to dig
+- **Bloats your Code and Complicates what’s Really Happening:** With all these intermediary steps to dig
    around and find what you want; your code is more confusing. And it’s longer than it needs to be.
-* **Hard for Testing:** If you have to test a method that takes a context object, when you exercise that
+- **Hard for Testing:** If you have to test a method that takes a context object, when you exercise that
   method it’s hard to guess what is pulled out of the context, and what isn’t cared about. Typically this
   means we pass in an empty context, get some null pointers, then set some state in the context and try again.
   We repeat until all the null pointers go away. See also Breaking the *Law of Demeter* is Like Looking for a
@@ -1113,10 +1116,10 @@ flaw. Inject directly the object(s) that you need, rather than walking around an
 
 This is also known as a “Train Wreck” or a “*Law of Demeter*” violation (See Wikipedia on the Law of Demeter).
 
-* **Symptom:** having to create mocks that return mocks in tests
-* **Symptom:** reading an object named “context”
-* **Symptom:** seeing more than one period “.” in a method chaining where the methods are getters
-* **Symptom:** difficult to write tests, due to complex fixture setup
+- **Symptom:** having to create mocks that return mocks in tests
+- **Symptom:** reading an object named “context”
+- **Symptom:** seeing more than one period “.” in a method chaining where the methods are getters
+- **Symptom:** difficult to write tests, due to complex fixture setup
 
 Example violations: 
 
@@ -1134,9 +1137,9 @@ Instead of looking for things, simply ask for the objects you need in the constr
 asking for your dependencies in constructor you move the responsibility of object finding to the factory which
 created the class, typically a factory or GUICE.
 
-* Only talk to your immediate friends.
-* Inject (pass in) the more specific object that you really need.
-* Leave the object location and configuration responsibility to the caller ie the factory or GUICE.
+- Only talk to your immediate friends.
+- Inject (pass in) the more specific object that you really need.
+- Leave the object location and configuration responsibility to the caller ie the factory or GUICE.
 
 ### Concrete Examples Before and After
 
@@ -1191,7 +1194,8 @@ class SalesTaxCalculatorTest extends TestCase {
   Invoice invoice = new Invoice(1, new ProductX(95.00));
   // ...
   assertEquals(
-      0.09, calc.computeSalesTax(user, invoice), 0.05);
+      0.09, calc.computeSalesTax(user, invoice), 0.05)
+- The new keyword constructs anything you woul
 }
 ```
 
@@ -1242,11 +1246,11 @@ class SalesTaxCalculatorTest extends TestCase {
 This example mixes object lookup with calculation. The core responsibility is to multiply an amount by a tax
 rate.
 
-* **Flaw:** To test this class you need to instantiate a `User` and an `Invoice` and populate them with a
+- **Flaw:** To test this class you need to instantiate a `User` and an `Invoice` and populate them with a
   `Zip` and an amount. This is an extra burden to testing.
-* **Flaw:** For users of the method, it is unclear that all that is needed is an `Address` and an `Invoice`.
+- **Flaw:** For users of the method, it is unclear that all that is needed is an `Address` and an `Invoice`.
   (The API lies to you).
-* **Flaw:** From code reuse point of view, if you wanted to use this class on another project you would also
+- **Flaw:** From code reuse point of view, if you wanted to use this class on another project you would also
   have to supply source code to unrelated classes such as `Invoice`, and `User`. (Which in turn may pull in
   more dependencies)
 
@@ -1355,13 +1359,13 @@ The most common *Law of Demeter* violations have many chained calls, however thi
 violate it with a single chain. Getting the `Authenticator` from the `RPCClient` is a violation, because the
 `RPCClient` is not used elsewhere, and is only used to get the `Authenticator`.
 
-* **Flaw:** Nobody actually cares about the `RPCCllient` in this class. Why are we passing it in?
-* **Flaw:** Nobody actually cares about the `HttpRequest` in this class. Why are we passing it in?
-* **Flaw:** The cookie is what we need, but we must dig into the request to get it. For testing, instantiating
+- **Flaw:** Nobody actually cares about the `RPCClient` in this class. Why are we passing it in?
+- **Flaw:** Nobody actually cares about the `HttpRequest` in this class. Why are we passing it in?
+- **Flaw:** The cookie is what we need, but we must dig into the request to get it. For testing, instantiating
   an `HttpRequest` is not a trivial matter.
-* **Flaw:** The `Authenticator` is the real object of interest, but we have to dig into the `RPCClient` to get
+- **Flaw:** The `Authenticator` is the real object of interest, but we have to dig into the `RPCClient` to get
   the `Authenticator`.
-  
+
 For testing the original bad code we had to mock out the `RPCClient` and `HttpRequest`. Also the test is very
 intimate with the implementation since we have to mock out the object graph traversal. In the fixed code we
 didn’t have to mock any graph traversal. This is easier, and helps our code be less brittle. (Even if we chose
@@ -1512,14 +1516,14 @@ We need our objects to have one responsibility, and that is not to act as a Serv
 When using Guice, you will be able to remove any existing Service Locators. *Law of Demeter* violations occur
 when one method acts as a locator in addition to its primary responsibility.
 
-* **Flaw:** `db.getLock()` is outside the single responsibility of the `Database`. It also violates the *Law
+- **Flaw:** `db.getLock()` is outside the single responsibility of the `Database`. It also violates the *Law
   of demeter* by requiring us to call `db.getLock().acquire()` and `db.getLock().release()` to use the lock.
-* **Flaw:** When testing the UpdateBug class, you will have to mock out the Database‘s getLock method.
-* **Flaw:** The `Database` is acting as a database, as well as a service locator (helping others to find a
+- **Flaw:** When testing the UpdateBug class, you will have to mock out the Database‘s getLock method.
+- **Flaw:** The `Database` is acting as a database, as well as a service locator (helping others to find a
   lock). It has an identity crisis. Combining *Law of Demeter* violations with acting like a Service Locator
   is worse than either problem individually. The point of the `Database` is not to distribute references to
   other services, but to save entities into a persistent store.
-  
+
 The `Database`’s `getLock()` method should be eliminated. Even if `Database` needs to have a reference to a
 lock, it is a better if `Database` does not share it with others. You should never have to mock out a setter
 or getter.
@@ -1529,7 +1533,6 @@ style asserts against the state of objects after work is performed on them. It i
 implementation, just that the result is in the state as expected. The second style uses mock objects to assert
 about the internal behavior of the *System Under Test* (SUT). Both styles are valid, although different people
 have strong opinions about one or the other.
-
 
 #### Problem: Object Called “Context” is a Great Big Hint to look for a Violation
 
@@ -1612,15 +1615,15 @@ public void testWithHonestApiDeclaringWhatItNeeds() {
 Context objects may sound good in theory (no need to change signatures to change dependencies) but they are
 very hard to test.
 
-* **Flaw:** Your API says all you need to test this method is a `UserContext` map. But as a writer of the
+- **Flaw:** Your API says all you need to test this method is a `UserContext` map. But as a writer of the
   test, you have no idea what that actually is! Generally this means you write a test passing in null, or an
   empty map, and watch it fail, then progressively stuff things into the map until it will pass.
-* **Flaw:** Some may claim the API is “flexible” (in that you can add any parameters without changing the
+- **Flaw:** Some may claim the API is “flexible” (in that you can add any parameters without changing the
   signatures), but really it is brittle because you cannot use refactoring tools; users don’t know what
   parameters are really needed. It is not possible to determine what its collaborators are just by examining
   the API. This makes it hard for new people on the project to understand the behavior and purpose of the
   class. We say that API lies about its dependencies.
-  
+
 The way to fix code using context objects is to replace them with the specific objects that are needed. This
 will expose true dependencies, and may help you discover how to decompose objects further to make an even
 better design.
@@ -1652,16 +1655,16 @@ to fail unexpectedly. Break the static dependency using manual or Guice *Depende
 
 ### Warning Signs
 
-* Adding or using singletons
-* Adding or using static fields or static methods
-* Adding or using static initialization blocks
-* Adding or using registries
-* Adding or using service locators
+- Adding or using singletons
+- Adding or using static fields or static methods
+- Adding or using static initialization blocks
+- Adding or using registries
+- Adding or using service locators
 
-**NOTE:** When we say “Singleton” or “JVM Singleton” in this document, we mean the classic Gang of Four
-singleton. (We say that this singleton enforces its own “singletonness” though a static instance field). An
-“application singleton” on the other hand is an object which has a single instance in our application, but
-which does not enforce its own “singletonness.”
+> **NOTE:** When we say “Singleton” or “JVM Singleton” in this document, we mean the classic Gang of Four
+> singleton. (We say that this singleton enforces its own “singletonness” though a static instance field). An
+> “application singleton” on the other hand is an object which has a single instance in our application, but
+> which does not enforce its own “singletonness.”
 
 ### Why This Is a Flaw
 
@@ -1715,18 +1718,18 @@ Guice singleton if there’s only one in the application).
 
 #### Global State & Singletons makes for Brittle Applications (and Tests)
 
-* Static access prevents collaborating with a subclass or wrapped version of another class. By hard-coding the
-  dependency, we lose the power and flexibility of polymorphism.
-* Every test using global state needs it to start in an expected state, or the test will fail. But another
-  object might have mutated that global state in a previous test.
-* Global state often prevents tests from being able to run in parallel, which forces test suites to run slower.
-* If you add a new test (which doesn’t clean up global state) and it runs in the middle of the suite, another
-  test may fail that runs after it.
-* Singletons enforcing their own “Singletonness” end up cheating.
-     
-  You’ll often see mutator methods such as `reset()` or `setForTest(…)` on so-called singletons, because
-  you’ll need to change the instance during tests. If you forget to reset the Singleton after a test, a later
-  use will use the stale underlying instance and may fail in a way that’s difficult to debug.
+-   Static access prevents collaborating with a subclass or wrapped version of another class. By hard-coding the
+    dependency, we lose the power and flexibility of polymorphism.
+-   Every test using global state needs it to start in an expected state, or the test will fail. But another
+    object might have mutated that global state in a previous test.
+-   Global state often prevents tests from being able to run in parallel, which forces test suites to run slower.
+-   If you add a new test (which doesn’t clean up global state) and it runs in the middle of the suite, another
+    test may fail that runs after it.
+-   Singletons enforcing their own “Singletonness” end up cheating.
+       
+    You’ll often see mutator methods such as `reset()` or `setForTest(…)` on so-called singletons, because
+    you’ll need to change the instance during tests. If you forget to reset the Singleton after a test, a later
+    use will use the stale underlying instance and may fail in a way that’s difficult to debug.
   
 #### Global State & Singletons turn APIs into Liars
 
@@ -1787,11 +1790,11 @@ global state. The higher the number, the bigger the problem. Below, we have a gl
 
 ```java
 class UniqueID {
-// Global Load of 1 because only nextID is exposed as global state 
-private static int nextID = 0;
-int static get() {
-return nextID++;
-}
+  // Global Load of 1 because only nextID is exposed as global state 
+  private static int nextID = 0;
+  int static get() {
+    return nextID++;
+  }
 }
 ```
 
@@ -1799,11 +1802,11 @@ What would the global load be in the example below?
 
 ```java
 class AppSettings {
-static AppSettings instance = new AppSettings(); 
-int numberOfThreads = 10;
-int maxLatency = 20;
-int timeout = 30;
-private AppSettings(){} // To prevent people from instantiating
+  static AppSettings instance = new AppSettings(); 
+  int numberOfThreads = 10;
+  int maxLatency = 20;
+  int timeout = 30;
+  private AppSettings(){} // To prevent people from instantiating
 }
 ```
 
@@ -1829,12 +1832,12 @@ Here is a typical singleton implementation of Cache.
 
 ```java
 class Cache {
-static final instance Cache = new Cache();
-
-Map<String, User> userCache = new HashMap<String, User>();
-EvictionStrategy eviction = new LruEvictionStrategy();
-
-private Cache(){} // private constructor //..
+  static final instance Cache = new Cache();
+  
+  Map<String, User> userCache = new HashMap<String, User>();
+  EvictionStrategy eviction = new LruEvictionStrategy();
+  
+  private Cache(){} // private constructor //..
 }
 ```
 
@@ -1870,7 +1873,7 @@ with singletons often relax the singleton property of their singletons into two 
 
 1. They remove the final keyword from the static final declaration of the instance. This allows them to
    substitute different singletons for different tests.
-2. They provide a second `initalizeForTest()` method which allows them to modify the singleton state. However,
+1. They provide a second `initalizeForTest()` method which allows them to modify the singleton state. However,
    these solutions at best are a hack which produce hard to maintain and understand code. Every test (or
    tearDown) affecting any global state must undo those changes, or leak them to subsequent tests. And test
    isolation is nearly impossible if running tests in parallel.
@@ -1878,26 +1881,26 @@ with singletons often relax the singleton property of their singletons into two 
 Global state is the single biggest headache of unit testing!
 
 ### Recognizing the Flaw
-* **Symptom:** Presence of static fields
-* **Symptom:** Code in the CL makes static method calls
-* **Symptom:** A Singleton has `initializeForTest(…)`, `uninitialize(…)`, and other resetting methods (i.e. to
+- **Symptom:** Presence of static fields
+- **Symptom:** Code in the CL makes static method calls
+- **Symptom:** A Singleton has `initializeForTest(…)`, `uninitialize(…)`, and other resetting methods (i.e. to
   tell it to use some light weight service instead of one that talks to other servers).
-* **Symptom:** Tests fail when run in a suite, but pass individually or vice versa
-* **Symptom:** Tests fail if you change the order of execution
-* **Symptom:** Flag values are read or written to, or `Flags.disableStateCheckingForTest()` and
+- **Symptom:** Tests fail when run in a suite, but pass individually or vice versa
+- **Symptom:** Tests fail if you change the order of execution
+- **Symptom:** Flag values are read or written to, or `Flags.disableStateCheckingForTest()` and
   `Flags.enableStateCheckingForTest()` is called.
-* **Symptom:** Code in the CL has or uses Singletons, Mingletons, Hingletons, and Fingletons (see Google
+- **Symptom:** Code in the CL has or uses Singletons, Mingletons, Hingletons, and Fingletons (see Google
   Singleton Detector.)
-  
-**NOTE:** There is a distinction between global as in “JVM Global State” and global as in “Application Shared
-State.”
 
-* JVM Global State occurs when the static keyword is used to make accessible a field or a method that returns
+> **NOTE:** There is a distinction between global as in “JVM Global State” and global as in “Application Shared
+> State.”
+
+- JVM Global State occurs when the static keyword is used to make accessible a field or a method that returns
   a shared object. The use of static in order to facilitate shared state is the problem. Because static is
   enforced as One Per JVM, parallelizing and isolating tests becomes a huge problem. From a maintenance point
   of view, static fields create coupling, hidden colaborators and APIs which lie about their true
   dependencies. Static access is the root of the problem.
-* Application Shared State simply means the same instance is shared in multiple places throughout the code.
+- Application Shared State simply means the same instance is shared in multiple places throughout the code.
   There may or may not be multiple instances of a class instantiated at any one time, depending on whether
   application logic enforces uniqueness. The shared state is not accessed globally through the use of static.
   It is passed to collaborators who need the state, or Guice manages the consistent injection of needed shared
@@ -1905,7 +1908,7 @@ State.”
   is servicing that user’s request. Guice would scope that as `@RequestScoped`.) It is not shared state in and
   of itself that is a problem. There are places in an application that need access to shared state. It’s
   sharing that state through statics that causes brittle code and difficulty for testing.
-  
+
 Test for JVM Global State:
 
 Answer the following question: “Can I, in theory, create a second instance of your application in the same
@@ -1919,33 +1922,33 @@ shared state.
 *Dependency Injection* is your Friend.
 *Dependency Injection* is your Friend.
 
-* If you need a collaborator, use *Dependency Injection* (pass in the collaborator to the constructor).
+- If you need a collaborator, use *Dependency Injection* (pass in the collaborator to the constructor).
   *Dependency injection* will make your collaborators clear, and give you seams for injecting test-doubles.
-* If you need shared state, use Guice which can manage Application Scope singletons in a way that is still
+- If you need shared state, use Guice which can manage Application Scope singletons in a way that is still
   entirely testable.
-* If a static is used widely in the codebase, and you cannot replace it with a Guice Singleton Scoped object
+- If a static is used widely in the codebase, and you cannot replace it with a Guice Singleton Scoped object
   in one CL, try one of these workaround:
-  * Create an Adapter class. It will probably have just a default constructor, and methods of the Adapter will
+  - Create an Adapter class. It will probably have just a default constructor, and methods of the Adapter will
     each be named the same as (and call through to) a static method you’re trying to decouple from. This
     doesn’t fully fix the problems–the static access still exists, but at least the Adapter can be
     faked/mocked in testing. Once all consumers of a static method or utility filled with static methods have
     been adapted, the statics can be eliminated by pushing the shared behavior/state into the Adapters
     (turning them from adapters into full fledged collaborators). Use application logic or Guice scopes to
     enforce necessary sharing.
-  * Rather than wrapping an adapter around the static methods, you can sometimes move the shared
+  - Rather than wrapping an adapter around the static methods, you can sometimes move the shared
     behavior/state into an instantiable class early. Have Guice manage the instantiable object (perhaps in
     @Singleton scope) and place a Guice-managed instance behind the static method, until all callers can be
     refactored to inject the instance instead of using it through the static method. Again, this is a
     half-solution that still retains statics, but it’s a step toward removing the statics that may be useful
     when dealing with pervasive static methods.
-  * When eliminating a Singleton in small steps, try binding a Guice Provider to the class you want to share
+  - When eliminating a Singleton in small steps, try binding a Guice Provider to the class you want to share
     in Scopes.Singleton (or use a provider method annotated `@Singleton`). The Provider returns an instance 
     it retrieves from the GoF Singleton. Use Guice to inject the shared instance where possible, and once all
     sites can be injected, eliminate the GoF Singleton.
-* If you’re stuck with a library class’ static methods, wrap it in an object that implements an interface.
+- If you’re stuck with a library class’ static methods, wrap it in an object that implements an interface.
   Pass in the object where it is needed. You can stub the interface for testing, and cut out the static
   dependency. See the example below.
-* If using Guice, you can use GUICE to bind flag values to injectable objects. Then wherever you need the
+- If using Guice, you can use GUICE to bind flag values to injectable objects. Then wherever you need the
   flag’s value, inject it. For tests, you can pass in any value with *Dependency Injection*, bypassing the
   flag entirely and enabling easy parallelization.
 
@@ -2088,15 +2091,15 @@ class AdminDashboardTest extends TestCase {
 </table>
 
 For various reasons, it may be necessary to have only one of something in your application. Typically this is
-implemented as a Singleton [GoF], in which the class can give out one instance of an object, and it is
+implemented as a Singleton (GoF), in which the class can give out one instance of an object, and it is
 impossible to instantiate two instances at the same time. There is a price to pay for such a JVM Singleton,
 and that price is flexibility and testability.People may work around these problems (by breaking
 encapsulation) with `setForTest(…)` and `resetForTest()` methods to alter the underlying singleton’s instance.
 
-* **Flaw:** As in all uses of static methods, there are no seams to polymorphically change the implementation.
+- **Flaw:** As in all uses of static methods, there are no seams to polymorphically change the implementation.
   Your code becomes more fragile and brittle.
-* **Flaw:** Tests cannot run in parallel, as each thread’s mutations to shared global state will collide.
-* **Flaw:** `@VisibleForTesting` is a hint that the class should be re-worked so that it does not need to
+- **Flaw:** Tests cannot run in parallel, as each thread’s mutations to shared global state will collide.
+- **Flaw:** `@VisibleForTesting` is a hint that the class should be re-worked so that it does not need to
   break encapsulation in order to be tested. Notice how that is removed in the solution.
 
 If you need a guarantee of “just one instance” in your application, tell Guice that object is in Singleton
@@ -2207,11 +2210,11 @@ Flag classes with static fields are recognized as a way to share settings determ
 serious flaw. Because they share global state, they need to be very carefully adjusted before and after tests.
 (Otherwise subsequent tests might fail).
 
-* **Flaw:** One test can set a flag value and then forget to reset it, causing subsequent tests to fail.
-* **Flaw:** If two tests need different values of a certain flag to run, you cannot parallelize them. If you
+- **Flaw:** One test can set a flag value and then forget to reset it, causing subsequent tests to fail.
+- **Flaw:** If two tests need different values of a certain flag to run, you cannot parallelize them. If you
   tried to, there would be a race condition on which thread sets the flags value, and the other thread’s tests
   would fail.
-* **Flaw:** The code that needs flags is brittle, and consumers of it don’t know by looking at the API if
+- **Flaw:** The code that needs flags is brittle, and consumers of it don’t know by looking at the API if
   flags are used or not. The API is lying to you.
 
 To remedy these problems, turn to our friend *Dependency Injection*. You can use Guice to discover and make
@@ -2367,7 +2370,6 @@ class RpcCacheTest extends TestCase {
 </tr>
 </table>
 
-
 Tests for classes exhibiting this problem may pass individually, but fail when run in a suite. They also might
 fail if the test ordering changes in the suite.
 
@@ -2379,14 +2381,14 @@ If you work around this by exposing a setter for the `RpcClient`‘s Backend, yo
 “Problem: Need to call `setForTest(…)` and/or `resetForTest()` Methods,” above. The underlying problem with
 statics won’t be solved.
 
-* **Flaw:** Static Initialization Blocks are run once, and are non-overridable by tests
-* **Flaw:* The Backend is set once, and never can be altered for future tests. This may cause some tests to
+- **Flaw:** Static Initialization Blocks are run once, and are non-overridable by tests
+- **Flaw:** The Backend is set once, and never can be altered for future tests. This may cause some tests to
   fail, depending on the ordering of the tests.
-  
+    
 To remedy these problems, first remove the static state. Then inject into the `RpcClient` the Backend that it
 needs. *Dependency Injection* to the rescue. Again. Use Guice to manage the single instance of the `RpcClient`
 in the application’s scope. Getting away from a JVM Singleton makes testing all around easier.
-
+  
 #### Problem: Static Method call in a Depended on Library
 
 <table>
@@ -2497,11 +2499,11 @@ Sometimes you will be stuck with a static method in a library that you need to p
 But you need the library so you can’t remove or replace it with a non-static implementation. Because it is a
 library, you don’t have the control to remove the static modifier and make it an instance method.
 
-* **Flaw:** You are forced to execute the `TrackStatusChecker`‘s method even when you don’t want to, because
+- **Flaw:** You are forced to execute the `TrackStatusChecker`‘s method even when you don’t want to, because
   it is locked in there with a static call.
-* **Flaw:** Tests may be slower, and risk mutating global state through the static in the library.
-* **Flaw:** Static methods are non-overridable and non-injectable.
-* **Flaw:** Static methods remove a seam from your test code.
+- **Flaw:** Tests may be slower, and risk mutating global state through the static in the library.
+- **Flaw:** Static methods are non-overridable and non-injectable.
+- **Flaw:** Static methods remove a seam from your test code.
 
 If you control the code (it is not a third party library), you want to fix the root problem and remove the
 static method.
@@ -2523,8 +2525,7 @@ There are two cases when global state is tolerable.
    transitive. The `String` is safe, but replace it with a `MyObject`, and it gets be risky due to the
    transitive closure of all state `MyObject` exposes. You are on thin ice if someone in the future decides to
    add mutable state to your immutable object and then your innocent code changes into a headache.
-
-2. When the information only travels one way. For example a `Logger` is one big singleton. However our
+1. When the information only travels one way. For example a `Logger` is one big singleton. However our
    application only writes to logger and never reads from it. More importantly our application does not behave
    differently based on what is or is not enabled in our logger. While it is not a problem from test point of
    view, it is a problem if you want to assert that your application does indeed log important messages. This
@@ -2545,24 +2546,24 @@ have a clear seam between these interactions.
 > be isolated from the class’s real responsibility. Use *Dependency Injection* to pass in pre-configured
 > objects. Extract classes with single responsibilities.
 
-#### Warning Signs
+### Warning Signs
 
-* Summing up what the class does includes the word “and”
-* Class would be challenging for new team members to read and quickly “get it”
-* Class has fields that are only used in some methods
-* Class has static methods that only operate on parameters
+- Summing up what the class does includes the word “and”
+- Class would be challenging for new team members to read and quickly “get it”
+- Class has fields that are only used in some methods
+- Class has static methods that only operate on parameters
 
 ### Why This Is a Flaw
 
 When classes have a large span of responsibilities and activities, you end up with code that is:
 
-* Hard to debug
-* Hard to test
-* Non-extensible system
-* Difficult for Nooglers and hard to hand off
-* Not subject to altering behavior via standard mechanisms: decorator, strategy, subclassing: you end up
+- Hard to debug
+- Hard to test
+- Non-extensible system
+- Difficult for Nooglers and hard to hand off
+- Not subject to altering behavior via standard mechanisms: decorator, strategy, subclassing: you end up
   adding another conditional test
-* Hard to give a name to describe what the class does. Whenever struggling with a name, the code is telling
+- Hard to give a name to describe what the class does. Whenever struggling with a name, the code is telling
   you that the responsibilities are muddled. When objects have a clear name, it is easy to keep them focused
   and shear off any excess baggage.
 
@@ -2573,12 +2574,12 @@ changes to be made in classes with too many responsibilities.
 often they come to accurately describe code that is taking on too many responsibilities. If not immediately,
 in time these classes grow into such descriptions:
 
-* Kitchen Sink
-* Dumping Ground
-* Class who’s Behavior has too many “AND’s”
-* First thing’s KIll All The Managers (*See Shakespeare)
-* God Class
-* “You can look at anything except for this one class”
+- Kitchen Sink
+- Dumping Ground
+- Class who’s Behavior has too many “AND’s”
+- First thing’s KIll All The Managers (*See Shakespeare)
+- God Class
+- “You can look at anything except for this one class”
 
 ### Recognizing the Flaw
 
@@ -2589,69 +2590,68 @@ umbrella name like Manager, Utility, or Context it is probably doing too much. W
 accurately and completely, you are better able to isolate responsibilities and create a focused class. When
 you can’t name it, it probably needs to be multiple objects.
 
-* **Example Troubling Description:** “`KillerAppServer` contains `main()` and is responsible for parsing flags
+- **Example Troubling Description:** “`KillerAppServer` contains `main()` and is responsible for parsing flags
   AND initializing filters chains and servlets AND mapping servlets for Google Servlet Engine AND controlling
   the server loop… “
-* **Example Troubling Description:** “`SyndicationManager` caches syndications AND implements complex
+- **Example Troubling Description:** “`SyndicationManager` caches syndications AND implements complex
   expiration logic AND performs RPCs to repopulate missing or expired entries AND keeps statistics about
   syndications per user.” (In reality, initializing collaborators may be a separate responsibility,
   independent from the work that actually happens once they are wired together.)
-  
+
 #### Warning signs your class Does Too Much
 
-* Constructor does Real Work
-* Excessive scrolling
-* Many fields
-* Many methods
-* Clumping of unrelated/related methods
-* Many collaborators (passed in, constructed inside the class, accessed through statics, or yanked out of
+- Constructor does Real Work
+- Excessive scrolling
+- Many fields
+- Many methods
+- Clumping of unrelated/related methods
+- Many collaborators (passed in, constructed inside the class, accessed through statics, or yanked out of
   other collaborators)
-* The class just “feels too large.” It’s hard to hold in your head at once and understand it as a single chunk
+- The class just “feels too large.” It’s hard to hold in your head at once and understand it as a single chunk
   of behavior. It would be hard for a Noogler to read this class and “just get it.”
-* Class works with “dumb collaborators” that don’t have any behavior
-* Hidden interactions behind the public methods
-* The class is working with “dumb collaborators” that don’t have their own behavior. 
+- Class works with “dumb collaborators” that don’t have any behavior
+- Hidden interactions behind the public methods
+- The class is working with “dumb collaborators” that don’t have their own behavior. 
 
 > If the class you’re working with is doing all the work on behalf of the collaborators that interact with it,
 > that responsibility belongs on the collaborators. People may call this a “god class” that assumes all the
 > behavior that should be in other objects that interact with it. This is often caused by Primitive Obsession
-> [Refactoring, Fowler].
+> (Refactoring, Fowler).
 
 Hidden interactions behind one public API, which could be addressed better through composition.
 
-* From a design perspective, this hides a point of flexibility that composition would give us.
-* Encapsulating the behavior for a single responsibility is usually good information hiding.
-* Encapsulating the interaction between responsibilities (by having one class with many responsibilities) is
+- From a design perspective, this hides a point of flexibility that composition would give us.
+- Encapsulating the behavior for a single responsibility is usually good information hiding.
+- Encapsulating the interaction between responsibilities (by having one class with many responsibilities) is
   usually bad. This makes the collaborations brittle.
-* From a testing perspective, you don’t get the seams that you want to test individual pieces in isolation.
+- From a testing perspective, you don’t get the seams that you want to test individual pieces in isolation.
 
 ### Fixing the Flaw
 
-* **If this CL tried to introduce a class that does too much, require the author to split it up:**
-  1. Identify the individual responsibilities.
-  2. Name each one crisply.
-  3. Extract functionality into a separate class for each responsibility.
-  4. One class may perform the hidden responsibility of mediating between the others.
-  5. Celebrate that now you can test each class in isolation much easier than before.
-
-* **If working with a legacy class that did too much before this CL, and you can’t fix the whole legacy
-  problem today, you can at least:**
-  1. Sprout a new class with the sole responsibility of the new functionality.:
-  2. Extract a class where you are altering existing behavior. As you work on existing functionality, (i.e.
-     adding another conditional) extract a class pulling along that responsibility. This will start to take
-     chunks out of the legacy class, and you will be able to test each chunk in isolation (using Dependency
-     Injection).
-   
-     As you introduce these other collaborators, you may find the composition to be awkward or unnatural.
-     Despite this awkwardness, you have to take steps today to prevent the large class from growing. If you
-     don’t it will only grow, gaining more and more extraneous responsibilities, and get worse.
-* **If this CL has a class with fields that are only used in a few methods:** If you have a few methods that
-  are the only clients of a certain field – there is your new class. Encapsulate the work these methods do
-  into a new class.
-* **If this CL has a static method that operates on parameters:** Static methods are often a sign of a
-  homeless method. Look at the parameters passed into the static method. You probably have a method that
-  belongs on one of the parameters or a wrapper around one of the parameters. Move the method onto the
-  parameter it belongs on.
+-   **If this CL tried to introduce a class that does too much, require the author to split it up:**
+    1. Identify the individual responsibilities.
+    1. Name each one crisply.
+    1. Extract functionality into a separate class for each responsibility.
+    1. One class may perform the hidden responsibility of mediating between the others.
+    1. Celebrate that now you can test each class in isolation much easier than before.
+-   **If working with a legacy class that did too much before this CL, and you can’t fix the whole legacy
+    problem today, you can at least:**
+    1.  Sprout a new class with the sole responsibility of the new functionality.:
+    1.  Extract a class where you are altering existing behavior. As you work on existing functionality, (i.e.
+        adding another conditional) extract a class pulling along that responsibility. This will start to take
+        chunks out of the legacy class, and you will be able to test each chunk in isolation (using Dependency
+        Injection).
+     
+        As you introduce these other collaborators, you may find the composition to be awkward or unnatural.
+        Despite this awkwardness, you have to take steps today to prevent the large class from growing. If you
+        don’t it will only grow, gaining more and more extraneous responsibilities, and get worse.
+-   **If this CL has a class with fields that are only used in a few methods:** If you have a few methods that
+    are the only clients of a certain field – there is your new class. Encapsulate the work these methods do
+    into a new class.
+-   **If this CL has a static method that operates on parameters:** Static methods are often a sign of a
+    homeless method. Look at the parameters passed into the static method. You probably have a method that
+    belongs on one of the parameters or a wrapper around one of the parameters. Move the method onto the
+    parameter it belongs on.
   
 #### Caveat: Living With the Flaw
 

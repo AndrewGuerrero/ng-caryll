@@ -6,6 +6,8 @@ const requestImageSize = require('request-image-size');
 const unified = require('unified');
 const markdown = require('remark-parse');
 const remark2rehype = require('remark-rehype');
+const styleGuide = require('remark-preset-lint-markdown-style-guide');
+const report = require('vfile-reporter');
 const raw = require('rehype-raw');
 const highlight = require('rehype-highlight');
 const slug = require('rehype-slug');
@@ -36,6 +38,9 @@ function remarkFile(filePath) {
   const doc = fs.readFileSync(filePath).toString();
   unified()
     .use(markdown)
+    .use(styleGuide)
+    .use(require('remark-lint-maximum-line-length'), [1, 120])
+    .use(require('remark-lint-maximum-heading-length'), false)
     .use(remark2rehype, { allowDangerousHTML: true })
     .use(raw)
     .use(highlight)
@@ -50,6 +55,8 @@ function remarkFile(filePath) {
       const stream = fs.createWriteStream(OUTPUT_DIR + '/' + output_file + '.html');
       stream.write(String(file));
       stream.end();
+      console.log(filePath);
+      console.log(report(file));
     });
 }
 

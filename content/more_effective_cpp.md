@@ -6,8 +6,8 @@
 
 ### Item 1: Distinguish between pointers and references
 
-* There is no such thing as a `null` reference.
-* References require the object to be initialized.
+- There is no such thing as a `null` reference.
+- References require the object to be initialized.
 
 > ``` cpp
 > char *pc = 0;
@@ -37,8 +37,8 @@ C++ offers four cast operators.
 
 #### `const_cast`
 
-* Change the `const`ness of an object.
-* Change the `volatile`ness of an object.
+- Change the `const`ness of an object.
+- Change the `volatile`ness of an object.
 
 
 ``` cpp
@@ -61,9 +61,9 @@ update(const_cast<SpecialWidget*>(pw)); // error, const_cast cannot cast down th
 
 #### `dynamic_cast`
 
-* *Safe cast* an object down or across an inheritance hierarchy. *Safe cast* will
-  * Set pointer to `null` if cast fails
-  * `throw` an `exception` if reference cast fails
+- *Safe cast* an object down or across an inheritance hierarchy. *Safe cast* will
+  - Set pointer to `null` if cast fails
+  - `throw` an `exception` if reference cast fails
 
 
 ``` cpp
@@ -83,13 +83,13 @@ update(dynamic_cast<SpecialWidget*>(&csw));  // error, can't cast away constness
 
 #### `static_cast`
 
-* Closest to the C-style cast.
-* More flexible than `dynamic_cast` for situations where inheritance is not involved.
+- Closest to the C-style cast.
+- More flexible than `dynamic_cast` for situations where inheritance is not involved.
 
 #### `reinterpret_cast`
 
-* This cast should be rarely used as it destroys portability.
-* The most common use is to cast between function pointer types.
+- This cast should be rarely used as it destroys portability.
+- The most common use is to cast between function pointer types.
 
 ``` cpp
 typedef void (*FuncPtr)(); // function takes no args and returns ``void``
@@ -150,9 +150,9 @@ public:
 
 `class`es that lack a default constructor are problematic in three contexts
 
-* Arrays
-* `template`s
-* `virtual` base `class`es
+- Arrays
+- `template`s
+- `virtual` base `class`es
 
 #### Arrays
 
@@ -254,8 +254,8 @@ Implicit conversions where information can be lost is possible in C++. Conversio
 the author can choose to not provide the functions compilers use for implicit conversions. There are
 two kinds of functions to worry about.
 
-* implicit type conversion operators
-* single-argument constructors
+- implicit type conversion operators
+- single-argument constructors
 
 These types of functions should be avoided\!
 
@@ -452,18 +452,18 @@ const UPInt::operator++(int)
 }
 ```
 
-> * It is common to omit the name of the parameter so compilers don't complain about unused
+> *   It is common to omit the name of the parameter so compilers don't complain about unused
 >     parameters.
-> 
-> * Postfix returns a `const` value to prevent code like
 >     
->     ``` cpp
->     i++++;   // i.operator(0).operator(0);
->     ```
->     
->   which is prohibited for built-int types (developers must prohibit their own types themselves).
->   Additionally, `i` would only be incremented once since the `oldValue` is `return`ed and not the
->   incremented value.
+> *   Postfix returns a `const` value to prevent code like
+>       
+>       ``` cpp
+>       i++++;   // i.operator(0).operator(0);
+>       ```
+>       
+>     which is prohibited for built-int types (developers must prohibit their own types themselves).
+>     Additionally, `i` would only be incremented once since the `oldValue` is `return`ed and not the
+>     incremented value.
 
 > The prefix version is more efficient than the postfix version which needs to make multiple
 > temporaries.
@@ -527,83 +527,81 @@ operator new   operator delete   operator new[]   operator delete[]
 
 #### `new`
 
-* To create an object on the heap, use the `new` operator. It both allocates memory and calls the
-  constructor for that object.
-
-``` cpp
-string *ps = new string("Memory Management");
-```
-
-* To only allocate memory, call `operator new`; no constructor will be called.
-
-``` cpp
-void *rawMemory = operator new(sizeof(string));
-```
-
-> When declaring `operator new` the first parameter must be `size_t` which specifies how much
-> memory to allocate.
-
-</div>
-
-* To construct an object in a particular chunk of memory, use placement `new`.
-
-  ``` cpp
-  class Widget {
-  public:
-    Widget(int widgetSize);
-    ...
-  };
-  
-  Widget* constructWidgetInBuffer(void* buffer, int widgetSize)
-  {
-    return new (buffer) Widget(widgetSize);
-  }
-  
-  void* operator new(size_t, void* location)
-  {
-    return location;
-  }
-  ```
-
-  Placement `new` is `operator new` with an additional parameter to the memory which is simply
-  returned.
+-   To create an object on the heap, use the `new` operator. It both allocates memory and calls the
+    constructor for that object.
+    
+    ``` cpp
+    string *ps = new string("Memory Management");
+    ```
+    
+-   To only allocate memory, call `operator new`; no constructor will be called.
+    
+    ``` cpp
+    void *rawMemory = operator new(sizeof(string));
+    ```
+    
+    > When declaring `operator new` the first parameter must be `size_t` which specifies how much
+    > memory to allocate.
+    
+-   To construct an object in a particular chunk of memory, use placement `new`.
+    
+    ``` cpp
+    class Widget {
+    public:
+      Widget(int widgetSize);
+      ...
+    };
+    
+    Widget* constructWidgetInBuffer(void* buffer, int widgetSize)
+    {
+      return new (buffer) Widget(widgetSize);
+    }
+    
+    void* operator new(size_t, void* location)
+    {
+      return location;
+    }
+    ```
+    
+    Placement `new` is `operator new` with an additional parameter to the memory which is simply
+    returned.
 
 #### `delete`
 
-* To deallocate memory as well as call the destructor, use the `delete` operator.
+-   To deallocate memory as well as call the destructor, use the `delete` operator.
+    
+    ``` cpp
+    string *ps;
+    ...
+    delete ps;
+    ```
+    
+-   To only deallocate memory, call `operator delete`
+    
+    ``` cpp
+    ps->~string();
+    operator delete(ps);
+    ```
+    
+-   If placement `new` is used to create an object, explicitly call the objects destructor.
+    
+    ``` cpp
+    void * mallocShared(size_t size);
+    void freeShared(size_t size);
+    
+    void sharedMemory = mallocShared(sizeof(Widget));
+    
+    Widget *pw = constructWidgetInSharedBuffer(sharedMemory, 10);
+    ...
+    
+    pw->~Widget();
+    // or
+    freeShared(pw);
+    ```
+    
+    > Do not use the `delete` operator on any memory that was allocated with placement `new`.
 
-  ``` cpp
-  string *ps;
-  ...
-  delete ps;
-  ```
-
-* To only deallocate memory, call `operator delete`
-
-  ``` cpp
-  ps->~string();
-  operator delete(ps);
-  ```
-
-* If placement `new` is used to create an object, explicitly call the objects destructor.
-
-  ``` cpp
-  void * mallocShared(size_t size);
-  void freeShared(size_t size);
-  
-  void sharedMemory = mallocShared(sizeof(Widget));
-  
-  Widget *pw = constructWidgetInSharedBuffer(sharedMemory, 10);
-  ...
-  
-  pw->~Widget();
-  // or
-  freeShared(pw);
-  ```
-
-  > Do not use the `delete` operator on any memory that was allocated with placement `new`.
-
-#### Arrays
+#### Array syntax
 
 When using arrays, calls to `operator new` and `operator delete` are replaced with `operator new[]`
 and `operator delete[]` instead. Overload these carefully.
@@ -877,8 +875,8 @@ is no need need to provide a destructor, let C++ do that.
 
 A destructor can be called in two situations:
 
-* Normal situations such as going out of scope, `delete`
-* Stack unwinding as a part of `exception` propagation
+- Normal situations such as going out of scope, `delete`
+- Stack unwinding as a part of `exception` propagation
 
 If the destructor is called due to stack unwinding from an `exception` and then the code in the
 destructor `throw`s and is allowed to propagate out of the destructor, C++ calls the `terminate`
@@ -1028,8 +1026,8 @@ caught by the `catch` clause because it will only catch `exception`s of type dou
 
 There are two types of conversions allowed when matching `exception`s to `catch` clauses
 
-* Inheritance-based
-* Typed to untyped pointer
+- Inheritance-based
+- Typed to untyped pointer
 
 #### `catch` order
 
@@ -1056,9 +1054,9 @@ because the `Widget catch` clause is always tried first and the `exception` will
 
 When writing a `catch` clause, there are three different ways to `catch` an `exception`:
 
-* by pointer
-* by value
-* by reference
+- by pointer
+- by value
+- by reference
 
 `exception`s should always be caught by reference.
 
@@ -1109,7 +1107,8 @@ Furthermore, the four standard `exception`s
 </dd>
 <dt><code>bad_cast</code></dt>
 <dd>
-<code>throw</code>n when <code>dynamic_cast</code> to a reference fails (see <a href="more_effective_cpp#item-2-prefer-c-style-casts">Item 2</a>)
+<code>throw</code>n when <code>dynamic_cast</code> to a reference fails (see <a
+href="more_effective_cpp#item-2-prefer-c-style-casts">Item 2</a>)
 </dd>
 <dt><code>bad_typeid</code></dt>
 <dd>
@@ -1117,7 +1116,8 @@ Furthermore, the four standard `exception`s
 </dd>
 <dt><code>bad_exception</code></dt>
 <dd>
-available for unexpected <code>exception</code>s (see <a href="more_effective_cpp#item-14-use-exception-specifications-judiciously">Item 14</a>)
+available for unexpected <code>exception</code>s (see <a
+href="more_effective_cpp#item-14-use-exception-specifications-judiciously">Item 14</a>)
 </dd>
 </dl>
 
@@ -1176,20 +1176,20 @@ specification, a special function `unexpected` is automatically invoked.
 
 These benefits come with many drawbacks.
 
-**Default behavior**
+#### Default behavior
 
 The default behavior for `unexpected` is to call `terminate`.
 
-**Violation prevention**
+#### Violation prevention
 
 Compilers are forbidden from rejecting calls to functions that might violate the `exception`
 specification. Doing so allows flexibility but it becomes easy to violate the specification
 resulting in a call to `unexpected`. It becomes the programmers task to
 
-* Never use templates and `exception` specifications together.
-* Omit `exception` specifications on functions making calls to functions that lack `exception`
+- Never use templates and `exception` specifications together.
+- Omit `exception` specifications on functions making calls to functions that lack `exception`
   specifications.
-* Handle the standard `exception`s `throw`n by C++.
+- Handle the standard `exception`s `throw`n by C++.
 
 These three things coupled together can make `exception` specifications more trouble than they are
 worth.
@@ -1198,16 +1198,16 @@ worth.
 
 To handle `exception`s at runtime, programs must handle the bookkeeping associated with
 
-* Objects that require destruction if an `exception` is `throw`n
-* Entry to and exit from a `try` block
-* Associated `catch` clauses and types of `exception`s those clauses can handle
+- Objects that require destruction if an `exception` is `throw`n
+- Entry to and exit from a `try` block
+- Associated `catch` clauses and types of `exception`s those clauses can handle
 
-**Default costs**
+#### Default costs
 
 Even in code that does not make use of exception-handling features, C++ will still store data to
 keep tract of objects that are fully constructed and spend time to keep the data up to date.
 
-**`try` blocks**
+#### `try` blocks
 
 Assuming code that uses `try` blocks but never actually `throw`s exceptions, runtime and code size
 is expected to increase by 5-10%.
@@ -1373,8 +1373,8 @@ entirety of the matrix is not needed and resources are saved.
 
 ### Item 18: Amortize the cost of expected computations
 
-While [Item 17](more_effective_cpp#item-17-consider-using-lazy-evaluation) focused on *lazy evaluation*, the contents of this item can be
-described as *over-eager evaluation*
+While [Item 17](more_effective_cpp#item-17-consider-using-lazy-evaluation) focused on *lazy evaluation*, the contents
+of this item can be described as *over-eager evaluation*
 
 #### Caching
 
@@ -1462,8 +1462,8 @@ It's common to call `temp` a "temporary". As far as C++ is concerned, `temp` is 
 object. True temporary objects are *unnamed* objects that do not appear in the source code.
 Temporary objects arise in one of two ways:
 
-* implicit type conversions are applied to make function call succeed
-* functions `return` objects
+- implicit type conversions are applied to make function call succeed
+- functions `return` objects
 
 #### implicit type conversions
 
@@ -1483,8 +1483,9 @@ is converted to a parameter of type `const string&`. This conversion creates a t
 object bound by `str`.
 
 Though convenient, the conversion is unnecessarily expensive. This can be solved by redesigning
-software so that the conversion either cannot take place (see [Item 5](more_effective_cpp#item-5-be-wary-of-user-defined-conversion-functions)) or is
-unnecessary (see Item 21).
+software so that the conversion either cannot take place (see [Item
+5](more_effective_cpp#item-5-be-wary-of-user-defined-conversion-functions)) or is unnecessary (see [Item
+21](item-21-overload-to-avoid-implicit-type-conversions)).
 
 > These conversions only take place when passing objects by value or when passing to a
 > reference-to-`const` parameter. They do not occur when passing an object to a
@@ -1574,33 +1575,33 @@ const UPInt operator+(int lhs, const UPInt& rhs);
 
 Assignment operators `op=` are typically more efficient than stand-alone `op` because
 
-* Stand-alone `op` typically must `return` a new object which costs temporary object construction
-  and destruction.
-
-* Assignment versions allow clients to decide on convenience or efficiency.
-
-  ``` cpp
-  Rational a, b, c, d, result;
-  ...
-  
-  // convenience
-  result = a + b + c + d; // probably needs 3 temporary objects
-  
-  // or efficiency
-  result = a;    // no temporary needed
-  result += b;   // no temporary needed
-  result += c;   // no temporary needed
-  result += d;   // no temporary needed
-  ```
-
-* Stand-alone `template` code, like below, may be too complex for optimizing out the temporary
-  object.
-
-  ``` cpp
-  template<class T>
-  const T operator+(const T& lhs, const T& rhs)
-  { return T(lhs) += rhs; }
-  ```
+-   Stand-alone `op` typically must `return` a new object which costs temporary object construction
+    and destruction.
+    
+-   Assignment versions allow clients to decide on convenience or efficiency.
+    
+    ``` cpp
+    Rational a, b, c, d, result;
+    ...
+    
+    // convenience
+    result = a + b + c + d; // probably needs 3 temporary objects
+    
+    // or efficiency
+    result = a;    // no temporary needed
+    result += b;   // no temporary needed
+    result += c;   // no temporary needed
+    result += d;   // no temporary needed
+    ```
+    
+-   Stand-alone `template` code, like below, may be too complex for optimizing out the temporary
+    object.
+    
+    ``` cpp
+    template<class T>
+    const T operator+(const T& lhs, const T& rhs)
+    { return T(lhs) += rhs; }
+    ```
 
 ### Item 23: Consider alternative libraries
 
@@ -1617,12 +1618,12 @@ When a `virtual` function is called, the code executed must correspond to the dy
 object on which the function is invoked. This is achieved with *virtual tables* and *virtual table
 pointers*. A `class` with a `virtual` function has the following additional costs:
 
-* Space must be set aside for a *virtual table* for each `class`.
-* Every object needs space for an extra *virtual pointer* for its own `class` and each base
+- Space must be set aside for a *virtual table* for each `class`.
+- Every object needs space for an extra *virtual pointer* for its own `class` and each base
   `class` it inherits from (with the possible `exception` of `virtual` base `class`es).
-* Function calls gain a slight increase in overhead figuring out which function in the inheritance
+- Function calls gain a slight increase in overhead figuring out which function in the inheritance
   hierarchy to call.
-* `virtual` functions cannot be `inline`d if the function calls are made through pointers or
+- `virtual` functions cannot be `inline`d if the function calls are made through pointers or
   references to objects.
 
 #### RTTI
@@ -1635,12 +1636,12 @@ function must add an additional entry to the *virtual table* as well as addition
 
 #### Summary
 
-| Feature | Increases size of objects | Increases per-`class` data | Reduces `inline`ing |
-| -- | -- | -- | -- |
-| **`virtual` functions** | yes | yes | yes |
-| **multiple inheritance** | yes | yes | no |
-| **`virtual` base** | often | sometimes | no |
-| **`class`es RTTI** | no | yes | no |
+| Feature                  | Increases size of objects | Increases per-`class` data | Reduces `inline`ing |
+| --                       | --                        | --                         | --                  |
+| **`virtual` functions**  | yes                       | yes                        | yes                 |
+| **multiple inheritance** | yes                       | yes                        | no                  |
+| **`virtual` base**       | often                     | sometimes                  | no                  |
+| **`class`es RTTI**       | no                        | yes                        | no                  |
 
 *Table 1: Features of C++ and their associated costs*
 
@@ -1826,9 +1827,9 @@ Printer::~Printer()
 
 In the above example, `Printer` objects can exist in three different contexts
 
-* On their own
-* As a base `class`
-* Inside larger objects
+- On their own
+- As a base `class`
+- Inside larger objects
 
 which can get confusing when limiting the number of objects in existence. Typically, the intent is
 to only allow objects to exist on their own. This is easily done by declaring the constructors
@@ -1932,7 +1933,8 @@ private:
 > An alternative is to declare all the constructors `private` but its usually less work to make the
 > destructor `private`.
 
-> This technique will also make inheritance illegal as well (see [Item 26](more_effective_cpp#item-26-limiting-the-number-of-objects-of-a-class)). If
+> This technique will also make inheritance illegal as well (see [Item
+> 26](more_effective_cpp#item-26-limiting-the-number-of-objects-of-a-class)). If
 > this is not desirable, inheritance can be allowed by declaring the destructor `protected` instead.
 
 #### Determining whether an object is on the heap
@@ -2028,9 +2030,9 @@ private:
 *Smart pointer*s are pointers with additional functionality added to the built-in pointer. *Smart
 pointers* allow control over
 
-* Construction and destruction
-* Copying and assignment
-* Dereferencing
+- Construction and destruction
+- Copying and assignment
+- Dereferencing
 
 Below is a basic template for a DIY *smart pointer*.
 
@@ -2208,8 +2210,8 @@ single representation of that value.
 
 *Reference counting* is useful for improving efficiency under the following conditions
 
-* Relatively few values are shared by relatively many objects
-* Object values are expensive to create or destroy, or they use lots of memory.
+- Relatively few values are shared by relatively many objects
+- Object values are expensive to create or destroy, or they use lots of memory.
 
 #### Implementing reference counting
 
@@ -3015,11 +3017,11 @@ private:
 
 ### Item 32: Program in the future tense
 
-* Provide complete `class`es, even if some parts aren't currently used. When new demands are made
+- Provide complete `class`es, even if some parts aren't currently used. When new demands are made
   on the `class`es, it is less likely to have to go back and modify them.
-* Design interfaces to facilitate common operations and prevent common errors. Make the `class`es
+- Design interfaces to facilitate common operations and prevent common errors. Make the `class`es
   easy to use correctly, hard to use incorrectly.
-* If there is no great penalty for generalizing code, generalize it.
+- If there is no great penalty for generalizing code, generalize it.
 
 ### Item 33: Make non-leaf classes abstract
 
