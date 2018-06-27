@@ -17,7 +17,7 @@ const visit = require('unist-util-visit');
 const isElement = require('hast-util-is-element');
 const hasProperty = require('hast-util-has-property');
 
-const INPUT_DIR = 'content/**';
+const INPUT_DIR = 'content/*.md';
 const OUTPUT_DIR = 'src/assets/documents';
 
 remarkDirectory(INPUT_DIR);
