@@ -13,12 +13,16 @@ change any of the source files.
 
 ## Update content on dev server
 
-Run `yarn run remark-documents` to update the markdown content while developing. Run `yarn run lunr-index` to update
-the search index while developing. Run `yarn run prestart` to run both scripts with one command.
+Run `yarn run remark-documents` to update the markdown content while developing. This script also provides markdown
+syntax suggestions.
 
-## Lint content
+Run `yarn run lunr-index` to update the search index while developing. 
 
-Run `yarn run retext-documents` to lint the markdown content.
+Run `yarn run prestart` to run both of the above scripts with one command.
+
+## Content grammar
+
+Run `yarn run retext-documents` for content grammar suggestions.
 
 ## Build
 
