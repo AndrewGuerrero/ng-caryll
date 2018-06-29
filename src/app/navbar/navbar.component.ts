@@ -46,7 +46,8 @@ export class NavbarComponent {
       sanitizer.bypassSecurityTrustResourceUrl('assets/img/moon.svg'));
     iconRegistry.addSvgIcon('eye',
       sanitizer.bypassSecurityTrustResourceUrl('assets/img/eye.svg'));
-
+    iconRegistry.addSvgIcon('github',
+      sanitizer.bypassSecurityTrustResourceUrl('assets/img/github.svg'));
   }
 
   @Output() toggleSidenav = new EventEmitter<void>();
