@@ -11,14 +11,23 @@ Run `yarn` to install dependencies.
 Run `yarn start` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you
 change any of the source files.
 
+## Update content on dev server
+
+Run `yarn run remark-documents` to update the markdown content while developing. Run `yarn run lunr-index` to update
+the search index while developing. Run `yarn run prestart` to run both scripts with one command.
+
+## Lint content
+
+Run `yarn run retext-documents` to lint the markdown content.
+
 ## Build
 
 Run `yarn build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
 ## Deploy
 
-Run `firebase deploy --project ng-caryll` to deploy to the project to [Firebase](https://ng-caryll.firebaseapp.com) for the
-world to see. You must build the application first.
+Run `firebase deploy --project ng-caryll` to deploy to the project to [Firebase](https://ng-caryll.firebaseapp.com)
+for the world to see. You must build the application first.
 
 ## Running unit tests
 
