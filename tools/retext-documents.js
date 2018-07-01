@@ -40,7 +40,9 @@ function retextFile(filePath) {
           'component',
           'capability',
           'request',
-          'requirement'
+          'requirement',
+          'minimum',
+          'viable'
         ]
       }))
     .use(stringify)
