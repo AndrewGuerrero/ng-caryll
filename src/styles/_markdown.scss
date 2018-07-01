@@ -32,6 +32,13 @@
     line-height: 28px;
   }
 
+  ul,
+  ol {
+    p {
+      margin: 0;
+    }
+  }
+
   blockquote {
     margin: 0;
     padding: 15px;
