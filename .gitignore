@@ -6,7 +6,7 @@
 /tmp
 /out-tsc
 /src/assets/documents/*.html
-/src/assets/lunr
+/src/assets/lunr/*.json
 /src/assets/js/lunr.*
 /src/assets/*.css
 /src/assets/*.html
