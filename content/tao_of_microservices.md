@@ -440,7 +440,7 @@ deployment sequence for splitting a shard.
 
 #### Using weaker constraints to distribute data
 
-Traditionally, duplicating data in a database is undesired. However, in a distributed system, duplicating data using
+Traditionally, duplicating data in a database is undesired. But in a distributed system, duplicating data using
 strategies such as *denormalization* can lead to significant performance increases.
 
 |                     |                                                                                                                                                                                                                                       |
@@ -489,7 +489,7 @@ assumptions to legacy microservices and new messages to new microservices.
   for hardware because hardware eventually breaks. Redundancy does not work for software because software eventually
   works.
 - Software systems are not static, they suffer from deployments where several components change simultaneously. This
-  strategy is inherently risky and almost always fails. Resolving production issues is equivalent to trying another
+  strategy is inherently risky and almost always fails. Resolving production issues is equal to trying another
   deployment.
 
 ### Continuous delivery
@@ -514,7 +514,7 @@ A *continuous delivery* pipeline has a:
 
 #### Pipelines
 
-- Pipelines require tooling. Do not roll your own tooling; rely on the community first.
+- Pipelines need tooling. Do not roll your own tooling; rely on the community first.
 - Be able to trace all stages of a pipeline.
 - Mark and tag the source code so that *artifact* generation can be *hermetic*.
 - *Artifacts* are *immutable*.

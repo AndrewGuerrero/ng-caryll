@@ -22,21 +22,21 @@ const DOCS: DocItem[] = [
   //  name: 'Guide to Writing Testable Code',
   //  theme: 'blue',
   //},
-  //{
-  //  id: 'effective_cpp',
-  //  name: 'Effective Cpp',
-  //  theme: 'red',
-  //},
-  //{
-  //  id: 'more_effective_cpp',
-  //  name: 'More Effective Cpp',
-  //  theme: 'orange',
-  //},
-  //{
-  //  id: 'effective_stl',
-  //  name: 'Effective STL',
-  //  theme: 'yellow',
-  //},
+  {
+    id: 'effective_cpp',
+    name: 'Effective C++',
+    theme: 'red',
+  },
+  {
+    id: 'more_effective_cpp',
+    name: 'More Effective C++',
+    theme: 'orange',
+  },
+  {
+    id: 'effective_stl',
+    name: 'Effective STL',
+    theme: 'yellow',
+  },
 ];
 
 @Injectable()

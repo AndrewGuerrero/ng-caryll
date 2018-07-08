@@ -42,7 +42,21 @@ function retextFile(filePath) {
           'request',
           'requirement',
           'minimum',
-          'viable'
+          'viable',
+          'interface',
+          'parameters',
+          'type',
+          'terminate',
+          'implement',
+          'acquire',
+          'provide',
+          'evaluate',
+          'address',
+          'forward',
+          'allocate',
+          'multiple',
+          'magnitude',
+          'facilitate'
         ]
       }))
     .use(stringify)

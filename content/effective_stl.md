@@ -2,94 +2,57 @@
 
 *2008 Scott Meyers*
 
+Read the book [here](https://www.aristeia.com/books.html).
+
 ## Containers
 
 ### Item 1: Choose your containers with care
 
 #### Overview
 
-- **Standard STL sequence containers:** `vector`, `string`, `deque`, and `list`.
-- **Standard STL associative containers:** `set`, `multiset`, `map`, and `multimap`.
-- **Nonstandard sequence containers:** `slist` and `rope`. See [Item
+- **Standard STL sequence containers** - `vector`, `string`, `deque`, and `list`.
+- **Standard STL associative containers** - `set`, `multiset`, `map`, and `multimap`.
+- **Nonstandard sequence containers** - `slist` and `rope`. See [Item
   50](effective_stl#item-50-familiarize-yourself-with-stl-related-web-sites).
-- **Nonstandard associative containers:** `hash_set`, `hash_multiset`, `hash_map`, and `hash_multimap`. See
+- **Nonstandard associative containers** - `hash_set`, `hash_multiset`, `hash_map`, and `hash_multimap`. See
   [Item 25](effective_stl#item-25-familiarize-yourself-with-the-nonstandard-hashed-containers).
-- **`vector<char>` as a replacement for string:** See [Item
-  13](effective_stl#item-13-prefer-vector-and-string-to-dynamically-allocated-arrays).
-- **`vector` as a replacement for standard associative containers:** See [Item
-- 23](effective_stl#item-23-consider-replacing-associative-containers-with-sorted-vectors).
-- **standard non-STL containers:** arrays, `bitset`, `valarray`, `stack`, `queue`, and `priority_queue`.
+- **`vector<char>` as a replacement for string:** See 
+  [Item 13](effective_stl#item-13-prefer-vector-and-string-to-dynamically-allocated-arrays).
+- **`vector` as a replacement for standard associative containers:** See 
+  [Item 23](effective_stl#item-23-consider-replacing-associative-containers-with-sorted-vectors).
+- **standard non-STL containers** - arrays, `bitset`, `valarray`, `stack`, `queue`, and `priority_queue`.
   non-STL containers are mostly outside of the scope of this book.
 
 #### Memory arrangement
 
-<dl>
-<dt>Contiguous memory containers</dt>
-<dd>
-Elements are stored in one or more dynamically allocated chunks of memory, each chunk holding
-more than one container element. If a new element is inserted or an existing element is erased,
-other elements in the same memory chunk have to be shifted up or down to make room for the new
-element or fill the space formerly occupied by the erased element.
-
-<code>vector</code>, <code>string</code>, <code>deque</code>, <code>rope</code> are *contiguous memory
-container*s.
-</dd>
-<dt>Node-based containers</dt>
-<dd>
-Only a single element is stored per chunk of dynamically allocated memory. Insertion or erasure
-of a container element affects only pointers to nodes, not the contents of nodes themselves, so
-element values need not be moved when something is inserted or erased.
-
-<code>list</code>, <code>slist</code> are *node-based container*s.
-</dd>
-</dl>
+|                                  |                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Contiguous memory containers** | Elements are stored in one or more dynamically allocated chunks of memory, each chunk holding more than one container element. If a new element is inserted or an existing element is erased, other elements in the same memory chunk have to be shifted up or down to make room for the new element or fill the space formerly occupied by the erased element. `vector`, `string`, `deque`, and `rope` are *contiguous memory containers*. |
+| **Node-based containers**        | Only a single element is stored per chunk of dynamically allocated memory. Insertion or erasure of a container element affects only pointers to nodes, not the contents of nodes themselves, so element values need not be moved when something is inserted or erased. `list`, and `slist` are *node-based container*s.                                                                                                                     |
 
 #### Design decisions
 
-- **Do you need to be able to insert a new element at an arbitrary position in the container?**
-  Use sequence containers, not associative containers
-- **Do you care how elements are ordered in the container?**
-  If so, avoid hashed containers.
-- **Must the container be a part of standard C++?**
-  If so that eliminates `slist` and `rope`.
-- **What category of iterators do you require?**
-  If they must be random access iterators, use `vector`, `deque`, `string`, and `rope`. If
-  bidirectional iterators are required, avoid `slist` as well as a common implementation of hashed
-  containers (see [Item 25](effective_stl#item-25-familiarize-yourself-with-the-nonstandard-hashed-containers)).
-- **Is it important to avoid movement of existing container elements when insertions or erasures
-  take place?**
-  If so, avoid contiguous memory containers.
-- **Does the data in the container need to be layout-compatible with C?**
-  If so, you may only use `vector` (see [Item
-  16](effective_stl#item-16-know-how-to-pass-vector-and-string-data-to-legacy-apis)).
-- **Is lookup speed a critical consideration?**
-  If so, look at hashed containers (see [Item
-  25](effective_stl#item-25-familiarize-yourself-with-the-nonstandard-hashed-containers)), sorted `vectors` (see
-  [Item 23](effective_stl#item-23-consider-replacing-associative-containers-with-sorted-vectors)), and the standard
-  associative containers in that order.
-- **Do you mind if the underlying container uses reference counting?**
-  If so, avoid `string` and `rope` and consider `vector<char>`.
-- **Do you need transactional semantics for insertions and erasures?**
-  If so, you'll want to use a node based container. If you need transactional semantics for
-  multiple-element insertions (e.g. the range form - see [Item
-  5](effective_stl#item-5-prefer-range-member-functions-to-their-single-element-counterparts)), you'll want to choose
-  `list`.
-- **Do you need to minimize iterator, pointers, and reference invalidation?**
-  If so, you will want to use node-based containers.
-- **Do you care if using `swap` on containers invalidates iterators, pointers, and references?**
-  If so, avoid using `string`.
-- **Would it be helpful to have a sequence container with random access iterators where pointers and
-  references to data are not invalidated as long as nothing is erased and insertions take place
-  only at the ends of the container?**
-  Well then, `deque` is for you\!
+| Decision                                                                                                                                                                                                                          | Solution                                                                                                                                                                                                                                                                                                           |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Do you need to be able to insert a new element at an arbitrary position in the container?                                                                                                                                         | Use sequence containers, not associative containers                                                                                                                                                                                                                                                                |
+| Do you care how elements are ordered in the container?                                                                                                                                                                            | If so, avoid hashed containers.                                                                                                                                                                                                                                                                                    |
+| Must the container be a part of standard C++?                                                                                                                                                                                     | If so that removes `slist` and `rope`.                                                                                                                                                                                                                                                                             |
+| What category of iterators do you need?                                                                                                                                                                                           | If they must be random access iterators, use `vector`, `deque`, `string`, and `rope`. If bidirectional iterators are required, avoid `slist` as well as a common implementation of hashed containers (see [Item 25](effective_stl#item-25-familiarize-yourself-with-the-nonstandard-hashed-containers)).           |
+| Is it important to avoid movement of existing container elements when insertions or erasures take place?                                                                                                                          | If so, avoid contiguous memory containers.                                                                                                                                                                                                                                                                         |
+| Does the data in the container need to be layout-compatible with C?                                                                                                                                                               | If so, you may only use `vector` (see [Item16](effective_stl#item-16-know-how-to-pass-vector-and-string-data-to-legacy-apis)).                                                                                                                                                                                     |
+| Is lookup speed a critical consideration?                                                                                                                                                                                         | If so, look at hashed containers (see [Item 25](effective_stl#item-25-familiarize-yourself-with-the-nonstandard-hashed-containers)), sorted `vectors` (see [Item 23](effective_stl#item-23-consider-replacing-associative-containers-with-sorted-vectors)), and the standard associative containers in that order. |
+| Do you mind if the underlying container uses reference counting?                                                                                                                                                                  | If so, avoid `string` and `rope` and consider `vector<char>`.                                                                                                                                                                                                                                                      |
+| Do you need transactional semantics for insertions and erasures?                                                                                                                                                                  | If so, you'll want to use a node based container. If you need transactional semantics for multiple-element insertions (such as the range form - see [Item 5](effective_stl#item-5-prefer-range-member-functions-to-their-single-element-counterparts)), you'll want to choose `list`.                              |
+| Do you need to reduce iterator, pointers, and reference invalidation?                                                                                                                                                             | If so, you will want to use node-based containers.                                                                                                                                                                                                                                                                 |
+| Do you care if using `swap` on containers invalidates iterators, pointers, and references?                                                                                                                                        | If so, avoid using `string`.                                                                                                                                                                                                                                                                                       |
+| Would it be helpful to have a sequence container with random access iterators where pointers and references to data are not invalidated as long as nothing is erased and insertions take place only at the ends of the container? | Well then, `deque` is for you!                                                                                                                                                                                                                                                                                     |
 
 ### Item 2: Beware the illusion of container-independent code
 
-Containers are different with different strengths and weaknesses. They are not designed to be
-interchangeable.
+Containers have different strengths and weaknesses. They are not designed to be interchangeable.
 
 With that said, sometimes a container type must be changed throughout the life of the source code.
-Encapsulation can make this easier. For example, instead of writing this
+Encapsulation can make this easier. For example, instead of writing this:
 
 ``` cpp
 class Widget {...};
@@ -100,9 +63,11 @@ Widget bestWidget;
 ...
 
 vector<Widget>::iterator i = find(vw.begin(), vw.end(), bestWidget);
+```
 
 Write this
 
+``` cpp
 class Widget {...}
 
 typedef vector<Widget> WidgetContainer;
@@ -115,7 +80,7 @@ Widget bestWidget;
 WidgetContainer::iterator i = find(cw.begin(), cw.end(), bestWidget);
 ```
 
-Now, for example, adding a custom allocator becomes an easy task.
+Now, making changes, such as adding a custom allocator, becomes an easy task.
 
 ``` cpp
 class Widget {...};
@@ -157,27 +122,30 @@ should have little to no impact on the client.
 
 ### Item 3: Make copying cheap and correct for objects in containers
 
-When using STL containers, it is common for objects to be copied using the copy constructor or the
+When using STL containers, it's common for objects to be copied using the copy constructor or the
 copy assignment operator. Filling a container with objects that are expensive to copy can lead to
 performance bottlenecks, especially when objects are moved around in the container.
 
 Furthermore, objects with unconventional methods of copying can lead to grief when used with
-containers (see [Item 8](effective_stl#item-8-never-create-containers-of-auto_ptrs)). When using inheritance, slicing is also a concern.
+containers (see [Item 8](effective_stl#item-8-never-create-containers-of-auto_ptrs)). When using inheritance,
+*slicing* is also a concern.
 
-An easy way to correct the above issues is to create containers of pointer instead of containers of
-objects. Unfortunately, pointers have their own set of issues as seen in [Item 7](effective_stl#item-7-when-using-containers-of-newed-pointers-remember-to-delete-the-pointers-before-the-container-is-destroyed)
-and [Item 33](effective_stl#item-33-be-wary-of-remove-like-algorithms-on-containers-of-pointers). Using containers of *smart pointers* is an attractive option.
+An easy way to correct the above issues is to create containers of pointers instead of containers of
+objects. Unfortunately, pointers have their own set of issues, discussed in 
+[Item 7](effective_stl#item-7-when-using-containers-of-newed-pointers-remember-to-delete-the-pointers-before-the-container-is-destroyed)
+and [Item 33](effective_stl#item-33-be-wary-of-remove-like-algorithms-on-containers-of-pointers). Using containers of
+*smart pointers* is an attractive choice.
 
-Although STL does copy objects, it is still much more civilized than an array.
+Although STL does copy objects, it's still much more civilized than an array.
 
 ``` cpp
 Widget w[maxNumWidgets];
 ```
 
-will default-construct `maxNumWidgets` `Widget`s even if only a few widgets are expected to be used
-or each default-constructed value is overwritten with values used from someplace else. `vector` will
-grow when it needs to. It is even possible to create an empty `vector` that contains enough space
-for `maxNumWidgets` `Widget`s, but where zero `Widget`s have been constructed.
+The code above will default-construct `maxNumWidgets` `Widget`s even if only a few widgets are expected to be used
+or each default-constructed value is overwritten with values used from someplace else. An STL container, like
+`vector`, will grow when it needs to. It's even possible to create an empty `vector` that has enough space
+for `maxNumWidgets` `Widget`s, without needing to construct them.
 
 ``` cpp
 vector<Widget> vw;
@@ -192,14 +160,14 @@ For any container `c`, writing
 if (c.size() == 0) ...
 ```
 
-is equivalent to
+is equal to
 
 ``` cpp
 if (c.empty()) ...
 ```
 
-However, `empty` is a constant-time operation while `size` can take linear time. Why? Consider this
-code
+Yet, `empty` is a constant-time operation while `size` can take linear time. Why? Consider this
+code:
 
 ``` cpp
 list<int> list1;
@@ -214,23 +182,20 @@ list1.splice(list1.end(), list2,
              find(list2.rbegin(), list2.rend(), 10).base());
 ```
 
-There is no way to tell how many elements were spliced into `list2` without traversing the range and
+There's no way to tell how many elements were `splice`d into `list2` without traversing the range and
 counting them. This is because `splice` is a high-efficiency constant-time operation and counting
 the number of elements `splice`d would compromise its efficiency. The trade-off is `size` becoming a
 linear-time operation.
 
 ### Item 5: Prefer range member functions to their single-element counterparts
 
-<dl>
-<dt>Range member function</dt>
-<dd>
-Uses two iterator parameters to specify a range of elements over which something should be done.
-</dd>
-</dl>
+|                           |                                                                                                  |
+| ------------------------- | ------------------------------------------------------------------------------------------------ |
+| **Range member function** | Uses two iterator parameters to specify a range of elements over which something should be done. |
 
-*Range member functions* eliminate the need to write an explicit `for` loop (see [Item
+*Range member functions* remove the need to write an explicit `for` loop (see [Item
 43](effective_stl#item-43-prefer-algorithm-calls-to-hand-written-loops)) which translates to less work writing and
-reading code. Additionally, for standard sequence containers, *range member functions* are more efficient. For example,
+reading code. Also, for standard sequence containers, *range member functions* are more efficient.
 
 ``` cpp
 int data[numValues];
@@ -251,36 +216,35 @@ for (int i = 0; i < numValues; ++i) {
 copy(data, data + numValues, inserter(v, v.begin()));
 ```
 
-Efficiency wise, `copy` is the same as the single element `insert` so all comments about the
-explicit loop also apply to `copy`. There are three additional performance taxes the explicit loop
-must pay over the range `insert`:
+Compared to range `insert`, the single-element `insert` loop pays three extra taxes:
 
-1. Unnecessary function calls. It is possible that `inline`ing might nullify this tax, but there is
-  no guarantee that the `insert` can be `inline`d.
-1. Unnecessary movement of elements to their final positions. Each time `insert` is called, an
-  element is inserted at the front of `v`. To do so, all the other elements in `v` need to be
-  shifted up one position. This becomes especially problematic if `v` contains elements prior to
-  the `insert` loop.
-1. As [Item 14](effective_stl#item-14-use-reserve-to-avoid-unnecessary-reallocations) explains, `insert`ing an
-  element into a `vector` whose memory is full will cause it to allocate new memory with more capacity, copy
-  elements from the old memory to the new memory, destroy the elements in the old memory, deallocate the old memory
-  and then `insert` the element into the new memory. `insert`ing a large number of elements one at a time can cause
-  multiple new allocations.
+1. **Unnecessary function calls** - It's possible that `inline`ing might nullify this tax, but there's
+   no guarantee that the `insert` can be `inline`d.
+1. **Unnecessary movement of elements to their final positions** - Each time `insert` is called, an
+   element is inserted at the front of `v`. To do so, all the other elements in `v` need to be
+   shifted up one position. This becomes especially problematic if `v` has elements before
+   the `insert` loop.
+1. **Unnecessary container resizing** - As 
+   [Item14](effective_stl#item-14-use-reserve-to-avoid-unnecessary-reallocations) explains, `insert`ing an
+   element into a `vector` whose memory is full will cause it to allocate new memory with more capacity, copy
+   elements from the old memory to the new memory, destroy the elements in the old memory, deallocate the old memory
+   and then `insert` the element into the new memory. `insert`ing a large number of elements one at a time can cause
+   multiple new allocations.
 
-The same reasoning applies to `string`s too. `deque`s manage memory differently so tax \#3 does not
-apply. For `list`, tax \#1 applies but tax \#2 does not. Instead, `list` suffers from repeated
+Efficiency wise, `copy` is the same as the single element `insert`, so all comments about the
+single-element `insert` also apply to `copy`. 
+
+The same reasoning applies to `string`s too. `deque`s manage memory differently so tax #3 does not
+apply. For `list`, tax #1 applies but tax #2 does not. Instead, `list` suffers from repeated
 superfluous assignments of the `next` pointer of the element being `insert`ed and the `prev` pointer
-pointing to the element being `insert`ed. Pointer assignments are cheap but there is no need to pay
+pointing to the element being `insert`ed. Pointer assignments are cheap, but there's no need to pay
 for them.
 
 ### Item 6: Be alert for C++'s most vexing parse
 
-<dl>
-<dt>C++'s most vexing parse</dt>
-<dd>
-Situations where the C++ compiler recognizes a constructor as a function declaration.
-</dd>
-</dl>
+|                             |                                                                                       |
+| --------------------------- | ------------------------------------------------------------------------------------- |
+| **C++'s most vexing parse** | Situations where the C++ compiler recognizes a constructor as a function declaration. |
 
 ``` cpp
 ifstream dataFile("ints.dat");
@@ -290,18 +254,20 @@ list<int> data(istream_iterator<int>(dataFile), istream_iterator<int>());
 Here, this range constructor ([Item
 5](effective_stl#item-5-prefer-range-member-functions-to-their-single-element-counterparts)) is supposed to copy
 `int`s in the file into a `list` called `data`. Instead, it declares a function called `data` whose `return` type is
-`list<int>`. `data` takes two parameters both of type `istream_iterator<int>`: one called `dataFile`
+`list<int>`. `data` takes two parameters both of type `istream_iterator<int>`, one called `dataFile`,
 and the other nameless.
 
-One way to get the compiler to recognize the range constructor as a function is to surround an argument with
+One way to get the compiler to recognize the range constructor as a function is to surround the arguments with
 parenthesis.
 
 ``` cpp
 list<int> data((istream_iterator<int>(dataFile)), istream_iterator<int>());
+```
 
-Sometimes the compiler still wont correctly recognize this as a function call. A safer solution is
+Sometimes the compiler still won't correctly recognize this as a function call. A safer solution is
 to give the iterators names.
 
+``` cpp
 ifstream dataFile("ints.dat"):
 istream_iterator<int> dataBegin(dataFile);
 istream_iterator<int> dataEnd;
@@ -311,7 +277,7 @@ list<int> data(dataBegin, dataEnd);
 
 ### Item 7: When using containers of `new`ed pointers, remember to `delete` the pointers before the container is destroyed
 
-A container of pointers will destroy each element it contains when the container is destroyed, but
+A container of pointers will destroy each element it has when the container is destroyed, but
 the destructor for a pointer is a no-op. Cleaning up is easy enough:
 
 ``` cpp
@@ -347,7 +313,7 @@ void doSomething()
 }
 ```
 
-Further improvements can be made to reduce typing and improve safety when inheritance is used.
+Inheritance can further reduce typing and improve safety.
 
 ``` cpp
 struct DeleteObject {
@@ -389,37 +355,37 @@ void doSomething()
 
 Containers of `auto_ptr` are prohibited; they shouldn't compile.
 
-The reasoning for prohibiting contains of `auto_ptr` is its unique copying behavior. Ownership of
+The reasoning for prohibiting containers of `auto_ptr` is its unique copying behavior. Ownership of
 the object pointed to by the `auto_ptr` is transferred to the copying `auto_ptr`, and the copied
-`auto_ptr` is set to `NULL`. Since STL containers frequently copy elements when performing
-operations like `sort`, several elements in the container may have unintentionally been set to
-`NULL`.
+`auto_ptr` becomes `null`. Since STL containers often copy elements when performing
+operations like `sort`, several elements in the container may have unintentionally become
+`null`.
 
 ### Item 9: Choose carefully among erasing operations
 
-For some arbitrary STL container `c`, suppose the value `1963` should be removed.
+For some arbitrary STL container `c`, suppose the value `1963` should be removed:
 
--   For a contiguous-memory container, the best approach is the `erase-remove` idiom.
-    
+-   **Contiguous-memory container** - The best approach is the `erase-remove` idiom.
+  
     ``` cpp
     c.erase(remove(c.begin(), c.end(), 1963), c.end());
     ```
-    
--   For `lists`, call `remove`.
--   For associative containers, call `erase`.
+  
+-   **`lists`** - Call `remove`.
+-   **Associative containers** - Call `erase`.
 
-Now suppose, instead of removing a element with a particular value, removing an element for which a
-particular predicate `return`s `true` is desired.
+Now suppose, instead of removing an element with a particular value, removing an element for which a
+particular predicate `return`s `true` is desired:
 
 ``` cpp
 bool isPredicate(int x);
 ```
 
-- For sequence containers, replace `remove` with `remove_if`.
-- For standard associative containers, there are two approaches
-  - **Easier-but-less-efficient:** `remove_copy_if` to copy desired values to a new container
+- **Sequence containers** - replace `remove` with `remove_if`.
+- **Standard associative containers** - Choose between:
+  - **Easier-but-less-efficient** - `remove_copy_if` to copy desired values to a new container
       and then `swap` the contents of the original container with those of the new one.
-       
+     
       ``` cpp
       AssocContainer<int> c;
       ...
@@ -427,9 +393,9 @@ bool isPredicate(int x);
       remove_copy_if(c.begin(), c.end(), inserter(desiredValues, desiredValues.end()), isPredicate);
       c.swap(desiredValues);
       ```
-       
-  - **Harder-but-more-efficient:** Make a `remove_if` function.
-       
+     
+  - **Harder-but-more-efficient** - Make a `remove_if` function.
+     
       ``` cpp
       AssocContainer<int> c;
       ...
@@ -437,10 +403,10 @@ bool isPredicate(int x);
         if (isPredicate(*i)) c.erase(i);
       }
       ```
-       
+     
       Unfortunately, calling `erase` invalidates the `iterator` and yields undefined behavior once
       `i` is incremented. An `iterator` to the next element is required *before* calling `erase`.
-       
+     
       ``` cpp
       for (AssocContainer<int>::iterator i = c.begin(); i != c.end(); ) {
         if (isPredicate(*i)) c.erase(i++);
@@ -449,12 +415,12 @@ bool isPredicate(int x);
       ```
 
 Now suppose, every time an element matching `isPredicate` is removed, a message should be logged to
-a file.
+a file:
 
--   For associative containers, simply add the logging to the `for` loop.
--   For sequence containers, the `erase-remove` idiom no longer works. Instead, make a `for` loop
-    similar to the associative container.
-    
+-   **Associative containers** - Simply add the logging to the `for` loop.
+-   **Sequence containers** - The `erase-remove` idiom no longer works. Instead, make a `for` loop
+    like the associative container.
+  
     ``` cpp
     ofstream logFile;
     SeqContainer<int> c;
@@ -470,7 +436,7 @@ a file.
 
 ### Item 10: Be aware of allocator conventions and restrictions
 
-Below are a list of tips to consider when designing an allocator for a container.
+Below is list of tips to consider when designing an allocator for a container:
 
 - Allocators should be `template`s with the `template` parameter `T` representing the type of
   objects for which memory should be allocated.
@@ -486,14 +452,16 @@ Below are a list of tips to consider when designing an allocator for a container
 ### Item 11: Understand the legitimate uses of custom allocators
 
 Suppose a custom allocator is required for managing a heap of shared memory with the following
-functions
+functions:
 
 ``` cpp
 void* mallocShared(size_t bytesNeeded);
 void freeShared(void* ptr);
+```
 
-The implementations of the allocator would look something like this
+The implementations of the allocator would look something like:
 
+``` cpp
 template<typename T>
 class SharedMemoryAllocator {
 public:
@@ -509,9 +477,11 @@ public:
   }
   ...
 };
+```
 
-`SharedMemoryAllocator` would be used like this
+`SharedMemoryAllocator` would be used like:
 
+``` cpp
 typdef vector<double, SharedMemoryAllocator<allocator> > SharedDoubleVec;
 ...
 
@@ -522,8 +492,8 @@ typdef vector<double, SharedMemoryAllocator<allocator> > SharedDoubleVec;
 }
 ```
 
-> The elements `v` holds are located in shared memory but not `v` itself. Putting `v` and its contents
-> in shared memory would look something like this.
+> The elements `v` holds are located in shared memory, but not `v` itself. Putting `v` and its contents
+> in shared memory would look something like:
 > 
 > ``` cpp
 > void* pVectorMemory = mallocShared(sizeof(SharedDoubleVec));
@@ -572,7 +542,7 @@ map<int, string, less<int>. SpecificHeapAllocator<pair<const int, string>, Heap2
 
 ### Item 12: Have realistic expectations about the thread safety of STL containers
 
-STL containers are not thread safe; they require manual concurrency control.
+STL containers are not thread safe; they need manual concurrency control.
 
 ## `vector` and `string`
 
@@ -580,16 +550,16 @@ STL containers are not thread safe; they require manual concurrency control.
 
 Compared to arrays, `string` and `vector`
 
-- Make it easier to manage memory
+- Make it easier to manage memory.
   - A container's memory grows as elements are added to it.
   - When the container is destroyed, it's destructor automatically destroys the elements in the
     container and deallocates the memory holding those elements.
 - Provide powerful member functions to make manipulating elements easier.
 
-There is only one concern when replacing arrays with `vector`s or `string`s. Many `string`
-implementations employ reference counting behind the scenes. While generally an optimization, when
-used in multithreaded applications, performance problems may arise. There are three things that can
-be done to help troubleshoot this problem.
+There's only one concern when replacing arrays with `vector`s or `string`s: many `string`
+implementations use reference counting behind the scenes. While generally an optimization, when
+used in multithreaded applications, performance problems may arise. There's three things that can help troubleshoot
+this problem.
 
 - Check and see if the library implementation offers a way to disable reference counting.
 - Develop an alternative `string` implementation.
@@ -597,46 +567,41 @@ be done to help troubleshoot this problem.
 
 ### Item 14: Use `reserve` to avoid unnecessary reallocations
 
-Containers have a maximum size which can be discovered with `max_size`. If elements are inserted
-into a container beyond its maximum size, the container will automatically grow. This operation has
-four parts.
+Containers have a size limit which can be discovered with `max_size`. If elements are inserted
+into a container beyond it's limit, the container will automatically grow. This operation has
+four parts:
 
-- Allocate a new block of memory, usually between 1.5 to 2 times its current capacity.
+- Allocate a new block of memory, usually 1.5 to 2 times it's current capacity.
 - Copy all elements from the containers old memory to its new memory.
 - Destroy all objects in the old memory.
 - Deallocate the old memory.
 
-Growing can be quite expensive, especially if it can be avoided. Provided below are four
-interrelated member functions for managing a containers size.
+Growing can be quite expensive, especially if it can be avoided. Containers have some interrelated member functions
+to manage size:
 
-- **`size()`:** 
-  `return`s the number of elements in the container.
-- **`capacity()`:** 
-  `return`s the total number of elements the container can hold.
-- **`resize(Container::size_type n)`:**
-  Forces the container to hold `n` elements. If `n` is larger than `size`, elements are copied
-  (via an additional parameter) or default-constructed to the end of the container. If `n` is
+- **`size()`** - `return`s the number of elements in the container.
+- **`capacity()`** - `return`s the total number of elements the container can hold.
+- **`resize(Container::size_type n)`** - Forces the container to hold `n` elements. If `n` is larger than `size`,
+  elements are copied (via an extra parameter) or default-constructed to the end of the container. If `n` is
   larger than `capacity`, the container will grow. If `n` is smaller than `size`, elements at the
   end of the container will be destroyed.
-- **`reserve(container::size_type n)`:**
-  Forces the container to change its `capacity` to at least `n`. It is possible for a container to
-  reduce its capacity, but generally it is better to use the `swap` trick in [Item
+- **`reserve(container::size_type n)`** - Forces the container to change its `capacity` to at least `n`. It's
+  possible for a container to reduce its capacity, but generally it's better to use the `swap` trick in [Item
   17](effective_stl#item-17-use-the-swap-trick-to-trim-excess-capacity).
 
-In general, use `reserve` to allocate the appropriate amount of space in advance. If needed, excess
-capacity can be trimmed later ([Item 17](effective_stl#item-17-use-the-swap-trick-to-trim-excess-capacity)).
+In general, use `reserve` to allocate space in advance. If needed, excess capacity can be trimmed later 
+([Item 17](effective_stl#item-17-use-the-swap-trick-to-trim-excess-capacity)).
 
 ### Item 15: Be aware of variations in `string` implementations
 
 Though a `string`s interface is virtually the same, it's implementation can vary from library to
-library. Below are a list of degrees of freedom that the standard allows to `string`s.
+library:
 
-- `string`s, by default are usually reference counted and offer a way to turn the feature off. For
-  the price of some overhead, reference counting can be helpful when a string is frequently
-  copied.
-- `sizeof(string)` may range in size from one to at least seven times the size of `char*`
+- `string`s, by default, are usually reference counted and offer a way to turn the feature off. For
+  the price of some overhead, reference counting can be helpful when a string is copied often.
+- `sizeof(string)` may range in size from greater than one to seven times the size of `char*`
   pointers.
-- Construction of a new `string` may require zero, one or two dynamic allocations.
+- Construction of a new `string` may need zero, one or two dynamic allocations.
 - `string` objects may or may not share information on the strings `size` and `capacity`.
 - `string`s may or may not support per-object allocators.
 - Minimum allocations for character buffers may differ.
@@ -645,14 +610,16 @@ library. Below are a list of degrees of freedom that the standard allows to `str
 
 #### Reads
 
-Given the legacy APIs
+Given an an API that uses C primitives:
 
 ``` cpp
 void doSomething(const int* pInts, size_t numInts);
 void doSomething(const char* pString);
+```
 
-The API may read from a `vector` or `string` like so
+STL containers can feed the API their underlying API like so:
 
+``` cpp
 vector<int> v;
 string s;
 ...
@@ -662,13 +629,12 @@ doSomething(s.c_str());
 
 > Passing an empty `vector` yields undefined results. Make sure the `vector` is not `empty` first.
 > 
-> `c_str` does not need a similar check since it will at least `return` a pointer to a null character.
+> `c_str` does not need a similar check since it will at least `return` a pointer to a `null` character.
 
 #### Write
 
-Passing a `vector` to a legacy API that modifies its elements is safe for a C API. However, `vector`
-is the only container that is safe. Other containers must take advantage of `vector` like the
-example below.
+Passing a `vector` to a C API that modifies its elements is safe. But, `vector`
+is the only container that is safe. Other containers must take advantage of `vector`.
 
 ``` cpp
 // pArray is at most arraySize elements. Returns number of elements written.
@@ -689,67 +655,55 @@ list<double> l(vd.begin(), vd.end());
 set<double> s(vd.begin(), vd.end));
 ```
 
-### Item 17: Use "the `swap` trick" to trim excess capacity
+### Item 17: Use the `swap` trick to trim excess capacity
 
-`vector` and `string` can trim their excess capacity by using `swap`
+`vector` and `string` can trim their excess capacity by using `swap`.
 
 ``` cpp
 vector<int>(v.begin(), v.end()).swap(v);
 string(s.begin(), s.end()).swap(s);
 ```
 
-> There is not guarantee that the capacity will be reduced. This trick will simply make the capacity
+> There's no guarantee that the capacity will be reduced. This trick will simply make the capacity
 > as small as the implementation is willing to make it. For example, implementations typically have a
 > minimum capacity.
 
 ### Item 18: Avoid using `vector<bool>`
 
-`vector<bool>` doesn't satisfy the requirements of an STL container because
+`vector<bool>` doesn't meet the requirements of an STL container. References and pointers to individual bits aren't
+allowed and the standard requires any container `c` of objects of type `T` that supports `operator[]` to be able to
+get a pointer to it's elements.
 
 ``` cpp
 vector<bool> v;
 bool *pb = &v[0];
 ```
 
-fails to compile. References and pointers to individual bits are forbidden and the standard requires
-any container `c` of objects of type `T` that supports `operator[]` to be able to get a pointer to
-its elements.
-
-Instead, `deque<bool>` or `bitset` can be used as alternatives.
+The code above fails to compile. Instead, `deque<bool>` or `bitset` can be used as alternatives.
 
 ## Associative containers
 
 ### Item 19: Understand the difference between quality and equivalence
 
-`set::insert` and the `find` algorithm are two methods that both need to make a comparison. However,
-`set::insert` checks for equivalence while `find` checks for equality.
+`set::insert` and the `find` algorithm are both make a comparison. Yet, the behavior of the comparison is different
+because `set::insert` checks for equivalence, while `find` checks for equality.
 
-<dl>
-<dt>equality</dt>
-<dd>
-Based on <code>operator==</code>, <code>x</code> and <code>y</code> are considered to be equal if <code>x
-== y</code>.
-</dd>
-<dt>equivalence</dt>
-<dd>
-Based on <code>operator<</code>, <code>x</code> and <code>y</code> are considered to be equivalent if
-<code>!(x < y) && !(y < x)</code>.
-Thinking about it in terms of some sorted range, in words, this expression means <code>x</code> does not
-precede <code>y</code> and <code>y</code> does not precede <code>x</code>.
-</dd>
-</dl>
+|                 |                                                                                                                                                                                                                       |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Equality**    | Based on `operator==`, `x` and `y` are considered to be equal if `x == y`.                                                                                                                                            |
+| **Equivalence** | Based on `operator<`, `x` and `y` are considered to be equal if `!(x < y) && !(y < x)`. Thinking about it in terms of some sorted range, this expression means `x` does not precede `y` and `y` does not precede `x`. |
 
-While equality actually uses `operator==`, equivalence uses the predicate `key_comp` like so
+While equality actually uses `operator==`, equivalence uses the predicate `key_comp`.
 
 ``` cpp
 !c.key_comp()(x, y) && !c.key_comp()(y, x)
 ```
 
-where `c` is a sortable container.
+`c` is a sortable container.
 
 Suppose a case-insensitive `set<string>` is desired. To do so, the `set` needs to know how to make a
-case-insensitive comparison. This can be achieved with a functor `class` whose `operator()` calls a
-comparison function. An example is provided below.
+case-insensitive comparison. Do so with a functor `class` whose `operator()` calls a
+comparison function.
 
 ``` cpp
 struct CIStringCompare:
@@ -786,7 +740,7 @@ is shorthand for
 set<string*, less<string*> > ssp;
 ```
 
-so `ssp` will sort by pointer value instead of by value. To sort by value, a custom comparison
+`ssp` will sort by pointer value instead of by value. To sort by value, a custom comparison
 functor `class` is needed.
 
 ``` cpp
@@ -826,13 +780,13 @@ s.insert(10);
 ```
 
 When `10` is `insert`ed into `s` a second time, `s` will use `operator<=` to test for equivalence.
-When the first `10` is compared to the second `10`, the test for equivalence becomes
+When the first `10` is compared to the second `10`, the test for equivalence becomes:
 
 ``` cpp
 !(10 <= 10) && !(10 <= 10)
 ```
 
-The test determines that the second `10` is not equivalent to the first `10` and the second `10` is
+The test determines that the second `10` is not equal to the first `10` and the second `10` is
 `insert`ed into `s`.
 
 Comparison functions used to sort associative containers like `set` must define a "strict weak
@@ -840,11 +794,11 @@ ordering" over the objects they compare. One of the requirements of any function
 weak ordering is that it must `return` `false` if its passed two copies of the same value. Failure
 to do so will break the functionality of the container and lead to unexpected results.
 
-> Be careful when using \! in a comparison function. Negating `<` is not equivalent to `>`.
+> Be careful when using `!` in a comparison function. Negating `<` is not equal to `>`.
 
 ### Item 22: Avoid in-place key modification in `set` and `multiset`
 
-For `map` and `multimap` in-place key modification is impossible.
+For `map` and `multimap`, in-place key modification is impossible.
 
 ``` cpp
 map<int, string> m;
@@ -858,40 +812,31 @@ mm.begin()->first = 20; // compile error
 ```
 
 This is because the elements of in an object of type `map<K, V>` or `multimap<K, V>` are of type
-`pair<const K, V>`. Unfortunately, the same can not be said for `set` and `multiset`. There is no
-such equivalent standard for `set` and `multiset` so it may be possible to change a key's value. It
+`pair<const K, V>`. Unfortunately, `set` and `multiset` are not the same. There's no
+such equal standard for `set` and `multiset`, so it may be possible to change a key's value; it
 depends on the implementation of the library.
 
 > Though keys may be declared `const`, they are still vulnerable to `const_cast`. Doing so yields
 > undefined results.
 
-To safely change an element in a set follow these five steps
+To safely change an element in a set:
 
 1. Locate the element in the container that should be changed. (see [Item
    45](effective_stl#item-45-distinguish-among-count-find-binary_search-lower_bound-upper_bound-and-equal_range))
 1. Make a copy of the element.
-1. Modify the copy as needed.
+1. Change the copy as needed.
 1. Remove the element form the container, typically via `erase` (see [Item
    9](effective_stl#item-9-choose-carefully-among-erasing-operations)).
 1. Insert the new value into the container.
 
 ### Item 23: Consider replacing associative containers with sorted `vector`s
 
-#### Sorted vector pros and cons
+#### Sorted `vector` 
 
-##### pros
-
-- *Consumes less memory:* Each node in an associative container consumes three additional pointers
-  (left child, right child, parent) plus overhead.
-- *Faster searching*: Binary searches in a sorted `vector` are faster when page faults are taken
-  into account.
-
-##### cons
-
-- *Expensive inserts and erasures*: Using contiguous memory requires shifting everything beyond
-  the new element.
-
-##### Conclusion
+- **Consumes less memory** - Each node in an associative container consumes three extra pointers, left child, right
+  child, and parent, plus overhead.
+- **Faster searching** - Binary searches in a sorted `vector` are faster when page faults are considered.
+- **Expensive insertions and erasures** - Using contiguous memory requires shifting everything beyond the new element.
 
 Consider using a sorted `vector` instead of an associative container when lookups are almost never
 mixed with insertions or erasures.
@@ -918,14 +863,14 @@ if (range.first != range.second) ...
 sort(vw.begin(), vw.end());
 ```
 
-#### Sorted `vector` instead of `map`/`multimap`
+#### Sorted `vector` instead of `map` or `multimap`
 
 - `map<K, V>` is composed of elements of type `pair<const K, V>`. In a `vector` elements get moved
   around via assignment so the `const` must be omitted.
 - When sorting, `map` only look at the key part of the element. A custom comparison function will
   be needed because `pair`'s `operator<` looks at both components.
 - Another two comparison functions are needed for lookups. While sorting takes two `pair` objects,
-  sorting takes a key and a `pair` object. Two functions are needed so that the arguments can be
+  lookups take a key and a `pair` object. Two functions are needed so that the arguments can be
   swapped.
 
 ``` cpp
@@ -950,7 +895,9 @@ private:
     return k1 < k3;
   }
 };
+```
 
+``` cpp
 vector<Data> vd;
 
 ...
@@ -972,16 +919,6 @@ if (range.first != range.second) ...
 sort(vd.begin(), vd.end(), DataCompare());
 ```
 
-> The examples above used
-> 
-> ``` cpp
-> !(w < *i)
-> !DataCompare(s, *i)
-> ```
-> 
-> as tests. See [Item 19](effective_stl#item-19-understand-the-difference-between-quality-and-equivalence) for
-> info.
-
 ### Item 24: Choose carefully between `map::operator[]` and `map::insert` when efficiency is important
 
 ``` cpp
@@ -997,13 +934,13 @@ public:
 map<int, Widget> m;
 ```
 
-The statement to "add" a `Widget`
+The statement to "add" a `Widget` to `m`:
 
 ``` cpp
 m[1] = 1.50;
 ```
 
-is equivalent to
+is equal to:
 
 ``` cpp
 typedef map<int, Widget> IntWidgetMap;
@@ -1053,7 +990,7 @@ typename Maptype::iterator efficientAddOrUpdate(MapType& m,
 
 ### Item 25: Familiarize yourself with the nonstandard hashed containers
 
-As of C++11 hashed containers have been standardized as
+As of C++11 hashed containers have been standardized as:
 
 - `unordered_set`
 - `unordered_multiset`
@@ -1066,12 +1003,11 @@ As of C++11 hashed containers have been standardized as
 
 When choosing an iterator, keep the following points in mind.
 
-- Some versions of `insert` and `erase` require `iterator`. `const` and reverse iterators won't
-  do.
+- Some versions of `insert` and `erase` need `iterator`. `const_iterator` and `reverse_iterator` won't do.
 - It's not possible to implicitly convert a `const_iterator` to an `iterator`, and the technique
   described in [Item 27](effective_stl#item-27-use-distance-to-convert-a-containers-const_iterators-to-iterators) is
   neither universally applicable nor guaranteed to be efficient.
-- Conversion from `reverse_iterator` to `iterator` may require iterator adjustment after the
+- Conversion from `reverse_iterator` to `iterator` may need extra steps after the
   conversion. See [Item 28](effective_stl#item-28-understand-how-to-use-reverse_iterators-base-iterator).
 - Mixing iterators can sometimes cause funky compilation errors for seemingly correct code.
 
@@ -1090,10 +1026,10 @@ Iter i(ci); // error! no implicit conversion from const_iterator to iterator
 Iter i(const_cast<Iter>(ci)); // still an error!
 ```
 
-All other container fail to compile as well with the `exception` of `vector` and `string` which
-might compile. The two iterators should be treated (they usually are) as two separate `class`es.
+All other containers fail to compile as well, except for `vector` and `string`, which
+may compile. The two iterators should be treated as two separate `class`es; they usually are.
 
-Instead, use `advance`.
+`distance` is the proper way to convert `const_iterator` to `iterator`.
 
 ``` cpp
 IntDeque d;
@@ -1108,10 +1044,10 @@ advance(i, distance<ConstIter>(i, ci));
 
 Recall from [Item
 26](effective_stl#item-26-prefer-iterator-to-const_iterator-reverse_iterator-and-const_reverse_iterator) that some
-functions require an `iterator`. For example, to `erase` or `insert`, a `reverse_iterator` must be converted to an
+functions need an `iterator`. For example, to `erase` or `insert`, a `reverse_iterator` must be converted to an
 `iterator` using `base`.
 
-After converting to `iterator` it will point to the element preceding the `reverse_iterator` as if
+After converting to `iterator`, it will point to the element preceding the `reverse_iterator` as if
 it were decremented.
 
 ``` cpp
@@ -1135,27 +1071,25 @@ vector<int>::iterator i(ri.base());
 //       begin()       i      end()
 ```
 
-This offset must be considered depending on the operation
+This off-by-one error must be considered depending on the operation:
 
--   **`insert`:** Element is inserted in *front* of element indicated by iterator. The base `iterator`
+-   **`insert`** - Element is inserted in *front* of element described by `iterator`. The base `iterator`
     is already in the correct position.
-    
--   **`erase`:** Element iterator is pointing to is erased. The base `iterator` must be decremented.
-    
+  
+-   **`erase`** - Element `iterator` is pointing to is erased. The base `iterator` must be decremented.
+  
     ``` cpp
     v.erase(--ri.base());
     ```
 
-> The code above is not portable because some implementations do not allow the pointer returned by
-> `base` to be modified. Instead, increment the `reverse_iterator` and then call `base`.
-> 
-> ``` cpp
-> v.erase((++ri).base());
-> ```
+    > The code above is not portable because some implementations do not allow the pointer returned by
+    > `base` to be modified. Instead, increment the `reverse_iterator` and then call `base`.
+    > 
+    > ``` cpp
+    > v.erase((++ri).base());
+    > ```
 
 ### Item 29: Consider `istreambuf_iterator`s for character-by-character input
-
-The code below
 
 ``` cpp
 istream inputFile("interestingData.txt");
@@ -1163,17 +1097,17 @@ istream inputFile("interestingData.txt");
 string fileData((istream_iterator<char>(inputFile)), istream_iterator<char>());
 ```
 
-fails to copy whitespace in the file into the `string` because `istream_iterator`s use `operator>>`
-to do the reading, and, by default, `operator>>` functions skip whitespace. To copy whitespaces,
+The code above fails to copy whitespace in the file into the `string` because `istream_iterator`s use `operator>>`
+to do the reading, and by default, `operator>>` functions skip whitespace. To copy whitespaces,
 clear the `skipws` flag.
 
 ``` cpp
 inputfile.unsetf(ios::skipws);
 ```
 
-While `operator>>` provides powerful formatted input utility, it is overkill when the objective is
+While `operator>>` provides powerful formatted input utility, it's overkill when the goal is
 to grab the next character from the input stream. To improve efficiency, use `istreambuf_iterator`s
-instead. There is no need to unset the `skipws` flag too.
+instead. Clearing the `skipws` flag isn't needed either.
 
 ## Algorithms
 
@@ -1190,8 +1124,8 @@ transform(values.begin(), values.end(), results.end(), transmogrify);
 ```
 
 The intention of the code above is to invoke `transmogrify` on every element in `values` and
-`insert` at the `end` of the `results`. However, `*results.end()` doesn't exist and neither does any
-object after it. In order to place objects at either end of a container, use `push_back` or
+`insert` at the `end` of the `results`. Yet, `*results.end()` doesn't exist and neither does any
+object after it. To place objects at either end of a container, use `push_back` or
 `push_front` and their associated iterators `front_inserter` and `back_inserter`.
 
 ``` cpp
@@ -1212,7 +1146,7 @@ transform(values.begin(), values.end(), back_inserter(results), transmogrify);
 > results.reserve(results.size() + values.size());
 > ```
 
-To overwrite, use `resize`
+To overwrite, use `resize`.
 
 ``` cpp
 if (results.size() < values.size()) {
@@ -1222,7 +1156,7 @@ if (results.size() < values.size()) {
 transform(values.begin(), values.end(), results.begin(), transmogrify);
 ```
 
-or `clear`
+Or, use `clear`.
 
 ``` cpp
 results.clear();
@@ -1233,22 +1167,23 @@ transform(values.begin(), values.end(), back_inserter(results), transmogrify);
 
 ### Item 31: Know your sorting options
 
-- To perform a full sort, use `sort` or `stable_sort`.
-- To perform a sort of the top `n` elements, use `partial_sort`.
-- To identify the element at position `n` or the top `n` element without ordering them, use
-  `nth_element`
-- To separate elements of an array that into those that do and do not satisfy a criterion, use
-  `partition` or `stable_partiton`
-- When using `list`s, `partition` and `stable_partition` can be used directly, and `sort` and
-  `stable_sort` can be substituted for `list::sort`. `partial_sort` and `nth_element` cannot be
-  used directly but it is possible to mimic their behavior using other methods.
+| Goal                                                                           | Sorting algorithm                     |
+| ------------------------------------------------------------------------------ | ------------------------------------- |
+| Fully sort a container.                                                        | Use `sort` or `stable_sort`.          |
+| Find top `n` elements                                                          | use `partial_sort`.                   |
+| Find the element at position `n` or the top `n` element without ordering them. | Use `nth_element`.                    |
+| Separate elements of an array into those that do and do not meet a criterion.  | Use `partition` or `stable_partiton`. |
+
+When using `list`s, `partition` and `stable_partition` can be used directly, and `sort` and `stable_sort` can be
+substituted for `list::sort`. `partial_sort` and `nth_element` cannot be used directly but it's possible to mimic
+their behavior using other methods.
 
 > Choose an algorithm based on what needs to be accomplished, not on performance considerations.
 
 ### Item 32: Follow `remove`-like algorithms by `erase` if you really want to remove something
 
 `remove` is declared with a pair of iterators as parameters; it doesn't know anything about the
-contain on which it is operating.
+container on which it's operating.
 
 ``` cpp
 vector<int> v;
@@ -1266,18 +1201,18 @@ remove(v.begin(), v.end(), 99);
 cout << v.size();                // still prints 10
 ```
 
-The call to `remove` does the following to `v`
+Here's how the `remove` call above works on `v`:
 
-1. `v[0]`, `v[1]`, and `v[2]` should be kept, continue to `v[3]`.
+1. `v[0]`, `v[1]`, and `v[2]` do not need to be removed, continue to `v[3]`.
 1. `v[3]` should be removed so mark `v[3]`.
 1. `v[4]` does not need to be removed so assign `v[3]` to `v[4]`. `v[4]` is now marked.
 1. `v[5]` should be removed, continue to `v[6]`.
-1. `v[6]` should be kept, assign `v[6]` to `v[4]`, mark `v[5]`.
+1. `v[6]` do not need to be removed, assign `v[6]` to `v[4]`, mark `v[5]`.
 1. As above, assign `v[7]` to `v[5]` and `v[8]` to `v[6]`. Mark `v[7]`.
-1. `return` iterator pointing to last marked element: `v[7]`.
+1. `return` an `iterator` pointing to last marked element: `v[7]`.
 
-As a side effect, "removed" elements take the form of garbage elements located in the back of the
-container. To actually remove them from the container, use the range form of `erase`
+`remove`d elements become garbage elements located in the back of the container. To actually remove them
+from the container, use the range form of `erase`.
 
 ``` cpp
 v.erase(remove(v.begin(), v.end(), 99), v.end());
@@ -1285,16 +1220,16 @@ v.erase(remove(v.begin(), v.end(), 99), v.end());
 
 > `list:remove` actually removes an element from its container. Inconsistent, but true.
 
-> `unique` is another function that requires `erase`. Also, `list::unique` actually removes adjacent
+> `unique` is another function that requires `erase`. True to form, `list::unique` actually removes adjacent
 > duplicates from it's container as well.
 
 ### Item 33: Be wary of `remove`-like algorithms on containers of pointers
 
 [Item 32](effective_stl#item-32-follow-remove-like-algorithms-by-erase-if-you-really-want-to-remove-something)
-describes how the `remove` algorithm can re-assign "removed" elements. When using containers with dynamically
-allocated objects, pointers get reassigned leading to objects with no pointers to them.
+describes how the `remove` algorithm can re-assign `remove`d elements. When using containers with dynamically
+allocated objects, pointers get reassigned; the objects become leaked memory.
 
-In many cases `partition` can be used in place of `remove`. Another way is to `delete` the pointers
+Often, `partition` can be used in place of `remove`. Or, `delete` the pointers
 and set them to `null` before using the `erase-remove` idiom.
 
 ``` cpp
@@ -1314,7 +1249,7 @@ for_each(v.begin(), v.end(), delAndNullifyUncertified)
 v.erase(remove(v.begin(), v.end(), static_cast<Widget*>(0)), v.end());
 ```
 
-Another option is to replace pointers with *smart* pointers.
+Perhaps, the best choice is to replace pointers with *smart* pointers.
 
 ``` cpp
 template<typename T>
@@ -1330,8 +1265,7 @@ v.erase(remove_if(v.begin(), v.end(), not1(mem_fun(&Widget::isCertified))), v.en
 
 ### Item 34: Note which algorithms expect sorted ranges
 
-In exchange for greater performance, the following algorithms require sorted ranges before they are
-used
+In exchange for greater performance, the following algorithms need sorted ranges before they can be used:
 
 - `binary_search`
 - `upper_bound`
@@ -1345,8 +1279,8 @@ used
 - `inplace_merge`
 - `includes`
 
-> If a different comparison function is used to sort a container, make sure the sorting algorithm is
-> given the same comparison function.
+> If a different comparison function is used to sort a container, make sure the sorting algorithm has
+> the same comparison function.
 > 
 > ``` cpp
 > vector<int> v;
@@ -1358,7 +1292,7 @@ used
 
 ### Item 35: Implement simple case-insensitive string comparisons via `mismatch` or `lexicographical_compare`
 
-A non-standard way to compare `string`s is to use `stricmp` or `strcmpi`
+A non-standard way to compare `string`s is to use `stricmp` or `strcmpi`.
 
 ``` cpp
 int ciStringCompare(const string& s1, const string& s2)
@@ -1367,7 +1301,7 @@ int ciStringCompare(const string& s1, const string& s2)
 }
 ```
 
-Using STL, the first step is a write a character comparison function.
+To use STL, the first step is a write a character comparison function.
 
 ``` cpp
 int ciCharCompare(char c1, char c2)
@@ -1381,13 +1315,13 @@ int ciCharCompare(char c1, char c2)
 }
 ```
 
-There are two common interfaces used to compare strings:
+There's two common interfaces used to compare strings:
 
-- `strcmp`: `return` negative number, positive number or zero
-- `operator<`: `return` `true` or `false`
+- **`strcmp`** - `return` negative number, positive number or zero
+- **`operator<`** - `return` `true` or `false`
 
-Because `mismatch` `return`s the first position in two ranges where corresponding values are not the
-same, it is ideal for the `strcmp` interface. When using `mismatch`, the first range must be shorter
+`mismatch` `return`s the first position in two ranges where corresponding values are not the
+same; it's ideal for the `strcmp` interface. When using `mismatch`, the first range must be shorter
 than the second.
 
 ``` cpp
@@ -1432,11 +1366,11 @@ bool ciStringCompare(const string& s1, const string& s2)
 ```
 
 > The asumption of these two functions is that the strings are not internationalized. If this is a
-> concern, look towards `std::locale` and check appendix A for a solution.
+> concern, look at `std::locale`.
 
 ### Item 36: Understand the proper implementation of `copy_if`
 
-`copy_if` is not a STL algorithm. It is trival to implement, but it is also trivial to implement it
+`copy_if` is not a STL algorithm. It's trival to implement, but it's also trivial to implement it
 wrong. Below is the wrong implementation.
 
 ``` cpp
@@ -1452,9 +1386,9 @@ OutputIterator copy_if(InputIterator begin,
 }
 ```
 
-[Item 41](effective_stl#item-41-understand-the-reasons-for-ptr_fun-mem_fun-and-mem_fun_ref) describes `not1` can't be
-applied directly to a function pointer; the pointer must be passed through `ptr_fun` first. Passing an *adaptable*
-function object shouldn't be required of the client. Instead, the correct implementation is
+[Item 41](effective_stl#item-41-understand-the-reasons-for-ptr_fun-mem_fun-and-mem_fun_ref) describes how `not1`
+cannot be applied directly to a function pointer; the pointer must be passed through `ptr_fun` first. Passing an
+*adaptable* function object shouldn't be required of the client.
 
 ``` cpp
 template<typename InputIterator, 
@@ -1476,12 +1410,12 @@ OutputIterator copy_if(InputIterator begin,
 
 ### Item 37: Use `accumulate` or `for_each` to summarize ranges
 
-`accumulate` and `for_each` are used to boil down a entire range into a single object.
+`accumulate` and `for_each` are used to boil down an entire range into a single object.
 
 #### `accumulate`
 
 The default behavior of `acumulate` is to iterate through a range and `return` a sum using
-`operator+`. However, `accumulate` can be generalized further by passing in a summarization
+`operator+`. Yet, `accumulate` can be generalized further by passing in a summarization
 function.
 
 ``` cpp
@@ -1495,7 +1429,7 @@ public:
   PointAverage() : numPoints(0), xSum(0), ySum(0) {}
 
   const Point operator()(const Point& avgSoFar, const Point& p)
-  {            
+  {          
     ++numPoints;
     xSum += p.x;
     ySum += p.y;
@@ -1554,14 +1488,14 @@ Point avg = for_each(lp.begin(), lp.end(), PointAverage()).result();
 
 ### Item 38: Design functor classes for pass-by-value
 
-C and C++ require functions to be passed as pointers to functions. STL function objects (functors)
+C and C++ need functions to be passed as pointers to functions. STL function objects (functors)
 are modeled after function pointers. By convention, functors are always passed by value. Because of
-this convention, functors should be
+this convention, functors should be:
 
-- **small:** to lessen the expense of copying.
-- **monomorphic:** to prevent slicing issues with the copy constructor.
+- **small** to lessen the expense of copying.
+- **monomorphic** to prevent slicing issues with the copy constructor.
 
-Functors that need to be both large and polymorphic, like the one below,
+Functors that need to be both large and polymorphic, like the one below:
 
 ``` cpp
 template<typename T>
@@ -1576,7 +1510,7 @@ public:
 };
 ```
 
-can be converted to acceptable functors using the *pimpl idiom*
+can be converted to acceptable functors using the *pimpl idiom*, like so:
 
 ``` cpp
 template<typename T>
@@ -1585,7 +1519,7 @@ private:
   Widget w;                                    // move all the data in BPFC here
   int x;
   ...
-  virtual ~BPFCImpl();                         
+  virtual ~BPFCImpl();                       
   virtual void operator()(const T& val) const;
 
 friend class BPFC<T>;
@@ -1607,7 +1541,7 @@ public:
 
 ### Item 39: Make predicates pure functions
 
-STL implementations are allowed to copy predicates. If a predicate has some internal state like
+STL implementations are allowed to copy predicates. 
 
 ``` cpp
 class BadPredicate : public unary_function<Widget, bool> {
@@ -1623,8 +1557,6 @@ private:
 };
 ```
 
-or
-
 ``` cpp
 bool anotherBadPredicate(const Widget&, const Widget&)
 {
@@ -1633,15 +1565,15 @@ bool anotherBadPredicate(const Widget&, const Widget&)
 }
 ```
 
-it's behavior is undefined because the object can be copied and thus its internal state can be wiped
-out at any time.
+If a predicate has some internal state, like the examples above, it's behavior is undefined because the object can be
+copied and thus its internal state can be wiped out at any time.
 
 A well behaved predicate must be a pure function; it's `return` value should only depend on its
 parameters.
 
 ### Item 40: Make functor classes adaptable
 
-STL functors are modeled on C++ functions, and a C++ function has only one set of parameter types
+STL functors are modeled after C++ functions, and a C++ function has only one set of parameter types
 and one `return` type. As a result, the STL implicitly assumes each functor has only one
 `operator()` function, and it's the parameter and `return` types for this function that should be
 passed to `unary_function` or `binary_function`. Failure to do so will remove a functors
@@ -1660,8 +1592,8 @@ x.f();  // Syntax #2: f is member function, x is object or reference
 p->f(); // Syntax #3: f is member function, p is pointer to x 
 ```
 
-- `mem_fun` adapts Syntax \#3 to Syntax \#1.
-- `mem_fun_ref` adapts Syntax \#2 to Syntax \#1.
+- `mem_fun` adapts Syntax #3 to Syntax #1.
+- `mem_fun_ref` adapts Syntax #2 to Syntax #1.
 - `ptr_fun` allows functions to be adaptable by providing necessary `typedef`s that adapters need.
 
 ### Item 42: Make sure `less<T>` means `operator<`
@@ -1688,7 +1620,7 @@ bool operator<(const Widget& lhs, const Widget& rhs)
 ```
 
 `Widget` can now be sorted by `weight` with `less<Widget>`. If instead, a `Widget` needs to be
-sorted by `maxSpeed`, do not re-define `less<Widget>`
+sorted by `maxSpeed`, do not re-define `less<Widget>`.
 
 ``` cpp
 template<>
@@ -1706,7 +1638,7 @@ Instead, make a brand new `struct` like `MaxSpeedCompare`, for example.
 
 ### Item 43: Prefer algorithm calls to hand-written loops
 
-Algorithm calls are preferable to hand-written loops for three reasons:
+Algorithm calls are preferable to hand-written loops because they offer:
 
 - Efficiency
 - Correctness
@@ -1714,34 +1646,32 @@ Algorithm calls are preferable to hand-written loops for three reasons:
 
 #### Efficiency
 
-- **Minor:** Eliminates redundant computations
+-   **Minor:** Eliminates redundant computations.
    
-  ``` cpp
-  for(list<Widget>::iterator i = lw.begin(); i != lw.end(); ++i) {
-    i->redraw();
-  }
-  ```
+    ``` cpp
+    for(list<Widget>::iterator i = lw.begin(); i != lw.end(); ++i) {
+      i->redraw();
+    }
+    ```
    
-  calls `list::end` each time around the loop, while,
+    The code above calls `list::end` each time around the loop.
    
-  ``` cpp
-  for_each(lw.begin(), lw.end(), mem_fun_ref(&Widget::redraw));
-  ```
+    ``` cpp
+    for_each(lw.begin(), lw.end(), mem_fun_ref(&Widget::redraw));
+    ```
    
-  calls `list::end` once.
+    `for_each` calls `list::end` once.
      
-- **Major:** Library implementations take advantage of their own container implementations to
-  perform faster traversals than traversals performed by a client.
-- **Major:** Algorithms are much more sophisticated than anything the average C++ programmer can
-  come up with.
+-   **Major:** Library implementations take advantage of their own container implementations to do faster traversals
+    than anything you can come up with.
+-   **Major:** Algorithms in the STL are much more sophisticated than anything you can come up with.
 
 #### Correctness
 
-Writers of hand-written loops need to worry that their iterators are valid and the point to the
-right spot. Algorithms eliminate the need to worry about iterators.
+Writers of hand-written loops need to worry about whether their `iterator`s are valid and that they point to the
+right spot. Algorithms don't need `iterator` maintenance.
 
-For example, the goal is to take each element in an array, add 41 to it, and then `insert` it into
-the front of a `deque`.
+For example, take each element in an array, add 41 to it, and then `insert` it into the front of a `deque`.
 
 ``` cpp
 double data[maxNumDoubles];
@@ -1777,19 +1707,19 @@ for (size_t i = 0; i < numDoubles; ++i) {
 }
 ```
 
-The code above is correct, but, the following algorithm does the same thing.
+Now, the code is correct, but the following algorithm does the same thing.
 
+``` cpp
 transform(data, data + numDoubles, inserter(d, d.begin()), bind2nd(plus<double>(), 41));
+```
 
 #### Maintainability
 
-Each STL algorithm carries out some well-defined task and it is reasonable to expect professional
-C++ programmers to know (or lookup) what each does. In general, it is easier to follow a call to an
-algorithm than it is to decode a loop.
+Each STL algorithm carries out some well-defined task and it's reasonable to expect professional
+C++ programmers to know (or lookup) what each does. In general, it's easier to follow a call to an
+algorithm than it's to decode a loop.
 
-An exception to this rule is when a algorithm needs a separate functor or multiple adapters.
-
-For example,
+An exception to this rule is when an algorithm needs a separate functor or multiple adapters.
 
 ``` cpp
 vector<int> v;
@@ -1803,7 +1733,7 @@ for( ; i != v.end(); ++ i) {
 ...
 ```
 
-can be written be written using the algorithm `find_if`.
+The code above can be replaced using the algorithm `find_if`.
 
 ``` cpp
 vector<int>::iterator i = find_if(v.begin(), v.end(), 
@@ -1812,7 +1742,7 @@ vector<int>::iterator i = find_if(v.begin(), v.end(),
                                            bind2nd(less<int>(), y)));
 ```
 
-`find_if` can be simplified using a functor
+`find_if` can be simplified using a functor.
 
 ``` cpp
 template<typename T>
@@ -1835,13 +1765,13 @@ private:
 vector<int>::iterator i = find_if(v.begin(), v.end(), BetweenValues<int>(x, y));
 ```
 
-In this case, most would find the `for`-loop preferable to maintain. However, an increasingly
-complex loop can quickly tilt the scales in the functors favor.
+In this case, most would find the `for`-loop preferable to manage. Yet, an increasingly
+complex loop can quickly tilt the scales into the functor`s favor.
 
 ### Item 44: Prefer member functions to algorithms with the same names
 
 Some containers have member functions with the same names as STL algorithms. Those member functions
-are preferable to the algorithms because they are
+are preferable to the algorithms because they are:
 
 - Faster
 - Integrate better with the container than the algorithm.
@@ -1920,16 +1850,16 @@ are preferable to the algorithms because they are
 
 ### Item 46: Consider function object instead of functions as algorithm parameters
 
-Function objects (functors) a preferable to functions as parameters to algorithms because they are
+Function objects, or functors, are preferable to functions as parameters to algorithms because they are:
 
-- **Efficient:** functors can be `inline`d while passing a function directly guarantees a function
+- **Efficient** - Functors can be `inline`d while passing a function directly guarantees a function
   call.
-- **Robust:** there are sometimes subtle, compiler-related bugs and pitfalls that can be
+- **Robust** - Sometimes subtle, compiler-related bugs and pitfalls that can be
   encountered when using `const` member functions or `template`d functions.
 
 ### Item 47: Avoid producing write-only code
 
-Code that is hard to read, like
+Use of the STL can produce code that is hard to read.
 
 ``` cpp
 vector<int> v;
@@ -1944,7 +1874,8 @@ v.erase(
   v.end());
 ```
 
-should be broken down into chunks.
+Except for the `erase-remove` idiom, try to make it so that the code is only doing one
+thing per line.
 
 ``` cpp
 typedef vector<int>::iterator VecIntIter;
@@ -1952,9 +1883,6 @@ VecIntIter rangeBegin = find_if(v.rbegin(), v.rend(), bind2nd(greater_equal<int>
 
 v.erase(remove_if(rangeBegin, v.end(), bind2nd(less<int>(), x)), v.end());
 ```
-
-With the exception of the `erase-remove` idiom, try to make it so that the code is only doing one
-thing per line.
 
 ### Item 48: Always `#include` the proper headers
 
@@ -1964,11 +1892,11 @@ whats in each STL-related header.
 - Almost all the containers are declared in headers of the same name. The exceptions are `<set>`
   and `<map>`. `<set>` declares `set` and `multiset`. `<map>` declares `map` and `multimap`.
 - All but four algorithms are declared in `<algorithm>`. Exceptions are `accumulate`,
-  `inner_product`, `adjacent_difference`, and `partial_sum`, which, are all declared in
+  `inner_product`, `adjacent_difference`, and `partial_sum`, which are all declared in
   `<numeric>`.
 - Special kinds of iterators, including `istream_iterator`s and `istreambuf_iterator`s, are
   declared in `<iterator>`.
-- Standard functors (e.g. `less<T>`) and functor adapters (e.g. `not1`, `bind2nd`) are declared in
+- Standard functors (such as `less<T>`) and functor adapters (such as `not1`, `bind2nd`) are declared in
   `<functional>`.
 
 ### Item 49: Learn to decipher STL-related compiler diagnostics
@@ -1977,19 +1905,19 @@ When using the STL, compilers tend to emit gruesome compiler errors. Below is a 
 decoding them.
 
 - For `vector` and `string`, iterators are sometimes pointers, so compiler diagnostics may refer
-  to pointer types if a mistake was made with an `iterator`.
+  to pointer types if there's an error with an `iterator`.
 - Messages mentioning `back_insert_iterator`, `front_insert_iterator`, or `insert_iterator` almost
-  always mean a mistake was made calling `back_inserter`, `front_inserter` or `inserter`,
+  always describe an error calling `back_inserter`, `front_inserter` or `inserter`,
   respectively.
-- Similarly, messages mentioning `binder1st` or `binder2nd` probably mean a mistake was made with
+- Similarly, messages mentioning `binder1st` or `binder2nd` probably describe an error with
   `bind1st` or `bind2nd`.
 - Output iterators do their outputting or inserting work inside assignment operators. Messages
   complaining about something inside some assignment operator are likely produced because of them.
-- Error messages originating from inside an implementation of an STL algorithm usually mean there
-  is something wrong with the types used with that algorithm.
-- If a compiler doesn't know a common STL-component, it is usually do to missing `#include`s.
-  These typically arise when an application is ported to a new platform. See [Item
-  48](effective_stl#item-48-always-include-the-proper-headers).
+- Error messages originating from inside an implementation of an STL algorithm usually describe something is wrong
+  with the types used with that algorithm.
+- If a compiler doesn't know a common STL-component, it's usually because of missing `#include`s.
+  These typically arise when an application is ported to a new platform. See 
+  [Item 48](effective_stl#item-48-always-include-the-proper-headers).
 
 ### Item 50: Familiarize yourself with STL-related web sites
 

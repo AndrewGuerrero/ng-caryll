@@ -56,10 +56,10 @@ when testing.
     those other classes, your hands will be tied.
 -   **Bottom Line:** It all comes down to how hard or easy it is to construct the class in isolation or with
     test-double collaborators.
-    
+  
     - If it’s hard, you’re doing too much work in the constructor!
     - If it’s easy, pat yourself on the back.
-       
+     
     Always think about how hard it will be to test the object while you are writing it. Will it be easy to
     instantiate it via the constructor you’re writing? (Keep in mind that your test-class will not be the only
     code where this class will be instantiated.)
@@ -155,7 +155,7 @@ class House {
   House() {
     bedroom = new Bedroom();
   } 
-        
+      
   // ...
 }
 
@@ -618,7 +618,7 @@ Socket getSocket(@Named("port") int port) {
   //   which may involve more than just "new"
   return new Socket(port);
 }
-  
+
 // The revised code is flexible, and easily
 //   tested (without any global state). 
 
@@ -876,7 +876,7 @@ ServerConfig getServerConfig(
 //   use the FlagBinder.
   new FlagBinder(binder().bind(
       FlagClassX.class))
-      
+    
 // Dependency Injection exposes your
 //   dependencies and allows for seams to
 //   inject different collaborators.
@@ -1726,11 +1726,11 @@ Guice singleton if there’s only one in the application).
 -   If you add a new test (which doesn’t clean up global state) and it runs in the middle of the suite, another
     test may fail that runs after it.
 -   Singletons enforcing their own “Singletonness” end up cheating.
-       
+     
     You’ll often see mutator methods such as `reset()` or `setForTest(…)` on so-called singletons, because
     you’ll need to change the instance during tests. If you forget to reset the Singleton after a test, a later
     use will use the stale underlying instance and may fail in a way that’s difficult to debug.
-  
+
 #### Global State & Singletons turn APIs into Liars
 
 Let us look at a test we want to write
@@ -1833,10 +1833,10 @@ Here is a typical singleton implementation of Cache.
 ```java
 class Cache {
   static final instance Cache = new Cache();
-  
+
   Map<String, User> userCache = new HashMap<String, User>();
   EvictionStrategy eviction = new LruEvictionStrategy();
-  
+
   private Cache(){} // private constructor //..
 }
 ```
@@ -2239,7 +2239,7 @@ Flags) there is no longer a need to call `Flags.disableStateCheckingForTest()` o
 
 class RpcClient {
 
-  static Backend backend;  
+  static Backend backend;
 
   // static init block gets run ONCE, and whatever
   //   flag is read will be stuck forever.
@@ -2257,7 +2257,7 @@ class RpcClient {
     return client;
   }
 
-  // ...  
+  // ...
 
 }
 
@@ -2281,7 +2281,7 @@ class RpcClientTest extends TestCase {
     RpcClient client = RpcClient.getInstance();
 
     // ... make assertions that need a real backend
-    // and then clean up     
+    // and then clean up   
 
     FLAG_useRealBackend.resetForTest();
   }
@@ -2296,7 +2296,7 @@ class RpcCacheTest extends TestCase {
         new RpcCache(RpcClient.getInstance());
 
     // ... make assertions
-    // and then clean up     
+    // and then clean up   
 
     FLAG_useRealBackend.resetForTest();
   }
@@ -2311,14 +2311,14 @@ class RpcCacheTest extends TestCase {
 
 class RpcClient {
 
-  Backend backend;  
+  Backend backend;
 
   @Inject
   RpcClient(Backend backend) {
     this.backend = backend;
   }
 
-  // ...  
+  // ...
 
 }
 
@@ -2338,7 +2338,7 @@ class RpcCache {
 @LargeTest
 class RpcClientTest extends TestCase {
 
-  public void testXyzWithRealBackend() {  
+  public void testXyzWithRealBackend() {
 
     RpcClient client =
         new RpcClient(new RealBackend());
@@ -2384,11 +2384,11 @@ statics won’t be solved.
 - **Flaw:** Static Initialization Blocks are run once, and are non-overridable by tests
 - **Flaw:** The Backend is set once, and never can be altered for future tests. This may cause some tests to
   fail, depending on the ordering of the tests.
-    
+  
 To remedy these problems, first remove the static state. Then inject into the `RpcClient` the Backend that it
 needs. *Dependency Injection* to the rescue. Again. Use Guice to manage the single instance of the `RpcClient`
 in the application’s scope. Getting away from a JVM Singleton makes testing all around easier.
-  
+
 #### Problem: Static Method call in a Depended on Library
 
 <table>
@@ -2641,7 +2641,7 @@ Hidden interactions behind one public API, which could be addressed better throu
         adding another conditional) extract a class pulling along that responsibility. This will start to take
         chunks out of the legacy class, and you will be able to test each chunk in isolation (using Dependency
         Injection).
-     
+   
         As you introduce these other collaborators, you may find the composition to be awkward or unnatural.
         Despite this awkwardness, you have to take steps today to prevent the large class from growing. If you
         don’t it will only grow, gaining more and more extraneous responsibilities, and get worse.
@@ -2652,7 +2652,7 @@ Hidden interactions behind one public API, which could be addressed better throu
     homeless method. Look at the parameters passed into the static method. You probably have a method that
     belongs on one of the parameters or a wrapper around one of the parameters. Move the method onto the
     parameter it belongs on.
-  
+
 #### Caveat: Living With the Flaw
 
 Some legacy classes are “beyond the scope of this one CL.” It may be unreasonable for a reviewer to demand a
