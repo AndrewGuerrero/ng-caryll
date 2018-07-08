@@ -5,7 +5,7 @@
 /dist-server
 /tmp
 /out-tsc
-/src/assets/documents/*
+/src/assets/documents/*.html
 /src/assets/lunr
 /src/assets/js/lunr.*
 /src/assets/*.css
