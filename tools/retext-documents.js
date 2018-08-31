@@ -56,7 +56,13 @@ function retextFile(filePath) {
           'allocate',
           'multiple',
           'magnitude',
-          'facilitate'
+          'facilitate',
+          'accelerate',
+          'utilization',
+          'effect',
+          'identify',
+          'demonstrate',
+          'monitor'
         ]
       }))
     .use(stringify)

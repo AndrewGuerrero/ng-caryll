@@ -8,6 +8,11 @@ export interface DocItem {
 
 const DOCS: DocItem[] = [
   {
+    id: 'accelerate',
+    name: 'Accelerate',
+    theme: 'aqua',
+  },
+  {
     id: 'building_evolutionary_architectures',
     name: 'Building Evolutionary Architectures',
     theme: 'purple',
