@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { PageTitleService } from '../shared/page-title.service';
 import { ThemeService } from '../shared/theme.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DocItem, DocumentationItemsService } from '../shared/documentation-items.service';
 import { DocumentService } from '../shared/document.service';
 import { ScrollService } from '../shared/scroll.service';
@@ -19,6 +19,7 @@ export class DocumentViewerComponent {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private pageTitleService: PageTitleService,
     private themeService: ThemeService,
     private documentService: DocumentService,
@@ -32,6 +33,10 @@ export class DocumentViewerComponent {
     route.params.subscribe(p => {
       this.scrollService.scroll();
       this.docItem = docItemService.getItemById(p['id']);
+      if (this.docItem == null) {
+        this.router.navigate(['']);
+        return;
+      }
       this.pageTitleService.title = this.docItem.name;
       this.documentService
         .getDocument(this.docItem.id)
