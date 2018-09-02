@@ -23,6 +23,9 @@
 .settings/
 *.sublime-workspace
 
+# Firebase
+.firebase
+
 # IDE - VSCode
 .vscode
 
