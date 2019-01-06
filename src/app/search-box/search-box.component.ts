@@ -1,8 +1,7 @@
-import { Component, ViewChild, ElementRef, Output, OnInit, EventEmitter } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
+import { Component, Output, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { SearchService, SearchResult } from '../shared/search.service';
-import { MatMenuTrigger, MatMenu } from '@angular/material/menu';
+import { SearchService } from '../shared/search.service';
 
 @Component({
   selector: 'ngc-search-box',
@@ -15,11 +14,11 @@ export class SearchBoxComponent implements OnInit {
   private searchSubject = new Subject<string>();
   @Output() onSearch = this.searchSubject.pipe(debounceTime(this.searchDebounce));
 
-  constructor(private searchSevice: SearchService) { }
+  constructor(private searchService: SearchService) { }
 
   ngOnInit() {
     if ('Worker' in window) {
-      this.searchSevice.initWorker('assets/js/search-worker.js', 2000);
+      this.searchService.initWorker('assets/js/search-worker.js', 2000);
     }
   }
 

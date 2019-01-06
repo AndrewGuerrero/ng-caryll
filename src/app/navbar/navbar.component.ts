@@ -1,12 +1,11 @@
-import { Component, Output, EventEmitter, NgZone } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { PageTitleService } from '../shared/page-title.service';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Observable } from 'rxjs';
 import { SearchService } from '../shared/search.service';
-import { query } from '@angular/animations';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { SearchResultsComponent } from '../search-results/search-results.component';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 const SMALL_WIDTH_BREAKPOINT = 750;
 
@@ -16,8 +15,6 @@ const SMALL_WIDTH_BREAKPOINT = 750;
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
-  private mediaMatcher: MediaQueryList = matchMedia(`(max-width: ${SMALL_WIDTH_BREAKPOINT}px`);
-
   eyeIconMessage = `
   A secret symbol left by Caryll, runesmith of Byrgenwerth.
   A transcription of "Eye," as spoken by left-behind Great Ones.
@@ -38,16 +35,15 @@ export class NavbarComponent {
     private pageTitle: PageTitleService,
     private searchService: SearchService,
     private bottomSheet: MatBottomSheet,
-    private zone: NgZone,
+    private breakpointObserver: BreakpointObserver,
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer) {
-    this.mediaMatcher.addListener(mql => zone.run(() => this.mediaMatcher = mql));
-    iconRegistry.addSvgIcon('moon',
-      sanitizer.bypassSecurityTrustResourceUrl('assets/img/moon.svg'));
-    iconRegistry.addSvgIcon('eye',
-      sanitizer.bypassSecurityTrustResourceUrl('assets/img/eye.svg'));
-    iconRegistry.addSvgIcon('github',
-      sanitizer.bypassSecurityTrustResourceUrl('assets/img/github.svg'));
+    this.iconRegistry.addSvgIcon('moon',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/img/moon.svg'));
+    this.iconRegistry.addSvgIcon('eye',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/img/eye.svg'));
+    this.iconRegistry.addSvgIcon('github',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/img/github.svg'));
   }
 
   @Output() toggleSidenav = new EventEmitter<void>();
@@ -58,7 +54,7 @@ export class NavbarComponent {
   }
 
   isScreenSmall(): boolean {
-    return this.mediaMatcher.matches;
+    return this.breakpointObserver.isMatched(`(max-width: ${SMALL_WIDTH_BREAKPOINT}px`);
   }
 
   doSearch(query: string) {

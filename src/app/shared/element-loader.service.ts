@@ -1,7 +1,6 @@
 import { ComponentPortal, DomPortalHost } from '@angular/cdk/portal';
 import { Injectable, ComponentFactoryResolver, ApplicationRef, Injector, ViewContainerRef } from '@angular/core';
 import { HeaderLinkComponent } from '../header-link/header-link.component';
-import { from, Observable } from 'rxjs';
 
 @Injectable()
 export class ElementLoaderService {

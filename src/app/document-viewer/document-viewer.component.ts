@@ -26,13 +26,13 @@ export class DocumentViewerComponent {
     private docItemService: DocumentationItemsService,
     private scrollService: ScrollService,
   ) {
-    route.fragment.subscribe(() => {
+    this.route.fragment.subscribe(() => {
       this.scrollService.scroll();
     });
 
-    route.params.subscribe(p => {
+    this.route.params.subscribe(p => {
       this.scrollService.scroll();
-      this.docItem = docItemService.getItemById(p['id']);
+      this.docItem = this.docItemService.getItemById(p['id']);
       if (this.docItem == null) {
         this.router.navigate(['']);
         return;

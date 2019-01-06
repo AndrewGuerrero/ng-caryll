@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Observable, AsyncSubject } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
-import { DocumentationItemsService } from './documentation-items.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 
@@ -11,9 +9,7 @@ export class DocumentService {
   private cache = new Map<string, Observable<string>>();
 
   constructor(
-    private http: HttpClient,
-    private docItemsService: DocumentationItemsService
-  ) {
+    private http: HttpClient) {
   }
 
   getDocument(doc: string): Observable<string> {

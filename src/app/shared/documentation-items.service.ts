@@ -22,11 +22,6 @@ const DOCS: DocItem[] = [
     name: 'The Tao of Microservices',
     theme: 'green',
   },
-  //{
-  //  id: 'guide_to_writing_testable_code',
-  //  name: 'Guide to Writing Testable Code',
-  //  theme: 'blue',
-  //},
   {
     id: 'effective_cpp',
     name: 'Effective C++',

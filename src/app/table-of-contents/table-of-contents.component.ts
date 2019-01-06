@@ -1,10 +1,7 @@
-import { Component, OnInit, Input, Inject, ElementRef, ViewChildren, QueryList, AfterViewInit, OnDestroy } from '@angular/core';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
-import { asapScheduler as asap, Subject, fromEvent, combineLatest } from 'rxjs';
-import { takeUntil, debounceTime, subscribeOn, startWith } from 'rxjs/operators';
-import { DOCUMENT } from '@angular/common';
+import { Component, OnInit, ElementRef, ViewChildren, QueryList, AfterViewInit, OnDestroy } from '@angular/core';
+import { asapScheduler as asap, Subject, combineLatest } from 'rxjs';
+import { takeUntil, subscribeOn, startWith } from 'rxjs/operators';
 import { TocItem, TableOfContentsService } from '../shared/table-of-contents.service';
-import { Element } from '@angular/compiler';
 
 @Component({
   selector: 'ngc-table-of-contents',
@@ -19,7 +16,6 @@ export class TableOfContentsComponent implements OnInit, AfterViewInit, OnDestro
   private destroyed = new Subject();
 
   constructor(
-    private elementRef: ElementRef,
     private tableOfContentsService: TableOfContentsService) { }
 
   ngOnInit() {

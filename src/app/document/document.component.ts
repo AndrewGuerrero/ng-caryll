@@ -43,8 +43,8 @@ export class DocumentComponent implements OnDestroy {
     private elementLoaderService: ElementLoaderService,
     private tableOfContentsService: TableOfContentsService,
   ) {
-    route.params.subscribe(p => {
-      this.docItem = docItemService.getItemById(p['id']);
+    this.route.params.subscribe(p => {
+      this.docItem = this.docItemService.getItemById(p['id']);
     });
 
     this.hostElement = elementRef.nativeElement;
