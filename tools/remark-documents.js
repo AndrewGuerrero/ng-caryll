@@ -17,13 +17,25 @@ const visit = require('unist-util-visit');
 const isElement = require('hast-util-is-element');
 const hasProperty = require('hast-util-has-property');
 
-const INPUT_DIR = 'content/*.md';
+const INPUT_PATTERN = 'content/*.md';
 const OUTPUT_DIR = 'src/assets/documents';
 
-remarkDirectory(INPUT_DIR);
+cleanDirectory(OUTPUT_DIR);
+remarkDirectory(INPUT_PATTERN);
 
-function remarkDirectory(path) {
-  const files = glob.sync(path);
+function cleanDirectory(dir) {
+  fs.readdirSync(dir, (err, files) => {
+    if (err) throw err;
+    for (const file of files) {
+      fs.unlinkSync(path.join(dir, file), err => {
+        if (err) throw err;
+      });
+    }
+  });
+}
+
+function remarkDirectory(pattern) {
+  const files = glob.sync(pattern);
   const length = files.length;
   for (var i = 0; i < length; i++) {
     const stats = fs.lstatSync(files[i]);
