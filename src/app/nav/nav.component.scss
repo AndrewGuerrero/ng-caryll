@@ -1,26 +1,14 @@
 @import '../../styles/constants';
 
-.ngc-nav {
-  top: 25px;
-  padding-top: 20px;
+.ngc-nav-container {
+  height: 100%;
 
-  .ngc-nav-content {
-    max-height: 75vh;
-    overflow: auto;
-
-    mat-nav-list {
-      padding-top: 0;
-    }
-
-    &::-webkit-scrollbar {
-      height: 4px;
-      width: 4px;
-    }
-
-    .mat-list-item {
-      font-size: 14px;
-    }
+  a {
+    font-size: 14px;
+    text-decoration: none;
+    display: block;
   }
+  
 }
 
 @media (max-width: $small-breakpoint-width) {

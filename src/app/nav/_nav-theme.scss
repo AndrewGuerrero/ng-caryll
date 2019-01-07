@@ -9,12 +9,8 @@
   $nav-background-opacity: if($is-dark-theme, 0.2, 0.03);
   $nav-background-focus-opacity: if($is-dark-theme, 0.25, 0.08);
 
-  .ngc-nav-content {
-    background: none;
-
-    &::-webkit-scrollbar-thumb {
-      background: rgba(0, 0, 0, .26);
-    }
+  .ngc-nav-container {
+    border-right: solid 4px mat-color($primary);
 
     a {
       color: mat-color($foreground, secondary-text);
@@ -22,14 +18,6 @@
       &.ngc-item-selected,
       &:hover {
         color: mat-color($primary);
-      }
-    }
-  }
-
-  @media (max-width: $small-breakpoint-width) {
-    .mat-drawer {
-      &::-webkit-scrollbar-thumb {
-        background: rgba(0, 0, 0, .26);
       }
     }
   }
